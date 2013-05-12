@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenCV-Exp", "OpenCV-Exp\OpenCV-Exp.vcxproj", "{10112312-8A69-42DE-91E9-6887F23A2304}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenCV242", "OpenCV242\OpenCV242.vcxproj", "{696E5CD1-5712-4639-BD84-3A3D93C5C8D1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenCV245", "OpenCV245\OpenCV245.vcxproj", "{CA0575F4-4C78-4F63-A6A5-E0E74F90E7CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{10112312-8A69-42DE-91E9-6887F23A2304}.Debug|Win32.ActiveCfg = Debug|Win32
+		{10112312-8A69-42DE-91E9-6887F23A2304}.Debug|Win32.Build.0 = Debug|Win32
+		{10112312-8A69-42DE-91E9-6887F23A2304}.Release|Win32.ActiveCfg = Release|Win32
+		{10112312-8A69-42DE-91E9-6887F23A2304}.Release|Win32.Build.0 = Release|Win32
+		{696E5CD1-5712-4639-BD84-3A3D93C5C8D1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{696E5CD1-5712-4639-BD84-3A3D93C5C8D1}.Debug|Win32.Build.0 = Debug|Win32
+		{696E5CD1-5712-4639-BD84-3A3D93C5C8D1}.Release|Win32.ActiveCfg = Release|Win32
+		{696E5CD1-5712-4639-BD84-3A3D93C5C8D1}.Release|Win32.Build.0 = Release|Win32
+		{CA0575F4-4C78-4F63-A6A5-E0E74F90E7CB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CA0575F4-4C78-4F63-A6A5-E0E74F90E7CB}.Debug|Win32.Build.0 = Debug|Win32
+		{CA0575F4-4C78-4F63-A6A5-E0E74F90E7CB}.Release|Win32.ActiveCfg = Release|Win32
+		{CA0575F4-4C78-4F63-A6A5-E0E74F90E7CB}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
