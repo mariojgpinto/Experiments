@@ -12,7 +12,8 @@
 
 int main_pcl_recording_visualizer(int argc, char* argv[]){
 	NIKinect* kinect = new NIKinect();
-	kinect->init("C:\\Dev\\Kinect\\Data\\ONI\\mirror_papers.oni");
+	//kinect->init("C:\\Dev\\Kinect\\Data\\ONI\\mirror_papers.oni");
+	kinect->init();
 	bool result = false;
 
 //	result = kinect->init_generators();
@@ -48,7 +49,7 @@ int main_pcl_recording_visualizer(int argc, char* argv[]){
 
 		kinect->get_depth(depthMat16UC1);
 		kinect->get_color(color);
-		kinect->get_depth_meta_data(_depth_md);
+		//kinect->get_depth_meta_data(_depth_md);
 
 		XnPoint3D point2;
 

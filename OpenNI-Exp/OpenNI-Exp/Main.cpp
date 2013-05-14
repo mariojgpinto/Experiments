@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
 	//main_opencv(argc,argv);
 	//main_remove_floor(argc,argv);
 	//main_depth_threshold(argc,argv);
-	//main_colorize(argc,argv);
+	main_colorize(argc,argv);
 	//main_nikinect_test(argc,argv);
 	//main_slice(argc,argv);
 	//main_top_view(argc,argv);

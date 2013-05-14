@@ -101,8 +101,8 @@ int main_colorize(int argc, char* argv[]){
 	int _max_bar = 1500;
 
 	cv::namedWindow("Ranged Image");
-	cv::createTrackbar("MinDepth", "Ranged Image", &_min_bar, 5000, NULL);
-	cv::createTrackbar("MaxDepth", "Ranged Image", &_max_bar, 5000, NULL);
+	cv::createTrackbar("MinDepth", "Ranged Image", &_min_bar, 15000, NULL);
+	cv::createTrackbar("MaxDepth", "Ranged Image", &_max_bar, 15000, NULL);
 
 	cv::Mat color_rgb;
 	
