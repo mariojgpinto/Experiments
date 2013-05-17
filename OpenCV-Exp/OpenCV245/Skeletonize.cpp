@@ -93,8 +93,8 @@ int main_skeletonize(int argc, char* argv[]){
 	cv::Mat element = cv::getStructuringElement(cv::MORPH_CROSS, cv::Size(21, 21));
 
 	cv::namedWindow("bin");
-	int thresh = 100;
-	cv::createTrackbar("thresh","bin",&thresh,100,NULL);
+	int thresh = 45;
+	cv::createTrackbar("thresh","bin",&thresh,255,NULL);
 
 	double _last_tick = 0;
 	int _frame_counter = 0;
@@ -197,24 +197,92 @@ int main_skeletonize(int argc, char* argv[]){
 		//cv::imshow("canny",drawing);
 		cv::Mat distT;
 		cv::Mat distT2;
-		cv::Mat distT3;
+		
 		cv::distanceTransform(images_bin.at(im_index),distT,CV_DIST_L2,5);
-		cv::normalize(distT, distT2, 0.0, 1.0, cv::NORM_MINMAX);
+		//cv::normalize(distT, distT2, 0.0, 1.0, cv::NORM_MINMAX);
+		
 		//distT2.convertTo(distT3,CV_8UC1);
 		cv::imshow("img1",distT);
-		cv::imshow("img2",distT2);
+		//cv::imshow("img2",distT2);
+		
+		cv::Mat distT3;
+
+		distT.convertTo(distT3,CV_8UC1);
+
+		cv::imshow("8UC1",distT3);
+		//cv::Mat co,ga;
+		//co = cv::imread("img_q.PNG");
+
+		//int q2 = co.type();
+
+		//cv::cvtColor(co,distT3,CV_RGB2GRAY);
+
+		int q3 = distT3.type();
+
+
+		cv::Mat distT4;
+		int ddepth = CV_32F;
+		int asd  = distT2.type();
+		cv::Laplacian(distT3,distT4,ddepth,5,1,0,4);
+		
+		
+
+		double mmin,mmax;
+		
+		cv::Mat distT5;
+		cv::Mat distT6;
+		cv::normalize(distT4, distT5, 0, 255, cv::NORM_MINMAX);
+
+		 convertScaleAbs( distT4, distT6 );
+		 cv::minMaxIdx(distT6,&mmin, &mmax);
+
+
+		 cv::Mat distT7;
+		 float v = ((float)thresh);
+		 cv::threshold(distT6,distT7,v,255,CV_THRESH_BINARY);
+
+
+		//distT4.convertTo(distT5,CV_32FC1);
+
+		cv::imshow("Laplacian",distT6);
+		cv::imshow("Laplacian-4",distT4);
+		cv::imshow("bin",distT7);
+
+
+		cv::Mat distT8;
+		cv::dilate(distT7,distT7,cv::Mat(5,5,CV_8UC1));
+		cv::erode(distT7,distT7,cv::Mat(3,3,CV_8UC1));
+
+		cv::Mat top_view_color = cv::Mat::zeros(distT7.size(), CV_8UC1);
+
+		cv::vector<cv::vector<cv::Point> > contours;
+		cv::vector<cv::Vec4i> hierarchy;
+			
+		cv::findContours( distT7, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
+
+		for(unsigned int i = 0; i< contours.size(); i++ ){
+			if(contours[i].size() > 125){
+				cv::Scalar clr = cv::Scalar(255);// rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+				cv::Rect rect = cv::boundingRect(contours[i]);
+				drawContours( top_view_color, contours, i, clr, -1, 8, hierarchy, 0, cv::Point() );
+				//cv::rectangle(top_view_color,rect, clr);
+			}
+		}
+
+		cv::imshow("Contours",top_view_color);
+
 		if(c == ' '){ 
-			cv::imwrite("ocio.png",distT2);
+			cv::imwrite("ocio.png",distT4);
 		}
 		cv::Mat bin;
-		float v = ((float)thresh)/100.0;
+		
 		cv::threshold(distT2,bin,v,255,CV_THRESH_BINARY);
-		cv::imshow("bin",bin);
+		//cv::imshow("bin",bin);
 		//cv::waitKey();
 		//
 		//cv::imshow("img",distT);
 
-		cv::imshow("image",images.at(im_index));
+		cv::imshow("image",images.at(im_index) + top_view_color);
 		cv::imshow("image_bin",images_bin.at(im_index));
 
 		//cv::Mat adapt1; images_bin.at(im_index).convertTo(adapt1,CV_8UC1);
@@ -224,10 +292,10 @@ int main_skeletonize(int argc, char* argv[]){
 		//cv::imshow("Adaptative",adapt1);
 
 
-		if(c == 37){ // Left arrow
+		if(c == 'q'){//if(c == 37){ // Left arrow
 			im_index = ((im_index - 1) < 0) ? 2 : im_index - 1;
 		}
-		if(c == 39){ // Right arrow
+		if(c == 'w'){//if(c == 39){ // Right arrow
 			im_index = (im_index + 1) % 3;
 		}
 		if(c != -1){
