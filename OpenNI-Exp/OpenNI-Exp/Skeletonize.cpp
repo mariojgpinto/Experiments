@@ -319,7 +319,7 @@ void skeletonize(IplImage *im) {
 
 
 int main_skeletonize(int argc, char* argv[]){
-		Context _context;
+	Context _context;
 	ScriptNode _scriptNode;
 	DepthGenerator _depth;
 	ImageGenerator _image;
@@ -352,7 +352,7 @@ int main_skeletonize(int argc, char* argv[]){
 	cv::namedWindow("Ranged Image");
 	cv::createTrackbar("MinDepth", "Ranged Image", &_min_bar, 5000, NULL);
 	cv::createTrackbar("MaxDepth", "Ranged Image", &_max_bar, 5000, NULL);
-	cv::createTrackbar("FloorHeight", "Ranged Image", &_thresh, 200, NULL);
+	cv::createTrackbar("FloorHeight", "Ranged Image", &_thresh, 400, NULL);
 	cv::createTrackbar("FloorThresh", "Ranged Image", &_floor_range, 200, NULL);
 	cv::createTrackbar("Kernel", "Ranged Image", &_kernel, 11, NULL);
 
@@ -448,6 +448,12 @@ int main_skeletonize(int argc, char* argv[]){
 	cv::RNG rng(12345);
 	char ch = 0;
 
+
+
+	cv::namedWindow("Skel");
+	int thresh = 33;
+	cv::createTrackbar("thresh","Skel",&thresh,255,NULL);
+
 	while((ch = cv::waitKey(23)) != 27){
 		XnStatus rc = XN_STATUS_OK;
 
@@ -541,17 +547,52 @@ int main_skeletonize(int argc, char* argv[]){
 					}
 				} 
 			} 
+			cv::Mat distT_mask;
 			cv::Mat distT;
-			cv::Mat distT2;
-			cv::Mat distT3;
+			cv::Mat distT_8UC1;
+			cv::Mat distT_Laplacian;
+			cv::Mat distT_Laplacian_abs;
+			cv::Mat distT_Laplacian_abs_thresh;
+			cv::Mat distT_Laplacian_abs_thresh_erode;
+			cv::Mat distT_Laplacian_abs_thresh_dilate;
 
-			cv::erode(mask_cv,distT,cv::Mat(5,5,CV_8UC1));
-			cv::dilate(distT,distT2,cv::Mat(5,5,CV_8UC1));
+			cv::erode(mask_cv,distT_mask,cv::Mat(5,5,CV_8UC1));
+			cv::dilate(distT_mask,distT_mask,cv::Mat(5,5,CV_8UC1));
 
-			cv::distanceTransform(distT2,distT3,CV_DIST_L2,3);
-			cv::normalize(distT3, distT3, 0.0, 1.0, cv::NORM_MINMAX);
+			cv::distanceTransform(distT_mask,distT,CV_DIST_L2,3);
+			
+			distT.convertTo(distT_8UC1,CV_8UC1);
 
-			cv::imshow("distT", distT3);
+			cv::Laplacian(distT_8UC1,distT_Laplacian,CV_32F,5,1,0,4);
+
+			convertScaleAbs( distT_Laplacian, distT_Laplacian_abs );
+
+			float v = ((float)thresh);
+			cv::threshold(distT_Laplacian_abs,distT_Laplacian_abs_thresh,v,255,CV_THRESH_BINARY);
+			
+
+			cv::dilate(distT_Laplacian_abs_thresh,distT_Laplacian_abs_thresh_dilate,cv::Mat(5,5,CV_8UC1));
+			cv::erode(distT_Laplacian_abs_thresh_dilate,distT_Laplacian_abs_thresh_erode,cv::Mat(3,3,CV_8UC1));
+
+			cv::Mat top_view_color = cv::Mat::zeros(distT_Laplacian_abs_thresh.size(), CV_8UC1);
+
+			cv::vector<cv::vector<cv::Point> > contours;
+			cv::vector<cv::Vec4i> hierarchy;
+			
+			cv::findContours( distT_Laplacian_abs_thresh_erode, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
+
+			for(unsigned int i = 0; i< contours.size(); i++ ){
+				if(contours[i].size() > 125){
+					cv::Scalar clr = cv::Scalar(255);// rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+					cv::Rect rect = cv::boundingRect(contours[i]);
+					drawContours( top_view_color, contours, i, clr, -1, 8, hierarchy, 0, cv::Point() );
+					//cv::rectangle(top_view_color,rect, clr);
+				}
+			}
+			
+			cv::imshow("Skel",top_view_color);
+			
+
 			//cv::Mat mask_temp;
 			//cv::Mat mask_inv;
 			//cv::erode(mask_cv,mask_temp,cv::Mat(5,5,CV_8UC1));
