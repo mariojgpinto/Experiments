@@ -93,7 +93,9 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NIKinectTest.cpp" />
     <ClCompile Include="NIOpenCV.cpp" />
-    <ClCompile Include="NISimpleViewer.cpp" />
+    <ClCompile Include="NISimpleViewer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="ReadFromFile.cpp" />
     <ClCompile Include="RemoveFloor.cpp" />
     <ClCompile Include="Skeletonize.cpp" />
