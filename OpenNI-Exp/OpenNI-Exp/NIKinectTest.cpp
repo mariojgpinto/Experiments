@@ -7,6 +7,7 @@ int main_nikinect_test(int argc, char* argv[]){
 	bool result = false;
 	result = kinect->init("C:\\Dev\\Kinect\\Data\\ONI\\mirror_papers.oni");
 
+	//kinect->set_processing_flag(NIKinect::DEPTH_COLOR,true);
 	//result = kinect->init_generators();
 
 	cv::Mat color;
@@ -39,14 +40,15 @@ int main_nikinect_test(int argc, char* argv[]){
 		}
 
 		if(kinect->get_depth(depth)){
-			//depth.convertTo(depthMat8UC1, CV_8UC1,0.05);
-			//imshow("Depth",depthMat8UC1);
+			depth.convertTo(depthMat8UC1, CV_8UC1,0.05);
+			imshow("Depth",depthMat8UC1);
 			//
 			//kinect->get_mask(mask);
 			//imshow("Mask",mask);
 		
-			kinect->get_depth_as_color(depth_as_color);
-			cv::imshow("DepthAsColor",depth_as_color);
+			if(kinect->get_depth_as_color(depth_as_color)){
+				cv::imshow("DepthAsColor",depth_as_color);
+			}
 			//cv::Mat masked_color;
 			//color.copyTo(masked_color,mask);
 			//imshow("MaskedColor",masked_color);
