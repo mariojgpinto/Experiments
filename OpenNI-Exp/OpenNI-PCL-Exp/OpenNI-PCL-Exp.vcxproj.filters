@@ -24,12 +24,18 @@
     <ClCompile Include="pcl_recording_visualizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="pcl_foot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pcl_visualizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pcl_recording_visualizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pcl_foot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

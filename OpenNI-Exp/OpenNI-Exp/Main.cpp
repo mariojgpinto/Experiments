@@ -17,8 +17,8 @@ int main(int argc, char* argv[])
 	//main_colorize(argc,argv);
 	//main_nikinect_test(argc,argv);
 	//main_slice(argc,argv);
-	//main_top_view(argc,argv);
-	main_skeletonize(argc,argv);
+	main_top_view(argc,argv);
+	//main_skeletonize(argc,argv);
 	//main_read_from_file(argc,argv);
 
 	return 0;

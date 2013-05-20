@@ -91,10 +91,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main-PCL.cpp" />
+    <ClCompile Include="pcl_foot.cpp" />
     <ClCompile Include="pcl_recording_visualizer.cpp" />
     <ClCompile Include="pcl_visualizer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="pcl_foot.h" />
     <ClInclude Include="pcl_recording_visualizer.h" />
     <ClInclude Include="pcl_visualizer.h" />
   </ItemGroup>

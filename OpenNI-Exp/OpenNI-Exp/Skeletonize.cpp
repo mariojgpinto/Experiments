@@ -472,6 +472,8 @@ int main_skeletonize(int argc, char* argv[]){
 
 
 		cv::Mat depthMat16UC1(480, 640,CV_16UC1, (void*) _depthMD.Data());
+		cv::Mat depthMat8UC1;
+		depthMat16UC1.convertTo(depthMat8UC1, CV_8UC1,0.05);
 		//cv::Mat depthMat8UC1;
 		//depthMat16UC1.convertTo(depthMat8UC1, CV_8UC1,0.05);
 
@@ -556,10 +558,14 @@ int main_skeletonize(int argc, char* argv[]){
 			cv::Mat distT_Laplacian_abs_thresh_erode;
 			cv::Mat distT_Laplacian_abs_thresh_dilate;
 
-			cv::erode(mask_cv,distT_mask,cv::Mat(5,5,CV_8UC1));
-			cv::dilate(distT_mask,distT_mask,cv::Mat(5,5,CV_8UC1));
+			
 
-			cv::distanceTransform(distT_mask,distT,CV_DIST_L2,3);
+			cv::erode(mask_cv,distT_mask,cv::Mat(5,5,CV_8UC1));			
+			cv::dilate(distT_mask,distT_mask,cv::Mat(11,11,CV_8UC1));
+			cv::erode(distT_mask,distT_mask,cv::Mat(5,5,CV_8UC1));
+			cv::imshow("mask2",distT_mask);
+
+			cv::distanceTransform(distT_mask,distT,CV_DIST_L2,5);
 			
 			distT.convertTo(distT_8UC1,CV_8UC1);
 
@@ -571,8 +577,8 @@ int main_skeletonize(int argc, char* argv[]){
 			cv::threshold(distT_Laplacian_abs,distT_Laplacian_abs_thresh,v,255,CV_THRESH_BINARY);
 			
 
-			cv::dilate(distT_Laplacian_abs_thresh,distT_Laplacian_abs_thresh_dilate,cv::Mat(5,5,CV_8UC1));
-			cv::erode(distT_Laplacian_abs_thresh_dilate,distT_Laplacian_abs_thresh_erode,cv::Mat(3,3,CV_8UC1));
+			cv::dilate(distT_Laplacian_abs_thresh,distT_Laplacian_abs_thresh_dilate,cv::Mat(9,9,CV_8UC1));
+			cv::erode(distT_Laplacian_abs_thresh_dilate,distT_Laplacian_abs_thresh_erode,cv::Mat(5,5,CV_8UC1));
 
 			cv::Mat top_view_color = cv::Mat::zeros(distT_Laplacian_abs_thresh.size(), CV_8UC1);
 
@@ -590,7 +596,8 @@ int main_skeletonize(int argc, char* argv[]){
 				}
 			}
 			
-			cv::imshow("Skel",top_view_color);
+			
+			cv::imshow("Skel",top_view_color + depthMat8UC1);
 			
 
 			//cv::Mat mask_temp;

@@ -64,7 +64,7 @@ int main_pcl_recording_visualizer(int argc, char* argv[]){
 				XnPoint3D point1;
 				point1.X = x; 
 				point1.Y = y; 
-				point1.Z = kinect->_depth_md[y * XN_VGA_X_RES + x]; 
+				point1.Z = _depth_md[y * XN_VGA_X_RES + x]; 
 
 				pointList[y * XN_VGA_X_RES + x] = point1;
 			}
@@ -72,7 +72,7 @@ int main_pcl_recording_visualizer(int argc, char* argv[]){
 
 		_depth.ConvertProjectiveToRealWorld(XN_VGA_Y_RES*XN_VGA_X_RES, pointList, realWorld); 
 
-		cloud.points.clear();
+		//cloud.points.clear();
 		
 		//for(int y=0; y<XN_VGA_Y_RES; y++) { 
 		//	for(int x=0; x<XN_VGA_X_RES; x++) { 
@@ -86,8 +86,8 @@ int main_pcl_recording_visualizer(int argc, char* argv[]){
 					pt.x = realWorld[y * XN_VGA_X_RES + x].X;
 					pt.y = -realWorld[y * XN_VGA_X_RES + x].Y;
 					pt.z = realWorld[y * XN_VGA_X_RES + x].Z;
-					cloud.push_back(pcl::PointXYZRGB(pt));
-					//cloud.points[y * XN_VGA_X_RES + x] = pt;
+					//cloud.push_back(pcl::PointXYZRGB(pt));
+					cloud.points[y * XN_VGA_X_RES + x] = pt;
 				}
 			} 
 		}
