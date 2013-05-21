@@ -358,8 +358,8 @@ int main_skeletonize(int argc, char* argv[]){
 
 	{
 	EnumerationErrors errors;
-	rc = _context.InitFromXmlFile(SAMPLE_XML_PATH, _scriptNode, &errors);
-	//rc = _context.Init();
+	//rc = _context.InitFromXmlFile(SAMPLE_XML_PATH, _scriptNode, &errors);
+	rc = _context.Init();
 	if (rc == XN_STATUS_NO_NODE_PRESENT)
 	{
 		XnChar strError[1024];
@@ -373,6 +373,8 @@ int main_skeletonize(int argc, char* argv[]){
 		return (rc);
 	}
 
+	rc = _context.OpenFileRecording("C:\\Dev\\Walkys\\Project\\Data\\foot_1_left.oni");
+	//printf("Open failed: %s\n", xnGetStatusString(rc));
 	rc = _context.FindExistingNode(XN_NODE_TYPE_DEPTH, _depth);
 	if (rc != XN_STATUS_OK)
 	{
@@ -563,7 +565,7 @@ int main_skeletonize(int argc, char* argv[]){
 			cv::erode(mask_cv,distT_mask,cv::Mat(5,5,CV_8UC1));			
 			cv::dilate(distT_mask,distT_mask,cv::Mat(11,11,CV_8UC1));
 			cv::erode(distT_mask,distT_mask,cv::Mat(5,5,CV_8UC1));
-			cv::imshow("mask2",distT_mask);
+			//cv::imshow("mask2",distT_mask);
 
 			cv::distanceTransform(distT_mask,distT,CV_DIST_L2,5);
 			
@@ -578,7 +580,7 @@ int main_skeletonize(int argc, char* argv[]){
 			
 
 			cv::dilate(distT_Laplacian_abs_thresh,distT_Laplacian_abs_thresh_dilate,cv::Mat(9,9,CV_8UC1));
-			cv::erode(distT_Laplacian_abs_thresh_dilate,distT_Laplacian_abs_thresh_erode,cv::Mat(5,5,CV_8UC1));
+			cv::erode(distT_Laplacian_abs_thresh_dilate,distT_Laplacian_abs_thresh_erode,cv::Mat(7,7,CV_8UC1));
 
 			cv::Mat top_view_color = cv::Mat::zeros(distT_Laplacian_abs_thresh.size(), CV_8UC1);
 
@@ -588,11 +590,16 @@ int main_skeletonize(int argc, char* argv[]){
 			cv::findContours( distT_Laplacian_abs_thresh_erode, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
 
 			for(unsigned int i = 0; i< contours.size(); i++ ){
-				if(contours[i].size() > 125){
-					cv::Scalar clr = cv::Scalar(255);// rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
-					cv::Rect rect = cv::boundingRect(contours[i]);
-					drawContours( top_view_color, contours, i, clr, -1, 8, hierarchy, 0, cv::Point() );
-					//cv::rectangle(top_view_color,rect, clr);
+				if(contours[i].size() > 75){
+					cv::Scalar clr = cv::Scalar(255);
+					for(unsigned int j = 0 ; j < contours[i].size() ; j++){
+						cv::circle(top_view_color,contours[i][j],1,clr,-1);
+					}
+
+					//cv::Scalar clr = cv::Scalar(255);// rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+					//cv::Rect rect = cv::boundingRect(contours[i]);
+					//drawContours( top_view_color, contours, i, clr, -1, 1, hierarchy, 0, cv::Point() );
+					////cv::rectangle(top_view_color,rect, clr);
 				}
 			}
 			

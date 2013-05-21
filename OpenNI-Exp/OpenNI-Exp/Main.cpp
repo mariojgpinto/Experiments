@@ -1,3 +1,5 @@
+#include "_ID.h"
+
 #include "NISimpleViewer.h"
 #include "NIOpenCV.h"
 #include "RemoveFloor.h"
@@ -8,6 +10,9 @@
 #include "TopView.h"
 #include "Skeletonize.h"
 #include "ReadFromFile.h"
+
+
+
 int main(int argc, char* argv[])
 {
 	//main_simple_viewer(argc,argv);
@@ -15,11 +20,19 @@ int main(int argc, char* argv[])
 	//main_remove_floor(argc,argv);
 	//main_depth_threshold(argc,argv);
 	//main_colorize(argc,argv);
-	main_nikinect_test(argc,argv);
+	//main_nikinect_test(argc,argv);
 	//main_slice(argc,argv);
 	//main_top_view(argc,argv);
 	//main_skeletonize(argc,argv);
 	//main_read_from_file(argc,argv);
+
+#ifdef _CCG
+	main_skeletonize(argc,argv);
+#endif
+
+#ifdef _HOME
+	main_nikinect_test(argc,argv);
+#endif
 
 	return 0;
 }

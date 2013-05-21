@@ -19,8 +19,8 @@ int main_pcl_foot(int argc, char* argv[]){
 	bool result = false;
 	NIKinect* kinect = new NIKinect();
 	
-	//result = kinect->init("C:\\Dev\\Kinect\\Data\\ONI\\mirror_papers.oni");
-	kinect->init();
+	result = kinect->init("C:\\Dev\\Walkys\\Project\\Data\\foot_1_front.oni");
+	//kinect->init();
 	
 
 //	result = kinect->init_generators();
@@ -128,9 +128,11 @@ int main_pcl_foot(int argc, char* argv[]){
 			c2 = floorCoords.vNormal.Z;
 			d2 = -(a2*floorPoint.X + b2*floorPoint.Y + c2*floorPoint.Z);
 
-			for(int y=0; y<XN_VGA_Y_RES; y++) { 
-				for(int x=0; x<XN_VGA_X_RES; x++) { 
-					if(realWorld[y * XN_VGA_X_RES + x].Z > 0.0 /*&& ptr[y * XN_VGA_X_RES + x]*/){
+			//for(int y=0; y<XN_VGA_Y_RES; y++) { 
+			//	for(int x=0; x<XN_VGA_X_RES; x++) { 
+			for(int y=0; y<XN_VGA_Y_RES; y+=2) { 
+				for(int x=0; x<XN_VGA_X_RES; x+=2) { 
+					if(realWorld[y * XN_VGA_X_RES + x].Z > 0.0 && ptr[y * XN_VGA_X_RES + x]){
 						float value1 = distanceToPlane(realWorld[y * XN_VGA_X_RES + x],a,b,c,d) ;
 						float value2 = distanceToPlane(realWorld[y * XN_VGA_X_RES + x],a2,b2,c2,d2) ;
 						if( value1 < _thresh &&  value2 < _thresh){
@@ -146,9 +148,12 @@ int main_pcl_foot(int argc, char* argv[]){
 
 		cloud.points.clear();
 		cv::imshow("Mask",mask_cv);
+		ptr = mask_cv.data;
 
-		for(int y=0; y<XN_VGA_Y_RES; y++) { 
-			for(int x=0; x<XN_VGA_X_RES; x++) { 
+		//for(int y=0; y<XN_VGA_Y_RES; y++) { 
+		//	for(int x=0; x<XN_VGA_X_RES; x++) { 
+		for(int y=0; y<XN_VGA_Y_RES; y+=2) { 
+			for(int x=0; x<XN_VGA_X_RES; x+=2) { 
 				if(ptr[y * XN_VGA_X_RES + x]){
 					pcl::PointXYZRGB pt(ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 2],
 										ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 1],
