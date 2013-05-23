@@ -5,7 +5,7 @@
 int main_nikinect_test(int argc, char* argv[]){
 	NIKinect* kinect = new NIKinect();
 	bool result = false;
-	result = kinect->init("C:\\Dev\\Kinect\\Data\\ONI\\mirror_papers.oni");
+	result = kinect->init("C:\\Dev\\RDCC\\Project\\Data\\movement_1.oni");
 
 	//kinect->set_processing_flag(NIKinect::DEPTH_COLOR,true);
 	//result = kinect->init_generators();

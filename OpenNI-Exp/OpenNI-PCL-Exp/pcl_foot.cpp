@@ -19,7 +19,7 @@ int main_pcl_foot(int argc, char* argv[]){
 	bool result = false;
 	NIKinect* kinect = new NIKinect();
 	
-	result = kinect->init("C:\\Dev\\Walkys\\Project\\Data\\foot_1_front.oni");
+	result = kinect->init(NULL,1+NIKinect::SCENE_A);//"C:\\Dev\\RDCC\\Project\\Data\\movement_1.oni");
 	//kinect->init();
 	
 
@@ -49,21 +49,22 @@ int main_pcl_foot(int argc, char* argv[]){
 	XnStatus rc;
 
 	int _min_bar = 400;
-	int _max_bar = 1200;
+	int _max_bar = 9000;
 	int _thresh = 175;
 	int _thresh_floor = 185;
 	int _floor_range = 10;
 	int _kernel = 3;
 	cv::namedWindow("Ranged Image");
-	cv::createTrackbar("MinDepth", "Ranged Image", &_min_bar, 5000, NULL);
-	cv::createTrackbar("MaxDepth", "Ranged Image", &_max_bar, 5000, NULL);
-	cv::createTrackbar("FloorHeight", "Ranged Image", &_thresh, 400, NULL);
+	cv::createTrackbar("MinDepth", "Ranged Image", &_min_bar, 10000, NULL);
+	cv::createTrackbar("MaxDepth", "Ranged Image", &_max_bar, 10000, NULL);
+	cv::createTrackbar("FloorHeight", "Ranged Image", &_thresh, 2000, NULL);
 	cv::createTrackbar("FloorThresh", "Ranged Image", &_floor_range, 200, NULL);
 	cv::createTrackbar("Kernel", "Ranged Image", &_kernel, 11, NULL);
 
 
 	pcl::visualization::CloudViewer viewer("Simple cloud_file Viewer");
-	pcl::PointCloud<pcl::PointXYZRGB> cloud;
+	//pcl::PointCloud<pcl::PointXYZRGB> cloud;
+	pcl::PointCloud<pcl::PointXYZ> cloud;
 	cloud.width = 640*480;
 	cloud.height = 1;
 	cloud.points.resize (cloud.width * cloud.height);
@@ -75,7 +76,7 @@ int main_pcl_foot(int argc, char* argv[]){
 			break;
 		
 		result = kinect->get_depth(depthMat16UC1);
-		result = kinect->get_color(color);
+		//result = kinect->get_color(color);
 		result = kinect->get_depth_meta_data(_depth_md);
 
 		XnPoint3D point2;
@@ -155,14 +156,15 @@ int main_pcl_foot(int argc, char* argv[]){
 		for(int y=0; y<XN_VGA_Y_RES; y+=2) { 
 			for(int x=0; x<XN_VGA_X_RES; x+=2) { 
 				if(ptr[y * XN_VGA_X_RES + x]){
-					pcl::PointXYZRGB pt(ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 2],
-										ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 1],
-										ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 0]);
+					//pcl::PointXYZRGB pt(ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 2],
+					//					ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 1],
+					//					ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 0]);
 
-					pt.x = realWorld[y * XN_VGA_X_RES + x].X;
-					pt.y = -realWorld[y * XN_VGA_X_RES + x].Y;
-					pt.z = realWorld[y * XN_VGA_X_RES + x].Z;
-					cloud.push_back(pcl::PointXYZRGB(pt));
+					//pt.x = realWorld[y * XN_VGA_X_RES + x].X;
+					//pt.y = -realWorld[y * XN_VGA_X_RES + x].Y;
+					//pt.z = realWorld[y * XN_VGA_X_RES + x].Z;
+					//cloud.push_back(pcl::PointXYZRGB(pt));
+					cloud.push_back(pcl::PointXYZ(realWorld[y * XN_VGA_X_RES + x].X,-realWorld[y * XN_VGA_X_RES + x].Y,realWorld[y * XN_VGA_X_RES + x].Z));
 				}
 			}
 		}

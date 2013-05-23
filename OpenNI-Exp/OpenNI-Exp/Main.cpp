@@ -15,6 +15,7 @@
 
 int main(int argc, char* argv[])
 {
+	int result = -1;
 	//main_simple_viewer(argc,argv);
 	//main_opencv(argc,argv);
 	//main_remove_floor(argc,argv);
@@ -27,12 +28,12 @@ int main(int argc, char* argv[])
 	//main_read_from_file(argc,argv);
 
 #ifdef _CCG
-	main_skeletonize(argc,argv);
+	result = main_top_view(argc,argv);
 #endif
 
 #ifdef _HOME
-	main_nikinect_test(argc,argv);
+	result = main_nikinect_test(argc,argv);
 #endif
 
-	return 0;
+	return result;
 }
