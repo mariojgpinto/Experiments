@@ -1,11 +1,24 @@
-#include "NIKinectTest.h"
+#include <_ID.h>
 
+#include "NIKinectTest.h"
 #include <NIKinect.h>
+
+
+
+
 
 int main_nikinect_test(int argc, char* argv[]){
 	NIKinect* kinect = new NIKinect();
 	bool result = false;
+
+#ifdef _CCG
 	result = kinect->init("C:\\Dev\\RDCC\\Project\\Data\\movement_1.oni");
+#endif
+
+#ifdef _HOME
+	result = kinect->init("C:\\Dev\\Kinect\\Data\\ONI\\mirror_papers.oni", NIKinect::DEPTH_G + NIKinect::IMAGE_G + NIKinect::SCENE_A);
+#endif
+	
 
 	//kinect->set_processing_flag(NIKinect::DEPTH_COLOR,true);
 	//result = kinect->init_generators();

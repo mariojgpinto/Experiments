@@ -1,3 +1,5 @@
+#include <_ID.h>
+
 #include "pcl_recording_visualizer.h"
 #include <NIKinect.h>
 
@@ -19,7 +21,15 @@ int main_pcl_foot(int argc, char* argv[]){
 	bool result = false;
 	NIKinect* kinect = new NIKinect();
 	
+#ifdef _CCG
 	result = kinect->init(NULL,1+NIKinect::SCENE_A);//"C:\\Dev\\RDCC\\Project\\Data\\movement_1.oni");
+#endif
+
+#ifdef _HOME
+	result = kinect->init("C:\\Dev\\Kinect\\Data\\ONI\\mirror_papers.oni",NIKinect::DEPTH_G + NIKinect::IMAGE_G + NIKinect::SCENE_A);
+#endif
+
+	//result = kinect->init(NULL,1+NIKinect::SCENE_A);//"C:\\Dev\\RDCC\\Project\\Data\\movement_1.oni");
 	//kinect->init();
 	
 
@@ -76,7 +86,7 @@ int main_pcl_foot(int argc, char* argv[]){
 			break;
 		
 		result = kinect->get_depth(depthMat16UC1);
-		//result = kinect->get_color(color);
+		result = kinect->get_color(color);
 		result = kinect->get_depth_meta_data(_depth_md);
 
 		XnPoint3D point2;
@@ -115,8 +125,6 @@ int main_pcl_foot(int argc, char* argv[]){
 		_depth.ConvertProjectiveToRealWorld(XN_VGA_Y_RES*XN_VGA_X_RES, pointList, realWorld); 
 
 		if(remove_floor){
-
-
 			_thresh_floor = _thresh + _floor_range;
 
 			floorPoint = floorCoords.ptPoint;
@@ -179,6 +187,7 @@ int main_pcl_foot(int argc, char* argv[]){
 		cor.copyTo(color3,mask_cv);
 
 		cv::imshow("Ranged Image",color3);
+		cv::imshow("Color Image",color);
 
 		printf("Frame Rate: %.2f\n",kinect->get_frame_rate());
 

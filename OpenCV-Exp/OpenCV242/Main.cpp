@@ -1,3 +1,5 @@
+#include <_ID.h>
+
 #include "SphereCoordinates.h"
 #include "FaceDetect.h"
 #include "EyeDetect.h"
@@ -27,12 +29,20 @@ int main( int argc, char* argv[] )
 
 	//main_sphere_coordinates(argc, argv);
 	//return main_face_detect(argc,argv);
-	return main_cam_shift(argc,argv);
+	//return main_cam_shift(argc,argv);
 	//main_eye_detect(argc,argv);
 	//main_center_of_mass(argc,argv);
 	//main_mapping(argc,argv);
 	//main_cv_remapping(argc,argv);
 	//main_cv_homography(argc,argv);
+
+#ifdef _CCG
+	result = main_cam_shift(argc,argv);
+#endif
+
+#ifdef _HOME
+	result = main_cam_shift(argc,argv);
+#endif
 
 	return 0;
 }
