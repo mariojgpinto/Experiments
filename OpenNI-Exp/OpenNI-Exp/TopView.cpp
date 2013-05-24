@@ -7,6 +7,7 @@
 using namespace xn;
 
 #include <opencv2\opencv.hpp>
+#include <stdint.h>
 
 #define SAMPLE_XML_PATH "C:\\Dev\\External\\OpenNI\\Data\\SamplesConfig.xml"
 
@@ -43,17 +44,17 @@ int main_top_view(int argc, char* argv[]){
 	XnStatus rc;
 
 	int _min_bar = 500;
-	int _max_bar = 5000;
+	int _max_bar = 6600;
 	int _thresh = 2000;
 	int _thresh_floor = 185;
 	int _floor_range = 250;
-	int _kernel = 9;
+	int _kernel = 253;
 	cv::namedWindow("Ranged Image");
 	cv::createTrackbar("MinDepth", "Ranged Image", &_min_bar, 10000, NULL);
 	cv::createTrackbar("MaxDepth", "Ranged Image", &_max_bar, 10000, NULL);
 	cv::createTrackbar("FloorHeight", "Ranged Image", &_thresh, 2500, NULL);
 	cv::createTrackbar("FloorThresh", "Ranged Image", &_floor_range, 500, NULL);
-	cv::createTrackbar("Kernel", "Ranged Image", &_kernel, 21, NULL);
+	cv::createTrackbar("Kernel", "Ranged Image", &_kernel, 255, NULL);
 
 	{
 	EnumerationErrors errors;
@@ -176,7 +177,30 @@ int main_top_view(int argc, char* argv[]){
 	cv::RNG rng(12345);
 	char ch = 0;
 
-	
+	bool _bg_subtraction = false;
+	bool _bg_trainning = false;
+	int _bg_n_images = 10;
+	std::vector<cv::Mat> _bg_trainning_images;
+	std::vector<cv::Mat> _bg_trainning_images_8u;
+	cv::Mat _bg_average_image;
+	cv::Mat _bg_average_image_8u;
+	double _bg_threshold = 1;
+
+
+
+	bool _m_ = false;
+	int _m_n_old = 15;
+	std::vector<cv::Mat> _m_old(_m_n_old);
+
+	int _m_n_masks = 3;
+	std::vector<cv::Mat> _m_masks(_m_n_masks);
+
+	int _m_med = 3000;
+	int _m_max = 6000;
+	cv::namedWindow("MoveDiff");
+	cv::createTrackbar("Med", "MoveDiff", &_m_med, 10000, NULL);
+	cv::createTrackbar("Max", "MoveDiff", &_m_max, 10000, NULL);
+
 
 //	XnStatus rc = XN_STATUS_OK;
 
@@ -191,8 +215,7 @@ int main_top_view(int argc, char* argv[]){
 	_depth.GetMetaData(_depthMD);
 	_image.GetMetaData(_imageMD);
 	//xn_scene.GetMetaData(_sceneMD);
-	cv::Mat depth_old(480, 640,CV_16UC1);//, (void*) _depthMD.Data());
-	cv::Mat diff;
+
 	while((ch = cv::waitKey(23)) != 27){
 		//XnStatus rc = XN_STATUS_OK;
 
@@ -216,15 +239,179 @@ int main_top_view(int argc, char* argv[]){
 		cv::Mat color2;
 		cv::cvtColor(color,color2,CV_RGB2BGR);
 
-		//diff = depthMat16UC1 - depth_old;
-
-		//depthMat16UC1.copyTo(depth_old);
-
-		//cv::imshow("diff",diff);
-
-		//cv::Mat mask; cv::threshold(depthMat8UC1,mask,1,255,CV_THRESH_BINARY);
 		cv::Mat mask_cv;			
 		cv::inRange(depthMat16UC1,_min_bar,_max_bar,mask_cv);
+
+		if(ch == 'b'){
+			_bg_trainning = true;
+			_bg_subtraction = false;
+			_bg_trainning_images.clear();
+			_bg_trainning_images_8u.clear();
+		}
+		
+		if(_bg_trainning){
+			cv::Mat copy;
+			depthMat16UC1.copyTo(copy,mask_cv);
+			_bg_trainning_images.push_back(copy);
+
+			cv::Mat copy2;
+			cv::threshold(depthMat8UC1,copy2,0.1,1,CV_THRESH_BINARY);
+			_bg_trainning_images_8u.push_back(copy2);
+
+			if(_bg_trainning_images.size() >= _bg_n_images){
+				_bg_trainning = false;
+				_bg_subtraction = true;
+
+				//_bg_average_image = cv::Mat::zeros(_bg_trainning_images.at(0).size(),CV_8UC1);
+				_bg_trainning_images.at(0).copyTo(_bg_average_image);
+				cv::Mat mask_avg;
+				_bg_trainning_images_8u.at(0).copyTo(mask_avg);
+				
+
+				//cv::Mat freq = cv::Mat::zeros(_bg_trainning_images.at(0).size(),CV_8UC1);
+				//uchar* freq_ptr = (uchar*)_bg_average_image.data;
+				
+				for(int i = 1 ; i < _bg_n_images ; i++){
+
+					//uchar* bg_ptr = (uchar*)_bg_trainning_images.at(i).data;
+
+					//for(int y=0; y<XN_VGA_Y_RES; y++) { 
+					//	for(int x=0; x<XN_VGA_X_RES; x++) { 
+					//		if(!bg_ptr[y * XN_VGA_X_RES + x]){
+					//			avg_ptr[y * XN_VGA_X_RES + x] += (avg_ptr[y * XN_VGA_X_RES + x] / (i+1));
+					//		}
+					//		avg_ptr[y * XN_VGA_X_RES + x] += bg_ptr[y * XN_VGA_X_RES + x];
+					//	}
+					//}
+
+					//cv::imshow("depth",_bg_trainning_images.at(i));
+					//cv::bitwise_and(_bg_average_image,_bg_trainning_images.at(i),_bg_average_image);
+					_bg_average_image += _bg_trainning_images.at(i);
+					mask_avg += _bg_trainning_images_8u.at(i);
+					//cv::waitKey();
+				}
+
+				//uchar* mask_ptr = (uchar*)mask_avg.data;
+				//short* avg_ptr = (short*)_bg_average_image.data;
+
+				//for(int y=0; y<XN_VGA_Y_RES; y++) { 
+				//	for(int x=0; x<XN_VGA_X_RES; x++) { 
+				//		if(mask_ptr[y * XN_VGA_X_RES + x]){
+				//			//avg_ptr[y * XN_VGA_X_RES + x] = (uchar)((float)avg_ptr[y * XN_VGA_X_RES + x] / (float)mask_ptr[y * XN_VGA_X_RES + x]);
+				//			avg_ptr[y * XN_VGA_X_RES + x] /= (short)_bg_n_images;
+				//		//uchar asd = avg_ptr[y * XN_VGA_X_RES + x];
+				//		//printf("");
+				//		}	
+
+				//	}
+				//}
+				
+				double kmin, kmax;
+				cv::minMaxIdx(mask_avg,&kmin, &kmax);
+
+				cv::Mat mask_avg16;
+				mask_avg.convertTo(mask_avg16,CV_16UC1);
+
+				cv::minMaxIdx(mask_avg16,&kmin, &kmax);
+
+				_bg_average_image/=mask_avg16;
+				//_bg_average_image.convertTo(_bg_average_image_8u,CV_8UC1);
+				//cv::threshold(freq,freq,1,255,CV_THRESH_BINARY);
+				//cv::imshow("Ferq",mask_avg);
+				//cv::waitKey();
+			}
+		}
+
+		if(ch == 'f'){
+			if(remove_floor){
+				remove_floor = false;
+			}
+			else{
+				rc = xn_scene.GetFloor( floorCoords);
+				//rc = xnGetFloor(xn_scene, &floorCoords);
+				if(rc == XN_STATUS_OK){
+					std::cout << floorCoords.vNormal.X << " " << floorCoords.vNormal.Y << " " << floorCoords.vNormal.Z << std::endl;
+					std::cout << floorCoords.ptPoint.X << " " << floorCoords.ptPoint.Y << " " << floorCoords.ptPoint.Z  << "\n" << std::endl;
+
+					a = floorCoords.vNormal.X;
+					b = floorCoords.vNormal.Y;
+					c = floorCoords.vNormal.Z;
+
+					XnPoint3D pt1; pt1.X = 320; pt1.Y = 350; pt1.Z = _depthMD[ 350*640+ 320 ];
+					XnPoint3D pt2;
+					XnPoint3D pt3;
+					//_depth.ConvertProjectiveToRealWorld(1,&floorCoords.ptPoint,&pt2);
+					//_depth.ConvertProjectiveToRealWorld(1,&pt1,&pt2);
+					_depth.ConvertRealWorldToProjective(1,&floorCoords.ptPoint,&pt3);
+
+					d = -(a*floorCoords.ptPoint.X + b*floorCoords.ptPoint.Y + c*floorCoords.ptPoint.Z);
+
+					floorPoint = floorCoords.ptPoint;
+					floorPoint.Z-=_thresh_floor;
+
+					a2 = floorCoords.vNormal.X;
+					b2 = floorCoords.vNormal.Y;
+					c2 = floorCoords.vNormal.Z;
+
+					//_depth.ConvertRealWorldToProjective(1,&floorPoint,&pt2);
+
+					d2 = -(a2*floorPoint.X + b2*floorPoint.Y + c2*floorPoint.Z);
+
+					cv::Vec3f vec_1(1,0,0);
+					cv::Vec3f vec_2 = vec_1.cross(cv::Vec3f(a,b,c));
+
+					_matrix.create(3,3,CV_64FC1);
+					_matrix.ptr<double>(0)[0] = vec_1.val[0];
+					_matrix.ptr<double>(0)[1] = vec_1.val[1];
+					_matrix.ptr<double>(0)[2] = vec_1.val[2];
+					_matrix.ptr<double>(1)[0] = -a;
+					_matrix.ptr<double>(1)[1] = -b;
+					_matrix.ptr<double>(1)[2] = -c;
+					_matrix.ptr<double>(2)[0] = vec_2.val[0];
+					_matrix.ptr<double>(2)[1] = vec_2.val[1];
+					_matrix.ptr<double>(2)[2] = vec_2.val[2];
+
+					_inverse = _matrix.inv(1);
+
+					remove_floor = true;
+				}
+				else
+					printf("Read failed: %s\n", xnGetStatusString(rc));
+			}
+		}
+
+		if(ch == 'm'){
+			_m_ = !_m_;
+		}
+
+		//cv::Mat mask; cv::threshold(depthMat8UC1,mask,1,255,CV_THRESH_BINARY);
+		if(_bg_subtraction){
+			cv::Mat diff;
+			cv::Mat aux; depthMat16UC1.copyTo(aux,mask_cv);
+			cv::absdiff(aux,_bg_average_image,diff);
+			cv::Mat diff8U; diff.convertTo(diff8U,CV_8UC1);
+			cv::Mat bin;
+			cv::threshold(diff8U,bin,_kernel,255,CV_THRESH_BINARY);
+			//cv::threshold(diff,bin,_kernel,255,CV_THRESH_BINARY);
+
+			cv::erode(bin,bin,cv::Mat(9,9,CV_8UC1));
+			cv::dilate(bin,bin,cv::Mat(7,7,CV_8UC1));
+			//for(int i = 1 ; i < _bg_n_images ; i++){
+			//	cv::Mat avg;
+			//	cv::absdiff(aux,_bg_trainning_images.at(i),avg);
+			//	cv::Mat diff8U2; diff.convertTo(diff8U2,CV_8UC1);
+			//	cv::Mat bin2;	
+			//	cv::threshold(diff8U2,bin2,_kernel,255,CV_THRESH_BINARY);
+
+			//	cv::bitwise_or(bin2,bin,bin);
+			//}
+			
+			bin.copyTo(mask_cv);
+			//cv::imshow("Diff",bin);
+			//cv::threshold(diff,this->_result_mask,0.1,255,CV_THRESH_BINARY);
+		}
+
+		
 		//cv::inRange(diff,_min_bar,_max_bar,mask_cv);
 		cv::Mat color3;
 		cv::Mat color4;
@@ -317,24 +504,11 @@ int main_top_view(int argc, char* argv[]){
 			//----------------------------------------------------------------------------------------
 			// TOPVIEW
 			//----------------------------------------------------------------------------------------
-			//for(int y=0; y<XN_VGA_Y_RES; y++) { 
-			//	for(int x=0; x<XN_VGA_X_RES; x++) { 
-			//		XnPoint3D point1;
-			//		point1.X = x; 
-			//		point1.Y = y; 
-			//		point1.Z = _depthMD[y * XN_VGA_X_RES + x]; 
-
-			//		pointList[y * XN_VGA_X_RES + x] = point1;
-			//	}
-			//} 
-
-			//_depth.ConvertProjectiveToRealWorld(XN_VGA_Y_RES*XN_VGA_X_RES, pointList, realWorld); 
 			_max_xx = -FLT_MAX;
 			_max_yy = -FLT_MAX;
 			_min_xx = FLT_MAX;
 			_min_yy = FLT_MAX;
-
-
+			
 			for(int y=0; y<XN_VGA_Y_RES; y+=2) { 
 				for(int x=0; x<XN_VGA_X_RES; x+=2) { 
 			//for(int y=0; y<XN_VGA_Y_RES; y+=2) { 
@@ -388,7 +562,7 @@ int main_top_view(int argc, char* argv[]){
 			_width = _max_bar/10.0;
 			_height = _max_bar/10.0;
 			_min_yy = _min_bar;
-			_min_xx = -2500;
+			_min_xx = -_max_bar/2.0;
 
 			cv::Mat1b top = cv::Mat::zeros(cv::Size(_width,_height),CV_8UC1);
 			uchar* top_ptr = top.data;
@@ -404,16 +578,94 @@ int main_top_view(int argc, char* argv[]){
 				}
 			}
 
+			//cv::erode(top,top,cv::Mat(3,3,CV_8UC1));
+			//cv::dilate(top,top,cv::Mat(5,5,CV_8UC1));
+			//cv::blur(top,top,cv::Size(5,5));
+
 			cv::imshow("top",top);
+
+			if(_m_){
+				static int flag = 0;
+
+				if(!flag){
+					for(int i = 0 ; i < _m_n_old ; i++){
+						_m_old[i] = cv::Mat::zeros(top.size(),CV_8UC1); 
+					}
+
+					for(int i = 0 ; i < _m_n_masks ; i++){
+						_m_masks[i] = cv::Mat::zeros(top.size(),CV_8UC1); 
+						cv::rectangle(_m_masks[i],cv::Rect((_height/3) * i,0,_height/3,_height),cv::Scalar(255),-1);
+					}
+					//_m_masks[0] = cv::Mat::zeros(top.size(),CV_8UC1); 
+					//_m_masks[1] = cv::Mat::zeros(top.size(),CV_8UC1); 
+					//_m_masks[2] = cv::Mat::zeros(top.size(),CV_8UC1); 
+
+					//cv::rectangle(_m_masks[0],cv::Rect(0,0,_height/3,_height),cv::Scalar(255),-1);
+					//cv::rectangle(_m_masks[1],cv::Rect(_height/3,0,_height/3,_height),cv::Scalar(255),-1);
+					//cv::rectangle(_m_masks[2],cv::Rect((_height/3)*2,0,_height/3,_height),cv::Scalar(255),-1);
+
+					flag++;
+				}
+				cv::Mat _m_join = cv::Mat::zeros(top.size(),CV_8UC1);
+
+				for(int i = 0 ; i < _m_n_old ; i++){
+					cv::bitwise_or(_m_old[i],_m_join,_m_join);
+					//_m_join += _m_old[i];
+				}
+
+				cv::Mat _m_diff; cv::absdiff(top,_m_join,_m_diff);
+
+				for(int i = _m_n_old -1  ; i > 0; i--){
+					_m_old[i-1].copyTo(_m_old[i]);
+				}
+				top.copyTo(_m_old[0]);
+
+				cv::imshow("join",_m_join );
+
+				cv::erode(_m_diff,_m_diff,cv::Mat(3,3,CV_8UC1));
+				cv::dilate(_m_diff,_m_diff,cv::Mat(3,3,CV_8UC1));
+				//cv::blur(_m_diff,_m_diff,cv::Size(5,5));
+
+				for(int i = 0 ; i < _m_n_masks ; i++){
+					//char buff[100];
+					//sprintf(buff,"Area%d", i);
+					cv::Mat area; _m_diff.copyTo(area,_m_masks[i]);
+					//cv::imshow(buff,area);
+
+					int counter = cv::countNonZero(area);
+					int level = 0;
+					if(counter > _m_med){
+						level = 1;
+
+						if(counter > _m_max){
+							level = 2;
+						}
+					
+					}
+
+					char buff1[100];
+					char buff2[100];
+					sprintf(buff1,"counter: %d", counter);
+					sprintf(buff2,"Level %d", level);
+					cv::putText(_m_diff, buff1, cvPoint(30 + (i * (_height/3)),30), cv::FONT_HERSHEY_COMPLEX_SMALL, 1.2, cvScalar(255), 1, CV_AA);
+					cv::putText(_m_diff, buff2, cvPoint(30 + (i * (_height/3)),90), cv::FONT_HERSHEY_COMPLEX_SMALL, 1.2, cvScalar(255), 1, CV_AA);
+
+					cv::line(_m_diff,cv::Point((i * (_height/3)),0),cv::Point((i * (_height/3)),_height),cv::Scalar(255));
+
+				}
+
+				cv::imshow("MoveDiff",_m_diff);
+			}
 		}
 
-		//cv::Mat3b cor(480,640);
-		//double min = _min_bar,max = _max_bar;
-		//compute_color_encoded_depth(depthMat16UC1,cor,&min,&max);
+		cv::Mat3b cor(480,640);
+		double min = _min_bar,max = _max_bar;
+		compute_color_encoded_depth(depthMat16UC1,cor,&min,&max);
 
-		//cor.copyTo(color3,mask_cv);
+		cor.copyTo(color3,mask_cv);
 
-		cv::imshow("Ranged Image",color2);
+		cv::imshow("Ranged Image",color3);
+		//cv::imshow("Depth Image",depthMat8UC1);
 		//cv::imshow("Color Image",color2);
 		
 		//cv::imshow("color",);
@@ -426,64 +678,6 @@ int main_top_view(int argc, char* argv[]){
 			_last_tick = current_tick;
 			_frame_counter = 0;
 			printf("%.2f\n",_frame_rate);
-		}
-
-		if(ch == 'f'){
-			if(remove_floor){
-				remove_floor = false;
-			}
-			else{
-				rc = xn_scene.GetFloor( floorCoords);
-				//rc = xnGetFloor(xn_scene, &floorCoords);
-				if(rc == XN_STATUS_OK){
-					std::cout << floorCoords.vNormal.X << " " << floorCoords.vNormal.Y << " " << floorCoords.vNormal.Z << std::endl;
-					std::cout << floorCoords.ptPoint.X << " " << floorCoords.ptPoint.Y << " " << floorCoords.ptPoint.Z  << "\n" << std::endl;
-
-					a = floorCoords.vNormal.X;
-					b = floorCoords.vNormal.Y;
-					c = floorCoords.vNormal.Z;
-
-					XnPoint3D pt1; pt1.X = 320; pt1.Y = 350; pt1.Z = _depthMD[ 350*640+ 320 ];
-					XnPoint3D pt2;
-					XnPoint3D pt3;
-					//_depth.ConvertProjectiveToRealWorld(1,&floorCoords.ptPoint,&pt2);
-					//_depth.ConvertProjectiveToRealWorld(1,&pt1,&pt2);
-					_depth.ConvertRealWorldToProjective(1,&floorCoords.ptPoint,&pt3);
-
-					d = -(a*floorCoords.ptPoint.X + b*floorCoords.ptPoint.Y + c*floorCoords.ptPoint.Z);
-
-					floorPoint = floorCoords.ptPoint;
-					floorPoint.Z-=_thresh_floor;
-
-					a2 = floorCoords.vNormal.X;
-					b2 = floorCoords.vNormal.Y;
-					c2 = floorCoords.vNormal.Z;
-
-					//_depth.ConvertRealWorldToProjective(1,&floorPoint,&pt2);
-
-					d2 = -(a2*floorPoint.X + b2*floorPoint.Y + c2*floorPoint.Z);
-
-					cv::Vec3f vec_1(1,0,0);
-					cv::Vec3f vec_2 = vec_1.cross(cv::Vec3f(a,b,c));
-
-					_matrix.create(3,3,CV_64FC1);
-					_matrix.ptr<double>(0)[0] = vec_1.val[0];
-					_matrix.ptr<double>(0)[1] = vec_1.val[1];
-					_matrix.ptr<double>(0)[2] = vec_1.val[2];
-					_matrix.ptr<double>(1)[0] = -a;
-					_matrix.ptr<double>(1)[1] = -b;
-					_matrix.ptr<double>(1)[2] = -c;
-					_matrix.ptr<double>(2)[0] = vec_2.val[0];
-					_matrix.ptr<double>(2)[1] = vec_2.val[1];
-					_matrix.ptr<double>(2)[2] = vec_2.val[2];
-
-					_inverse = _matrix.inv(1);
-
-					remove_floor = true;
-				}
-				else
-					printf("Read failed: %s\n", xnGetStatusString(rc));
-			}
 		}
 	}
 }
