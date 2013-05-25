@@ -190,7 +190,7 @@ int main_top_view(int argc, char* argv[]){
 
 	bool _m_ = false;
 	int _m_n_old = 15;
-	std::vector<cv::Mat> _m_old(_m_n_old);
+	std::vector<cv::Mat> _m_old(30);
 
 	int _m_n_masks = 3;
 	std::vector<cv::Mat> _m_masks(_m_n_masks);
@@ -198,6 +198,7 @@ int main_top_view(int argc, char* argv[]){
 	int _m_med = 3000;
 	int _m_max = 6000;
 	cv::namedWindow("MoveDiff");
+	cv::createTrackbar("Time(frames)", "MoveDiff", &_m_n_old, 30, NULL);
 	cv::createTrackbar("Med", "MoveDiff", &_m_med, 10000, NULL);
 	cv::createTrackbar("Max", "MoveDiff", &_m_max, 10000, NULL);
 
@@ -572,7 +573,7 @@ int main_top_view(int argc, char* argv[]){
 				for(int x=0; x<XN_VGA_X_RES; x+=2) { 
 					_x = (int)((_temp_x[y][x] - _min_xx)/10.0);
 					_y = (int)((_temp_z[y][x] - _min_yy)/10.0);
-					if(_y >= 0 && _x >= 0){
+					if(_y >= 0 && _x >= 0 && _x < _width && _y < _height){
 						top_ptr[_x * _width + _y] = 255;
 					}
 				}
@@ -588,7 +589,7 @@ int main_top_view(int argc, char* argv[]){
 				static int flag = 0;
 
 				if(!flag){
-					for(int i = 0 ; i < _m_n_old ; i++){
+					for(int i = 0 ; i < 30 ; i++){
 						_m_old[i] = cv::Mat::zeros(top.size(),CV_8UC1); 
 					}
 
@@ -596,21 +597,13 @@ int main_top_view(int argc, char* argv[]){
 						_m_masks[i] = cv::Mat::zeros(top.size(),CV_8UC1); 
 						cv::rectangle(_m_masks[i],cv::Rect((_height/3) * i,0,_height/3,_height),cv::Scalar(255),-1);
 					}
-					//_m_masks[0] = cv::Mat::zeros(top.size(),CV_8UC1); 
-					//_m_masks[1] = cv::Mat::zeros(top.size(),CV_8UC1); 
-					//_m_masks[2] = cv::Mat::zeros(top.size(),CV_8UC1); 
-
-					//cv::rectangle(_m_masks[0],cv::Rect(0,0,_height/3,_height),cv::Scalar(255),-1);
-					//cv::rectangle(_m_masks[1],cv::Rect(_height/3,0,_height/3,_height),cv::Scalar(255),-1);
-					//cv::rectangle(_m_masks[2],cv::Rect((_height/3)*2,0,_height/3,_height),cv::Scalar(255),-1);
-
+			
 					flag++;
 				}
 				cv::Mat _m_join = cv::Mat::zeros(top.size(),CV_8UC1);
 
 				for(int i = 0 ; i < _m_n_old ; i++){
 					cv::bitwise_or(_m_old[i],_m_join,_m_join);
-					//_m_join += _m_old[i];
 				}
 
 				cv::Mat _m_diff; cv::absdiff(top,_m_join,_m_diff);
@@ -629,6 +622,9 @@ int main_top_view(int argc, char* argv[]){
 				for(int i = 0 ; i < _m_n_masks ; i++){
 					//char buff[100];
 					//sprintf(buff,"Area%d", i);
+
+					//FLIP IMAGE? 
+
 					cv::Mat area; _m_diff.copyTo(area,_m_masks[i]);
 					//cv::imshow(buff,area);
 
@@ -640,7 +636,6 @@ int main_top_view(int argc, char* argv[]){
 						if(counter > _m_max){
 							level = 2;
 						}
-					
 					}
 
 					char buff1[100];

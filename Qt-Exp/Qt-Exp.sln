@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Qt-Exp", "Qt-Exp\Qt-Exp.vcxproj", "{6C6D9E33-9DEA-41AC-8427-2DDFACAA47C5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Viewer", "Viewer\Viewer.vcxproj", "{1CB92AD0-8C10-47EB-899B-BA555B2D012E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NIViewer", "NIViewer\NIViewer.vcxproj", "{C164917F-9ACC-4C4F-A6A1-98D302711C81}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C6D9E33-9DEA-41AC-8427-2DDFACAA47C5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6C6D9E33-9DEA-41AC-8427-2DDFACAA47C5}.Debug|Win32.Build.0 = Debug|Win32
+		{6C6D9E33-9DEA-41AC-8427-2DDFACAA47C5}.Release|Win32.ActiveCfg = Release|Win32
+		{6C6D9E33-9DEA-41AC-8427-2DDFACAA47C5}.Release|Win32.Build.0 = Release|Win32
+		{1CB92AD0-8C10-47EB-899B-BA555B2D012E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1CB92AD0-8C10-47EB-899B-BA555B2D012E}.Debug|Win32.Build.0 = Debug|Win32
+		{1CB92AD0-8C10-47EB-899B-BA555B2D012E}.Release|Win32.ActiveCfg = Release|Win32
+		{1CB92AD0-8C10-47EB-899B-BA555B2D012E}.Release|Win32.Build.0 = Release|Win32
+		{C164917F-9ACC-4C4F-A6A1-98D302711C81}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C164917F-9ACC-4C4F-A6A1-98D302711C81}.Debug|Win32.Build.0 = Debug|Win32
+		{C164917F-9ACC-4C4F-A6A1-98D302711C81}.Release|Win32.ActiveCfg = Release|Win32
+		{C164917F-9ACC-4C4F-A6A1-98D302711C81}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
