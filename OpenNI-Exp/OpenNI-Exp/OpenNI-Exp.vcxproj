@@ -107,6 +107,7 @@
     <ClCompile Include="Slice.cpp" />
     <ClCompile Include="TopView.cpp" />
     <ClCompile Include="TopView_Movement.cpp" />
+    <ClCompile Include="Walkys.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Colorize.h" />
@@ -121,6 +122,7 @@
     <ClInclude Include="Slice.h" />
     <ClInclude Include="TopView.h" />
     <ClInclude Include="TopView_Movement.h" />
+    <ClInclude Include="Walkys.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

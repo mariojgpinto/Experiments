@@ -591,14 +591,14 @@ int main_skeletonize(int argc, char* argv[]){
 
 			for(unsigned int i = 0; i< contours.size(); i++ ){
 				if(contours[i].size() > 75){
-					cv::Scalar clr = cv::Scalar(255);
-					for(unsigned int j = 0 ; j < contours[i].size() ; j++){
-						cv::circle(top_view_color,contours[i][j],1,clr,-1);
-					}
+					//cv::Scalar clr = cv::Scalar(255);
+					//for(unsigned int j = 0 ; j < contours[i].size() ; j++){
+					//	cv::circle(top_view_color,contours[i][j],1,clr,-1);
+					//}
 
-					//cv::Scalar clr = cv::Scalar(255);// rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
-					//cv::Rect rect = cv::boundingRect(contours[i]);
-					//drawContours( top_view_color, contours, i, clr, -1, 1, hierarchy, 0, cv::Point() );
+					cv::Scalar clr = cv::Scalar(255);// rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+					cv::Rect rect = cv::boundingRect(contours[i]);
+					drawContours( top_view_color, contours, i, clr, -1, 1, hierarchy, 0, cv::Point() );
 					////cv::rectangle(top_view_color,rect, clr);
 				}
 			}

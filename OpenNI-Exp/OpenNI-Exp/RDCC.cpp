@@ -12,7 +12,7 @@ using namespace xn;
 #include <boost/asio.hpp>
 using boost::asio::ip::tcp;
 
-//#define _SOCKETS
+#define _SOCKETS
 
 char* host = "172.16.10.103";
 char* port = "9991";
@@ -22,9 +22,6 @@ char* port = "9991";
 void compute_color_encoded_depth(const cv::Mat1f& depth_im, cv::Mat3b& color_depth_im,
                                      double* i_min_val, double* i_max_val);
 float distanceToPlane(const XnPoint3D& p, float a, float b, float c, float d);
-
-
-
 
 int main_rdcc(int argc, char* argv[]){
 	Context _context;
@@ -231,14 +228,20 @@ int main_rdcc(int argc, char* argv[]){
 
 
 #ifdef _SOCKETS
-	boost::asio::io_service io_service;
+//	try{
+		boost::asio::io_service io_service;
 
-    tcp::resolver resolver(io_service);
-    tcp::resolver::query query(tcp::v4(), host, port);
-    tcp::resolver::iterator iterator = resolver.resolve(query);
+		tcp::resolver resolver(io_service);
+		tcp::resolver::query query(tcp::v4(), host, port);
+		tcp::resolver::iterator iterator = resolver.resolve(query);
 
-    tcp::socket s(io_service);
-    boost::asio::connect(s, iterator);
+		tcp::socket s(io_service);
+		boost::asio::connect(s, iterator);
+	//}
+	//catch(std::exception& e)
+	//{
+	//	std::cerr << "Exception: " << e.what() << "\n";
+	//}
 #endif
 
 

@@ -44,10 +44,10 @@ int main_top_view(int argc, char* argv[]){
 	XnStatus rc;
 
 	int _min_bar = 500;
-	int _max_bar = 6600;
-	int _thresh = 2000;
+	int _max_bar = 1000;
+	int _thresh = 400;
 	int _thresh_floor = 185;
-	int _floor_range = 250;
+	int _floor_range = 10;
 	int _kernel = 253;
 	cv::namedWindow("Ranged Image");
 	cv::createTrackbar("MinDepth", "Ranged Image", &_min_bar, 10000, NULL);
@@ -73,7 +73,7 @@ int main_top_view(int argc, char* argv[]){
 		return (rc);
 	}
 
-	//rc = _context.OpenFileRecording("C:\\Dev\\RDCC\\Project\\Data\\movement_1.oni");
+	rc = _context.OpenFileRecording("C:\\Dev\\Walkys\\Project\\Data\\foot_1_left.oni");
 
 	rc = _context.FindExistingNode(XN_NODE_TYPE_DEPTH, _depth);
 	if (rc != XN_STATUS_OK)
@@ -173,6 +173,8 @@ int main_top_view(int argc, char* argv[]){
 	float _min_yy = FLT_MAX;
 	int _width;
 	int _height;
+
+	double scale;
 	
 	cv::RNG rng(12345);
 	char ch = 0;
@@ -422,8 +424,10 @@ int main_top_view(int argc, char* argv[]){
 			_width = _max_xx - _min_xx;
 			_height = _max_yy - _min_yy;
 
-			_width = _max_bar/10.0;
-			_height = _max_bar/10.0;
+			scale = (_max_bar > 3000) ? 10.0 : (_max_bar > 1500) ? 5.0 : 2.0;
+
+			_width = _max_bar/scale;
+			_height = _max_bar/scale;
 			_min_yy = _min_bar;
 			_min_xx = -_max_bar/2.0;
 
@@ -433,8 +437,8 @@ int main_top_view(int argc, char* argv[]){
 			int _x,_y;
 			for(int y=0; y<XN_VGA_Y_RES; y+=1) { 
 				for(int x=0; x<XN_VGA_X_RES; x+=1) { 
-					_x = (int)((_temp_x[y][x] - _min_xx)/10.0);
-					_y = (int)((_temp_z[y][x] - _min_yy)/10.0);
+					_x = (int)((_temp_x[y][x] - _min_xx)/scale);
+					_y = (int)((_temp_z[y][x] - _min_yy)/scale);
 					if(_y >= 0 && _x >= 0 && _x < _width && _y < _height){
 						top_ptr[_x * _width + _y] = 255;
 					}

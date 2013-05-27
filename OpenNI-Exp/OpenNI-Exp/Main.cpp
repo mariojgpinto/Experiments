@@ -12,6 +12,7 @@
 #include "ReadFromFile.h"
 #include "TopView_Movement.h"
 #include "RDCC.h"
+#include "Walkys.h"
 
 
 
@@ -30,9 +31,10 @@ int main(int argc, char* argv[])
 	//main_read_from_file(argc,argv);
 	//result = main_top_view_movement(argc,argv);
 	//result = main_rdcc(argc,argv);
+	//result = main_walkys(argc,argv);
 
 #ifdef _CCG
-	result = main_rdcc(argc,argv);
+	result = main_walkys(argc,argv);
 #endif
 
 #ifdef _HOME

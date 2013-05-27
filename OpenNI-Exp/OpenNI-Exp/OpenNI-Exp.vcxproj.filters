@@ -54,6 +54,9 @@
     <ClCompile Include="RDCC.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Walkys.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NISimpleViewer.h">
@@ -90,6 +93,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RDCC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Walkys.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
