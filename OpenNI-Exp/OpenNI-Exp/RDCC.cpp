@@ -14,7 +14,7 @@ using boost::asio::ip::tcp;
 
 #define _SOCKETS
 
-char* host = "172.16.10.103";
+char* host = "192.168.1.1";
 char* port = "9991";
 
 #define SAMPLE_XML_PATH "C:\\Dev\\External\\OpenNI\\Data\\SamplesConfig.xml"
@@ -47,7 +47,7 @@ int main_rdcc(int argc, char* argv[]){
 	float a2 = 0,b2 = 0,c2 = 0,d2 = 0;
 
 	XnStatus rc;
-
+	
 	int _min_bar = 500;
 	int _max_bar = 6600;
 	int _thresh = 2000;
@@ -200,8 +200,8 @@ int main_rdcc(int argc, char* argv[]){
 	int _m_n_masks = 3;
 	std::vector<cv::Mat> _m_masks(_m_n_masks);
 
-	int _m_med = 3000;
-	int _m_max = 6000;
+	int _m_med = 2500;
+	int _m_max = 5500;
 	cv::namedWindow("MoveDiff");
 	cv::createTrackbar("Time(frames)", "MoveDiff", &_m_n_old, 30, NULL);
 	cv::createTrackbar("Med", "MoveDiff", &_m_med, 10000, NULL);
@@ -215,6 +215,8 @@ int main_rdcc(int argc, char* argv[]){
 //	XnStatus rc = XN_STATUS_OK;
 
 	// Read a new frame
+	_context.SetGlobalMirror(true);
+
 	rc = _context.WaitAnyUpdateAll();
 	if (rc != XN_STATUS_OK)
 	{

@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 #endif
 
 #ifdef _HOME
-	result = main_nikinect_test(argc,argv);
+	result = main_rdcc(argc,argv);
 #endif
 
 	return result;
