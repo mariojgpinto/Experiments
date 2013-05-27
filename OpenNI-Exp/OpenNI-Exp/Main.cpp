@@ -10,6 +10,8 @@
 #include "TopView.h"
 #include "Skeletonize.h"
 #include "ReadFromFile.h"
+#include "TopView_Movement.h"
+#include "RDCC.h"
 
 
 
@@ -26,9 +28,11 @@ int main(int argc, char* argv[])
 	//main_top_view(argc,argv);
 	//main_skeletonize(argc,argv);
 	//main_read_from_file(argc,argv);
+	//result = main_top_view_movement(argc,argv);
+	//result = main_rdcc(argc,argv);
 
 #ifdef _CCG
-	result = main_top_view(argc,argv);
+	result = main_rdcc(argc,argv);
 #endif
 
 #ifdef _HOME

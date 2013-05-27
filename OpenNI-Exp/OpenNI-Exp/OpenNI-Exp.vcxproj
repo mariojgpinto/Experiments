@@ -37,6 +37,7 @@
     <Import Project="C:\Dev\PropertySheets\OPENCV_245_DEBUG.props" />
     <Import Project="C:\Dev\PropertySheets\INCLUDE_MYLIB.props" />
     <Import Project="..\..\..\PropertySheets\NIKINECT.props" />
+    <Import Project="..\..\..\PropertySheets\BOOST.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -45,6 +46,7 @@
     <Import Project="C:\Dev\PropertySheets\OPENCV_245_RELEASE.props" />
     <Import Project="C:\Dev\PropertySheets\INCLUDE_MYLIB.props" />
     <Import Project="..\..\..\PropertySheets\NIKINECT.props" />
+    <Import Project="..\..\..\PropertySheets\BOOST.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -98,11 +100,13 @@
     <ClCompile Include="NISimpleViewer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="RDCC.cpp" />
     <ClCompile Include="ReadFromFile.cpp" />
     <ClCompile Include="RemoveFloor.cpp" />
     <ClCompile Include="Skeletonize.cpp" />
     <ClCompile Include="Slice.cpp" />
     <ClCompile Include="TopView.cpp" />
+    <ClCompile Include="TopView_Movement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Colorize.h" />
@@ -110,11 +114,13 @@
     <ClInclude Include="NIKinectTest.h" />
     <ClInclude Include="NIOpenCV.h" />
     <ClInclude Include="NISimpleViewer.h" />
+    <ClInclude Include="RDCC.h" />
     <ClInclude Include="ReadFromFile.h" />
     <ClInclude Include="RemoveFloor.h" />
     <ClInclude Include="Skeletonize.h" />
     <ClInclude Include="Slice.h" />
     <ClInclude Include="TopView.h" />
+    <ClInclude Include="TopView_Movement.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

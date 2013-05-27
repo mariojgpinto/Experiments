@@ -1,4 +1,4 @@
-#include "TopView.h"
+#include "TopView_Movement.h"
 
 #include <XnOS.h>
 #include <math.h>
@@ -18,7 +18,7 @@ float distanceToPlane(const XnPoint3D& p, float a, float b, float c, float d);
 
 
 
-int main_top_view(int argc, char* argv[]){
+int main_top_view_movement(int argc, char* argv[]){
 	Context _context;
 	ScriptNode _scriptNode;
 	DepthGenerator _depth;
@@ -177,6 +177,32 @@ int main_top_view(int argc, char* argv[]){
 	cv::RNG rng(12345);
 	char ch = 0;
 
+	bool _bg_subtraction = false;
+	bool _bg_trainning = false;
+	int _bg_n_images = 10;
+	std::vector<cv::Mat> _bg_trainning_images;
+	std::vector<cv::Mat> _bg_trainning_images_8u;
+	cv::Mat _bg_average_image;
+	cv::Mat _bg_average_image_8u;
+	double _bg_threshold = 1;
+
+
+
+	bool _m_ = false;
+	int _m_n_old = 15;
+	std::vector<cv::Mat> _m_old(30);
+
+	int _m_n_masks = 3;
+	std::vector<cv::Mat> _m_masks(_m_n_masks);
+
+	int _m_med = 3000;
+	int _m_max = 6000;
+	cv::namedWindow("MoveDiff");
+	cv::createTrackbar("Time(frames)", "MoveDiff", &_m_n_old, 30, NULL);
+	cv::createTrackbar("Med", "MoveDiff", &_m_med, 10000, NULL);
+	cv::createTrackbar("Max", "MoveDiff", &_m_max, 10000, NULL);
+
+
 //	XnStatus rc = XN_STATUS_OK;
 
 	// Read a new frame
@@ -216,6 +242,86 @@ int main_top_view(int argc, char* argv[]){
 
 		cv::Mat mask_cv;			
 		cv::inRange(depthMat16UC1,_min_bar,_max_bar,mask_cv);
+
+		if(ch == 'b'){
+			_bg_trainning = true;
+			_bg_subtraction = false;
+			_bg_trainning_images.clear();
+			_bg_trainning_images_8u.clear();
+		}
+		
+		if(_bg_trainning){
+			cv::Mat copy;
+			depthMat16UC1.copyTo(copy,mask_cv);
+			_bg_trainning_images.push_back(copy);
+
+			cv::Mat copy2;
+			cv::threshold(depthMat8UC1,copy2,0.1,1,CV_THRESH_BINARY);
+			_bg_trainning_images_8u.push_back(copy2);
+
+			if(_bg_trainning_images.size() >= _bg_n_images){
+				_bg_trainning = false;
+				_bg_subtraction = true;
+
+				//_bg_average_image = cv::Mat::zeros(_bg_trainning_images.at(0).size(),CV_8UC1);
+				_bg_trainning_images.at(0).copyTo(_bg_average_image);
+				cv::Mat mask_avg;
+				_bg_trainning_images_8u.at(0).copyTo(mask_avg);
+				
+
+				//cv::Mat freq = cv::Mat::zeros(_bg_trainning_images.at(0).size(),CV_8UC1);
+				//uchar* freq_ptr = (uchar*)_bg_average_image.data;
+				
+				for(int i = 1 ; i < _bg_n_images ; i++){
+
+					//uchar* bg_ptr = (uchar*)_bg_trainning_images.at(i).data;
+
+					//for(int y=0; y<XN_VGA_Y_RES; y++) { 
+					//	for(int x=0; x<XN_VGA_X_RES; x++) { 
+					//		if(!bg_ptr[y * XN_VGA_X_RES + x]){
+					//			avg_ptr[y * XN_VGA_X_RES + x] += (avg_ptr[y * XN_VGA_X_RES + x] / (i+1));
+					//		}
+					//		avg_ptr[y * XN_VGA_X_RES + x] += bg_ptr[y * XN_VGA_X_RES + x];
+					//	}
+					//}
+
+					//cv::imshow("depth",_bg_trainning_images.at(i));
+					//cv::bitwise_and(_bg_average_image,_bg_trainning_images.at(i),_bg_average_image);
+					_bg_average_image += _bg_trainning_images.at(i);
+					mask_avg += _bg_trainning_images_8u.at(i);
+					//cv::waitKey();
+				}
+
+				//uchar* mask_ptr = (uchar*)mask_avg.data;
+				//short* avg_ptr = (short*)_bg_average_image.data;
+
+				//for(int y=0; y<XN_VGA_Y_RES; y++) { 
+				//	for(int x=0; x<XN_VGA_X_RES; x++) { 
+				//		if(mask_ptr[y * XN_VGA_X_RES + x]){
+				//			//avg_ptr[y * XN_VGA_X_RES + x] = (uchar)((float)avg_ptr[y * XN_VGA_X_RES + x] / (float)mask_ptr[y * XN_VGA_X_RES + x]);
+				//			avg_ptr[y * XN_VGA_X_RES + x] /= (short)_bg_n_images;
+				//		//uchar asd = avg_ptr[y * XN_VGA_X_RES + x];
+				//		//printf("");
+				//		}	
+
+				//	}
+				//}
+				
+				double kmin, kmax;
+				cv::minMaxIdx(mask_avg,&kmin, &kmax);
+
+				cv::Mat mask_avg16;
+				mask_avg.convertTo(mask_avg16,CV_16UC1);
+
+				cv::minMaxIdx(mask_avg16,&kmin, &kmax);
+
+				_bg_average_image/=mask_avg16;
+				//_bg_average_image.convertTo(_bg_average_image_8u,CV_8UC1);
+				//cv::threshold(freq,freq,1,255,CV_THRESH_BINARY);
+				//cv::imshow("Ferq",mask_avg);
+				//cv::waitKey();
+			}
+		}
 
 		if(ch == 'f'){
 			if(remove_floor){
@@ -275,6 +381,38 @@ int main_top_view(int argc, char* argv[]){
 			}
 		}
 
+		if(ch == 'm'){
+			_m_ = !_m_;
+		}
+
+		//cv::Mat mask; cv::threshold(depthMat8UC1,mask,1,255,CV_THRESH_BINARY);
+		if(_bg_subtraction){
+			cv::Mat diff;
+			cv::Mat aux; depthMat16UC1.copyTo(aux,mask_cv);
+			cv::absdiff(aux,_bg_average_image,diff);
+			cv::Mat diff8U; diff.convertTo(diff8U,CV_8UC1);
+			cv::Mat bin;
+			cv::threshold(diff8U,bin,_kernel,255,CV_THRESH_BINARY);
+			//cv::threshold(diff,bin,_kernel,255,CV_THRESH_BINARY);
+
+			cv::erode(bin,bin,cv::Mat(9,9,CV_8UC1));
+			cv::dilate(bin,bin,cv::Mat(7,7,CV_8UC1));
+			//for(int i = 1 ; i < _bg_n_images ; i++){
+			//	cv::Mat avg;
+			//	cv::absdiff(aux,_bg_trainning_images.at(i),avg);
+			//	cv::Mat diff8U2; diff.convertTo(diff8U2,CV_8UC1);
+			//	cv::Mat bin2;	
+			//	cv::threshold(diff8U2,bin2,_kernel,255,CV_THRESH_BINARY);
+
+			//	cv::bitwise_or(bin2,bin,bin);
+			//}
+			
+			bin.copyTo(mask_cv);
+			//cv::imshow("Diff",bin);
+			//cv::threshold(diff,this->_result_mask,0.1,255,CV_THRESH_BINARY);
+		}
+
+		
 		//cv::inRange(diff,_min_bar,_max_bar,mask_cv);
 		cv::Mat color3;
 		cv::Mat color4;
@@ -290,8 +428,8 @@ int main_top_view(int argc, char* argv[]){
 			XnPoint3D point2;
 
 			uchar* ptr = mask_cv.data;
-			for(int y=0; y<XN_VGA_Y_RES; y+=1) { 
-				for(int x=0; x<XN_VGA_X_RES; x+=1) { 
+			for(int y=0; y<XN_VGA_Y_RES; y+=2) { 
+				for(int x=0; x<XN_VGA_X_RES; x+=2) { 
 					XnPoint3D point1;
 					point1.X = x; 
 					point1.Y = y; 
@@ -315,54 +453,54 @@ int main_top_view(int argc, char* argv[]){
 			c2 = floorCoords.vNormal.Z;
 			d2 = -(a2*floorPoint.X + b2*floorPoint.Y + c2*floorPoint.Z);
 
-			//for(int y=0; y<XN_VGA_Y_RES; y+=1) { 
-			//	for(int x=0; x<XN_VGA_X_RES; x+=1) { 
-			//		if(realWorld[y * XN_VGA_X_RES + x].Z > 0.0 && ptr[y * XN_VGA_X_RES + x]){
-			//			float value1 = distanceToPlane(realWorld[y * XN_VGA_X_RES + x],a,b,c,d) ;
-			//			float value2 = distanceToPlane(realWorld[y * XN_VGA_X_RES + x],a2,b2,c2,d2) ;
-			//			if( value1 < _thresh &&  value2 < _thresh){
-			//				ptr[y * XN_VGA_X_RES + x]=255;
-			//				
-			//				_temp_x[y][x] = _inverse.row(0).at<double>(0) * realWorld[y * XN_VGA_X_RES + x].X + 
-			//								_inverse.row(0).at<double>(1) * realWorld[y * XN_VGA_X_RES + x].Y +
-			//								_inverse.row(0).at<double>(2) * realWorld[y * XN_VGA_X_RES + x].Z;
+			for(int y=0; y<XN_VGA_Y_RES; y+=2) { 
+				for(int x=0; x<XN_VGA_X_RES; x+=2) { 
+					if(realWorld[y * XN_VGA_X_RES + x].Z > 0.0 && ptr[y * XN_VGA_X_RES + x]){
+						float value1 = distanceToPlane(realWorld[y * XN_VGA_X_RES + x],a,b,c,d) ;
+						float value2 = distanceToPlane(realWorld[y * XN_VGA_X_RES + x],a2,b2,c2,d2) ;
+						if( value1 < _thresh &&  value2 < _thresh){
+							ptr[y * XN_VGA_X_RES + x]=255;
+							
+							_temp_x[y][x] = _inverse.row(0).at<double>(0) * realWorld[y * XN_VGA_X_RES + x].X + 
+											_inverse.row(0).at<double>(1) * realWorld[y * XN_VGA_X_RES + x].Y +
+											_inverse.row(0).at<double>(2) * realWorld[y * XN_VGA_X_RES + x].Z;
 
-			//				_temp_y[y][x] = _inverse.row(1).at<double>(0) * realWorld[y * XN_VGA_X_RES + x].X + 
-			//								_inverse.row(1).at<double>(1) * realWorld[y * XN_VGA_X_RES + x].Y +
-			//								_inverse.row(1).at<double>(2) * realWorld[y * XN_VGA_X_RES + x].Z;
+							_temp_y[y][x] = _inverse.row(1).at<double>(0) * realWorld[y * XN_VGA_X_RES + x].X + 
+											_inverse.row(1).at<double>(1) * realWorld[y * XN_VGA_X_RES + x].Y +
+											_inverse.row(1).at<double>(2) * realWorld[y * XN_VGA_X_RES + x].Z;
 
-			//				_temp_z[y][x] = _inverse.row(2).at<double>(0) * realWorld[y * XN_VGA_X_RES + x].X + 
-			//								_inverse.row(2).at<double>(1) * realWorld[y * XN_VGA_X_RES + x].Y +
-			//								_inverse.row(2).at<double>(2) * realWorld[y * XN_VGA_X_RES + x].Z;
+							_temp_z[y][x] = _inverse.row(2).at<double>(0) * realWorld[y * XN_VGA_X_RES + x].X + 
+											_inverse.row(2).at<double>(1) * realWorld[y * XN_VGA_X_RES + x].Y +
+											_inverse.row(2).at<double>(2) * realWorld[y * XN_VGA_X_RES + x].Z;
 
-			//				if(_temp_x[y][x] < _min_xx)
-			//					_min_xx = _temp_x[y][x];
-			//				if(_temp_x[y][x] > _max_xx)
-			//					_max_xx = _temp_x[y][x];
-			//				if(_temp_z[y][x] < _min_yy)
-			//					_min_yy = _temp_z[y][x];
-			//				if(_temp_z[y][x] > _max_yy)
-			//					_max_yy = _temp_z[y][x];
+							if(_temp_x[y][x] < _min_xx)
+								_min_xx = _temp_x[y][x];
+							if(_temp_x[y][x] > _max_xx)
+								_max_xx = _temp_x[y][x];
+							if(_temp_z[y][x] < _min_yy)
+								_min_yy = _temp_z[y][x];
+							if(_temp_z[y][x] > _max_yy)
+								_max_yy = _temp_z[y][x];
 
-			//				//realWorld[y * XN_VGA_X_RES + x].X += value2 * a2;
-			//				//realWorld[y * XN_VGA_X_RES + x].Y += value2 * b2;
-			//				//realWorld[y * XN_VGA_X_RES + x].Z += value2 * c2;
-			//			}
-			//			else{
-			//				ptr[y * XN_VGA_X_RES + x]=0;
+							//realWorld[y * XN_VGA_X_RES + x].X += value2 * a2;
+							//realWorld[y * XN_VGA_X_RES + x].Y += value2 * b2;
+							//realWorld[y * XN_VGA_X_RES + x].Z += value2 * c2;
+						}
+						else{
+							ptr[y * XN_VGA_X_RES + x]=0;
 
-			//				_temp_x[y][x] = 0;
-			//				_temp_y[y][x] = 0;
-			//				_temp_z[y][x] = 0;
-			//			}
-			//		}
-			//		else{
-			//			_temp_x[y][x] = 0;
-			//			_temp_y[y][x] = 0;
-			//			_temp_z[y][x] = 0;
-			//		}
-			//	} 
-			//} 
+							_temp_x[y][x] = 0;
+							_temp_y[y][x] = 0;
+							_temp_z[y][x] = 0;
+						}
+					}
+					else{
+						_temp_x[y][x] = 0;
+						_temp_y[y][x] = 0;
+						_temp_z[y][x] = 0;
+					}
+				} 
+			} 
 
 			//----------------------------------------------------------------------------------------
 			// TOPVIEW
@@ -372,10 +510,10 @@ int main_top_view(int argc, char* argv[]){
 			_min_xx = FLT_MAX;
 			_min_yy = FLT_MAX;
 			
-			for(int y=0; y<XN_VGA_Y_RES; y+=1) { 
-				for(int x=0; x<XN_VGA_X_RES; x+=1) { 
-			//for(int y=0; y<XN_VGA_Y_RES; y+=1) { 
-			//	for(int x=0; x<XN_VGA_X_RES; x+=1) { 
+			for(int y=0; y<XN_VGA_Y_RES; y+=2) { 
+				for(int x=0; x<XN_VGA_X_RES; x+=2) { 
+			//for(int y=0; y<XN_VGA_Y_RES; y+=2) { 
+			//	for(int x=0; x<XN_VGA_X_RES; x+=2) { 
 					if(realWorld[y * XN_VGA_X_RES + x].Z > 0.0 && ptr[y * XN_VGA_X_RES + x]){
 						float value1 = distanceToPlane(realWorld[y * XN_VGA_X_RES + x],a,b,c,d) ;
 						float value2 = distanceToPlane(realWorld[y * XN_VGA_X_RES + x],a2,b2,c2,d2) ;
@@ -431,8 +569,8 @@ int main_top_view(int argc, char* argv[]){
 			uchar* top_ptr = top.data;
 
 			int _x,_y;
-			for(int y=0; y<XN_VGA_Y_RES; y+=1) { 
-				for(int x=0; x<XN_VGA_X_RES; x+=1) { 
+			for(int y=0; y<XN_VGA_Y_RES; y+=2) { 
+				for(int x=0; x<XN_VGA_X_RES; x+=2) { 
 					_x = (int)((_temp_x[y][x] - _min_xx)/10.0);
 					_y = (int)((_temp_z[y][x] - _min_yy)/10.0);
 					if(_y >= 0 && _x >= 0 && _x < _width && _y < _height){
@@ -446,6 +584,75 @@ int main_top_view(int argc, char* argv[]){
 			//cv::blur(top,top,cv::Size(5,5));
 
 			cv::imshow("top",top);
+
+			if(_m_){
+				static int flag = 0;
+
+				if(!flag){
+					for(int i = 0 ; i < 30 ; i++){
+						_m_old[i] = cv::Mat::zeros(top.size(),CV_8UC1); 
+					}
+
+					for(int i = 0 ; i < _m_n_masks ; i++){
+						_m_masks[i] = cv::Mat::zeros(top.size(),CV_8UC1); 
+						cv::rectangle(_m_masks[i],cv::Rect(0,(_height/3) * i,_height,_height/3),cv::Scalar(255),-1);
+					}
+			
+					flag++;
+				}
+				cv::Mat _m_join = cv::Mat::zeros(top.size(),CV_8UC1);
+
+				for(int i = 0 ; i < _m_n_old ; i++){
+					cv::bitwise_or(_m_old[i],_m_join,_m_join);
+				}
+
+				cv::Mat _m_diff; cv::absdiff(top,_m_join,_m_diff);
+
+				for(int i = _m_n_old -1  ; i > 0; i--){
+					_m_old[i-1].copyTo(_m_old[i]);
+				}
+				top.copyTo(_m_old[0]);
+
+				cv::imshow("join",_m_join );
+
+				cv::erode(_m_diff,_m_diff,cv::Mat(3,3,CV_8UC1));
+				cv::dilate(_m_diff,_m_diff,cv::Mat(3,3,CV_8UC1));
+				//cv::blur(_m_diff,_m_diff,cv::Size(5,5));
+
+				//cv::flip(_m_diff,_m_diff,1);
+
+				for(int i = 0 ; i < _m_n_masks ; i++){
+					//char buff[100];
+					//sprintf(buff,"Area%d", i);
+
+					//FLIP IMAGE? 
+
+					cv::Mat area; _m_diff.copyTo(area,_m_masks[i]);
+					//cv::imshow(buff,area);
+
+					int counter = cv::countNonZero(area);
+					int level = 0;
+					if(counter > _m_med){
+						level = 1;
+
+						if(counter > _m_max){
+							level = 2;
+						}
+					}
+
+					char buff1[100];
+					char buff2[100];
+					sprintf(buff1,"counter: %d", counter);
+					sprintf(buff2,"Level %d", level);
+					cv::putText(_m_diff, buff1, cvPoint((2 * (_height/3)),(i * (_height/3)) + 30), cv::FONT_HERSHEY_COMPLEX_SMALL, 1.2, cvScalar(255), 1, CV_AA);
+					cv::putText(_m_diff, buff2, cvPoint((2 * (_height/3)),(i * (_height/3)) + 90), cv::FONT_HERSHEY_COMPLEX_SMALL, 1.2, cvScalar(255), 1, CV_AA);
+
+					cv::line(_m_diff,cv::Point(0,(i * (_height/3))),cv::Point(_height,(i * (_height/3))),cv::Scalar(255));
+
+				}
+
+				cv::imshow("MoveDiff",_m_diff);
+			}
 		}
 
 		cv::Mat3b cor(480,640);
