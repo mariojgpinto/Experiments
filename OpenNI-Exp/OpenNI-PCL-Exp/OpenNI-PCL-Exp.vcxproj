@@ -40,6 +40,7 @@
     <Import Project="C:\Dev\PropertySheets\BOOST.props" />
     <Import Project="C:\Dev\PropertySheets\VTK_DEBUG.props" />
     <Import Project="..\..\..\PropertySheets\NIKINECT.props" />
+    <Import Project="..\..\..\PropertySheets\OPENGL.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -96,12 +97,14 @@
     <ClCompile Include="pcl_recording_visualizer.cpp" />
     <ClCompile Include="pcl_topview.cpp" />
     <ClCompile Include="pcl_visualizer.cpp" />
+    <ClCompile Include="Walkys-PCL.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pcl_foot.h" />
     <ClInclude Include="pcl_recording_visualizer.h" />
     <ClInclude Include="pcl_topview.h" />
     <ClInclude Include="pcl_visualizer.h" />
+    <ClInclude Include="Walkys-PCL.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

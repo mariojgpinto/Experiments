@@ -30,6 +30,9 @@
     <ClCompile Include="pcl_topview.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Walkys-PCL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pcl_visualizer.h">
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pcl_topview.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Walkys-PCL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -56,16 +56,27 @@ int main_walkys_top_view(int argc, char* argv[]){
 
 	int _min_bar = 500;
 	int _max_bar = 1000;
-	int _thresh = 400;
-	int _thresh_floor = 185;
+	int _thresh = 250;
+	int _thresh_floor = 10;
 	int _floor_range = 10;
-	int _kernel = 253;
+	//int _kernel = 253;
+	
 	cv::namedWindow("Ranged Image");
+	
+
 	cv::createTrackbar("MinDepth", "Ranged Image", &_min_bar, 10000, NULL);
 	cv::createTrackbar("MaxDepth", "Ranged Image", &_max_bar, 10000, NULL);
-	cv::createTrackbar("FloorHeight", "Ranged Image", &_thresh, 2500, NULL);
 	cv::createTrackbar("FloorThresh", "Ranged Image", &_floor_range, 500, NULL);
-	cv::createTrackbar("Kernel", "Ranged Image", &_kernel, 255, NULL);
+	cv::createTrackbar("FloorHeight", "Ranged Image", &_thresh, 2500, NULL);
+	
+
+	bool _leg = false;
+	int _leg_height_start = 200;
+	int _leg_height_end = 20;
+
+	cv::namedWindow("Leg");
+	cv::createTrackbar("LegStart", "Leg", &_leg_height_start, 750, NULL);
+	cv::createTrackbar("LegEnd", "Leg", &_leg_height_end, 100, NULL);
 
 	{
 	EnumerationErrors errors;
@@ -84,7 +95,7 @@ int main_walkys_top_view(int argc, char* argv[]){
 		return (rc);
 	}
 
-	rc = _context.OpenFileRecording("C:\\Dev\\Walkys\\Project\\Data\\foot_1_left.oni");
+	//rc = _context.OpenFileRecording("C:\\Dev\\Walkys\\Project\\Data\\foot_1_left.oni");
 
 	rc = _context.FindExistingNode(XN_NODE_TYPE_DEPTH, _depth);
 	if (rc != XN_STATUS_OK)
@@ -177,6 +188,8 @@ int main_walkys_top_view(int argc, char* argv[]){
 		_temp_z[i] = (float*)malloc(sizeof(float) * 640);
 	}
 	
+
+	//int
 
 	float _max_xx = -FLT_MAX;
 	float _max_yy = -FLT_MAX;
@@ -288,6 +301,9 @@ int main_walkys_top_view(int argc, char* argv[]){
 			}
 		}
 
+		if(ch == 'l'){
+			_leg = !_leg;
+		}
 		//cv::inRange(diff,_min_bar,_max_bar,mask_cv);
 		cv::Mat color3;
 		cv::Mat color4;
@@ -399,26 +415,29 @@ int main_walkys_top_view(int argc, char* argv[]){
 			int _x,_y;
 			for(int y=0; y<XN_VGA_Y_RES; y+=2) { 
 				for(int x=0; x<XN_VGA_X_RES; x+=2) { 
-					_x = (int)((_temp_x[y][x] - _min_xx)/scale);
-					_y = (int)((_temp_z[y][x] - _min_yy)/scale);
+					_y = (int)((_temp_x[y][x] - _min_xx)/scale);
+					_x = (int)((_temp_z[y][x] - _min_yy)/scale);
 					if(_y >= 0 && _x >= 0 && _x < _width && _y < _height){
 						top_ptr[_x * _width + _y] = 255;
 					}
 				}
 			}
 			cv::Mat top_w;
-			cv::erode(top,top_w,cv::Mat(3,3,CV_8UC1));
-			cv::dilate(top_w,top_w,cv::Mat(5,5,CV_8UC1));
+			cv::dilate(top,top_w,cv::Mat(3,3,CV_8UC1));
+			cv::erode(top_w,top_w,cv::Mat(5,5,CV_8UC1));
+			cv::dilate(top_w,top_w,cv::Mat(7,7,CV_8UC1));
 			//cv::blur(top,top,cv::Size(5,5));
 
 
-			cv::Mat top_countours; top.copyTo(top_countours);
+			cv::Mat top_countours = cv::Mat::zeros(top.size(),CV_8UC1);
 
 			cv::vector<cv::vector<cv::Point> > contours;
 			cv::vector<cv::Vec4i> hierarchy;
 			
 			cv::findContours( top_w, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
 
+
+			uchar* ptr_cont = top.data;
 			for(unsigned int i = 0; i< contours.size(); i++ ){
 				if(contours[i].size() > 75){
 					//cv::Scalar clr = cv::Scalar(255);
@@ -429,14 +448,155 @@ int main_walkys_top_view(int argc, char* argv[]){
 					cv::Scalar clr = cv::Scalar(255);// rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
 					cv::Rect rect = cv::boundingRect(contours[i]);
 					drawContours( top_countours, contours, i, clr, -1, 1, hierarchy, 0, cv::Point() );
-					////cv::rectangle(top_view_color,rect, clr);
+					//
+
+					int xxx = 0;
+					int yyy = 0;
+					int acc = 0;
+
+					if(rect.width / rect.height < 0.75 ){
+						cv::putText(top_countours, "Front", cvPoint(30 , 400), cv::FONT_HERSHEY_COMPLEX_SMALL, 1., cvScalar(255,255,255), 1, CV_AA);
+
+						int max_rows = rect.height *0.2;
+						for(int yy = rect.y ; yy < rect.y + max_rows ; yy++){ //Lines
+							for(int xx = rect.x ; xx < rect.x + rect.width ; xx++){ //Cols
+								if(ptr_cont[yy * _width + xx]){
+									xxx += xx;
+									yyy += yy;
+									acc ++;
+								}
+							}
+						}
+					}
+					else{
+						if(rect.width / rect.height > 1.25){
+							cv::putText(top_countours, "Side", cvPoint(30 , 400), cv::FONT_HERSHEY_COMPLEX_SMALL, 1., cvScalar(255,255,255), 1, CV_AA);
+
+							int max_lines = rect.width *0.2;
+							for(int yy = rect.y ; yy < rect.y + rect.height ; yy++){ //Lines
+								for(int xx = rect.x ; xx < rect.x + max_lines ; xx++){ //Cols
+									if(ptr_cont[yy * _width + xx]){
+										xxx += xx;
+										yyy += yy;
+										acc ++;
+									}
+								}
+							}
+						}
+						else{
+							cv::putText(top_countours, "middle", cvPoint(30 , 400), cv::FONT_HERSHEY_COMPLEX_SMALL, 1., cvScalar(255,255,255), 1, CV_AA);
+
+							int max_rows = rect.height *0.3;
+							int max_lines = rect.width *0.3;
+							for(int yy = rect.y ; yy < rect.y + max_rows ; yy++){ //Lines
+								for(int xx = rect.x ; xx < rect.x + max_lines ; xx++){ //Cols
+									if(ptr_cont[yy * _width + xx]){
+										xxx += xx;
+										yyy += yy;
+										acc ++;
+									}
+								}
+							}
+						}
+					}
+					if(acc){
+						xxx /= acc;
+						yyy /= acc;
+
+						cv::circle(top_countours,cv::Point(xxx,yyy),5,cv::Scalar(20),-1);
+						cv::circle(top_countours,cv::Point(xxx,yyy),2,cv::Scalar(255),-1);
+					}
+					
+
+					cv::rectangle(top_countours,rect, clr);
+
 				}
 			}
+
+
+			if(_leg){
+				int _x,_y;
+				cv::Mat leg_temp = cv::Mat::ones(color2.size(),CV_8UC1);
+				uchar* ptr_leg = leg_temp.data;
+
+				int ac = 0;
+				double _mid_x = 0.0;
+				double _mid_y = 0.0;
+				double _mid_z = 0.0;
+
+				int _mid_xx = 0;
+				int _mid_yy = 0;
+		
+
+				for(int y=0; y<XN_VGA_Y_RES; y+=2) { 
+					for(int x=0; x<XN_VGA_X_RES; x+=2) {
+						if(_temp_y[y][x] > _leg_height_start && _temp_y[y][x] < _leg_height_start + _leg_height_end){
+							ptr_leg[y * XN_VGA_X_RES + x] = 0;
+							ac++;
+							_mid_x += _temp_x[y][x];
+							_mid_y += _temp_y[y][x];
+							_mid_z += _temp_z[y][x];
+							_mid_xx += x;
+							_mid_yy += y;
+						}
+					}
+				}
+
+				_mid_x /= ac;
+				_mid_y /= ac;
+				_mid_z /= ac;
+				_mid_xx = (int)((float)_mid_xx/(float)ac);
+				_mid_yy = (int)((float)_mid_yy/(float)ac);
+
+				double p1 = _temp_x[_mid_yy][_mid_xx];
+				double p2 = _temp_y[_mid_yy][_mid_xx];
+				double p3 = _temp_z[_mid_yy][_mid_xx];
+
+				XnPoint3D ppp[1]; 
+				XnPoint3D ppp_out[1]; 
+				ppp[0].X = _mid_x;
+				ppp[0].Y = _mid_y;
+				ppp[0].Z = _mid_z;
+
+
+				_depth.ConvertRealWorldToProjective(1,ppp,ppp_out);
+
+				cv::Mat color_temp; color2.copyTo(color_temp,leg_temp);
+
+				char buff1[100];
+				sprintf(buff1," real: %.2f , %.2f , %.2f", ppp[0].X , ppp[0].Y , ppp[0].Z);
+				char buff2[100];
+				sprintf(buff2," proj: %.2f , %.2f , %.2f", ppp_out[0].X , ppp_out[0].Y , ppp_out[0].Z);
+				char buff3[100];
+				sprintf(buff3," med : %.2f , %.2f , %.2f", p1 , p2 , p3);
+
+				cv::putText(color_temp, buff1, cvPoint(30 , 30), cv::FONT_HERSHEY_COMPLEX_SMALL, 1., cvScalar(255,255,255), 1, CV_AA);
+				cv::putText(color_temp, buff3, cvPoint(30 , 60), cv::FONT_HERSHEY_COMPLEX_SMALL, 1., cvScalar(255,255,255), 1, CV_AA);
+				cv::putText(color_temp, buff2, cvPoint(30 , 90), cv::FONT_HERSHEY_COMPLEX_SMALL, 1., cvScalar(255,255,255), 1, CV_AA);
+
+				cv::circle(color_temp,cv::Point(ppp_out[0].X, XN_VGA_Y_RES - ppp_out[0].Y),5,cv::Scalar(255,255,255),-1);
+				cv::circle(color_temp,cv::Point(_mid_xx, _mid_yy),5,cv::Scalar(255,255,255),-1);
+				cv::imshow("Leg",color_temp);
+
+				int mxx = (int)((ppp[0].X - _min_xx)/scale);
+				int myy = (int)((ppp[0].Z + 30 - _min_yy)/scale);	
+
+				cv::circle(top_countours,cv::Point(mxx, myy),5,cv::Scalar(50,50,50),-1);
+				cv::circle(top_countours,cv::Point(mxx, myy),2,cv::Scalar(255,255,255),-1);
+
+				float leg_dist = distanceToPlane(ppp[0],a,b,c,d);
+				char buff4[100];
+				sprintf(buff4," Dist to Plane: %.2f", leg_dist);
+				cv::putText(top, buff4, cvPoint(30 , 400), cv::FONT_HERSHEY_COMPLEX_SMALL, 1., cvScalar(255,255,255), 1, CV_AA);
+				//cv::imshow("top",top);
+			}
+
 
 			cv::imshow("top",top);
 			cv::imshow("top_w",top_w);
 			cv::imshow("top_contours",top_countours);
 
+			
 		}
 
 		cv::Mat3b cor(480,640);

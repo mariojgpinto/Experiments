@@ -196,7 +196,7 @@ int main_pcl_foot(int argc, char* argv[]){
 				remove_floor = false;
 			}
 			else{
-				result = kinect->init_scene_analyzer();
+				//result = kinect->init_scene_analyzer();
 
 				xn::SceneAnalyzer _scene;
 				rc = kinect->get_context().FindExistingNode(XN_NODE_TYPE_SCENE,_scene);
