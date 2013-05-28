@@ -194,13 +194,13 @@ int main_rdcc(int argc, char* argv[]){
 
 
 	bool _m_ = false;
-	int _m_n_old = 15;
+	int _m_n_old = 19;
 	std::vector<cv::Mat> _m_old(30);
 
 	int _m_n_masks = 3;
 	std::vector<cv::Mat> _m_masks(_m_n_masks);
 
-	int _m_med = 2500;
+	int _m_med = 2150;
 	int _m_max = 5500;
 	cv::namedWindow("MoveDiff");
 	cv::createTrackbar("Time(frames)", "MoveDiff", &_m_n_old, 30, NULL);
@@ -576,11 +576,20 @@ int main_rdcc(int argc, char* argv[]){
 
 					for(int i = 0 ; i < _m_n_masks ; i++){
 						_m_masks[i] = cv::Mat::zeros(top.size(),CV_8UC1); 
-						cv::rectangle(_m_masks[i],cv::Rect((_height/3) * i,0,_height/3,_height),cv::Scalar(255),-1);
+						//cv::rectangle(_m_masks[i],cv::Rect((_height/3) * i,0,_height/3,_height),cv::Scalar(255),-1);
 						//cv::imshow("masks",_m_masks[i]);
 						//cv::waitKey();
 					}
+
+					cv::rectangle(_m_masks[0],cv::Rect((_height/3) * 0,0,_height/3 + 30,_height),cv::Scalar(255),-1);
+					cv::rectangle(_m_masks[1],cv::Rect((_height/3) * 1 + 30 ,0,_height/3 - 60,_height),cv::Scalar(255),-1);
+					cv::rectangle(_m_masks[2],cv::Rect((_height/3) * 2 - 30 ,0,_height/3 + 60,_height),cv::Scalar(255),-1);
 			
+					//cv::imshow("masks0",_m_masks[0]);
+					//cv::imshow("masks1",_m_masks[1]);
+					//cv::imshow("masks2",_m_masks[2]);
+					//cv::waitKey();
+
 					flag++;
 				}
 				cv::Mat _m_join = cv::Mat::zeros(top.size(),CV_8UC1);
@@ -656,8 +665,17 @@ int main_rdcc(int argc, char* argv[]){
 					cv::putText(_m_diff, buff1, cvPoint(30 + (i * (_height/3)), 30), cv::FONT_HERSHEY_COMPLEX_SMALL, 1., cvScalar(255), 1, CV_AA);
 					cv::putText(_m_diff, buff2, cvPoint(30 + (i * (_height/3)), 90), cv::FONT_HERSHEY_COMPLEX_SMALL, 1., cvScalar(255), 1, CV_AA);
 
-					cv::line(_m_diff,cv::Point((i * (_height/3)),0),cv::Point((i * (_height/3)),_height),cv::Scalar(255));
+					//cv::line(_m_diff,cv::Point((i * (_height/3)),0),cv::Point((i * (_height/3)),_height),cv::Scalar(255));
 
+
+					cv::line(_m_diff,cv::Point((0 * (_height/3)),0),cv::Point((0 * (_height/3)),_height),cv::Scalar(255));
+					cv::line(_m_diff,cv::Point((1 * (_height/3)) + 30,0),cv::Point((1 * (_height/3)) + 30,_height),cv::Scalar(255));
+					cv::line(_m_diff,cv::Point((2 * (_height/3)) - 30,0),cv::Point((2 * (_height/3)) - 30,_height),cv::Scalar(255));
+
+
+					/*cv::rectangle(_m_masks[0],cv::Rect((_height/3) * 0,0,_height/3 + 30,_height),cv::Scalar(255),-1);
+					cv::rectangle(_m_masks[1],cv::Rect((_height/3) * 1 + 30 ,0,_height/3 - 60,_height),cv::Scalar(255),-1);
+					cv::rectangle(_m_masks[2],cv::Rect((_height/3) * 2 - 30 ,0,_height/3 + 60,_height),cv::Scalar(255),-1);*/
 				}
 
 				cv::imshow("MoveDiff",_m_diff);
