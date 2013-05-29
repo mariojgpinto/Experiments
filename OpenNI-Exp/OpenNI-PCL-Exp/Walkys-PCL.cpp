@@ -26,6 +26,13 @@ float distanceToPlane(const XnPoint3D& p, float a, float b, float c, float d);
 int main_walkys_top_view(int argc, char* argv[]);
 
 
+#include <boost/asio.hpp>
+using boost::asio::ip::tcp;
+
+char* host = "172.16.30.147";
+char* port = "13000";
+
+#define _SOCKETS
 
 int main_walkys(int argc, char* argv[]){
 	//return main_walkys_skeletonize(argc,argv);
@@ -232,7 +239,25 @@ int main_walkys_top_view(int argc, char* argv[]){
 	_image.GetMetaData(_imageMD);
 	//xn_scene.GetMetaData(_sceneMD);
 
+#ifdef _SOCKETS
+//	try{
+		boost::asio::io_service io_service;
 
+		tcp::resolver resolver(io_service);
+		tcp::resolver::query query(tcp::v4(), host, port);
+		tcp::resolver::iterator iterator = resolver.resolve(query);
+
+		tcp::socket s(io_service);
+		boost::asio::connect(s, iterator);
+
+		std::string message;
+		int counter = 0;
+	//}
+	//catch(std::exception& e)
+	//{
+	//	std::cerr << "Exception: " << e.what() << "\n";
+	//}
+#endif
 
 	pcl::visualization::PCLVisualizer viewer("Simple cloud_file Viewer");
 	//pcl::PointCloud<pcl::PointXYZRGB> cloud;
@@ -272,6 +297,11 @@ int main_walkys_top_view(int argc, char* argv[]){
 		viewer.removeAllPointClouds();
 		viewer.removeAllShapes();
 
+#ifdef _SOCKETS
+		//Sockets
+		message.clear();
+		counter = 0;
+#endif
 		if(ch == 'f'){
 			if(remove_floor){
 				remove_floor = false;
@@ -642,6 +672,13 @@ int main_walkys_top_view(int argc, char* argv[]){
 				
 					viewer.addSphere(pcl::PointXYZ(ptleg2.X,ptleg2.Y,ptleg2.Z+50),10,0,0,255,"Corte2");
 					//viewer.addSphere(pcl::PointXYZ(_mid_x+(a*-leg_dist),_mid_y+(b*-leg_dist)+50,_mid_z+(c*-leg_dist)+50),10,"Leg2");
+#ifdef _SOCKETS
+					char buff1[100];
+					message.append("#");
+					sprintf_s(buff1,"%.4f %.4f %.4f|",ptleg2.X,ptleg2.Y,ptleg2.Z+50);
+					message.append(buff1);
+					counter++;
+#endif
 
 					double _x_x = ptleg2.X - ptleg.X;
 					double _y_y = ptleg2.Y - ptleg.Y;
@@ -660,7 +697,14 @@ int main_walkys_top_view(int argc, char* argv[]){
 												   _mid_y+(_y_y*-leg_dist) + (b* 50),
 												   _mid_z+(_z_z*-leg_dist) + (c* 50) + 50),
 												   10,0,0,255,"Calcanhar");
-
+#ifdef _SOCKETS
+					char buff2[100];
+					sprintf_s(buff2,"%.4f %.4f %.4f|",_mid_x+(_x_x*-leg_dist) + (a* 50),
+													  _mid_y+(_y_y*-leg_dist) + (b* 50),
+													  _mid_z+(_z_z*-leg_dist) + (c* 50) + 50);
+					message.append(buff2);
+					counter++;
+#endif
 
 			//PONTA DO PE
 			for(unsigned int i = 0; i< contours.size(); i++ ){
@@ -763,34 +807,18 @@ int main_walkys_top_view(int argc, char* argv[]){
 
 						foot_point = realWorld[_back_positions[yyy][xxx][1] * XN_VGA_X_RES + _back_positions[yyy][xxx][0]];
 						viewer.addSphere(pcl::PointXYZ(foot_point.X,foot_point.Y-20,foot_point.Z),10,0,0,255,"PontaDoPe");
+#ifdef _SOCKETS					
+						char buff3[100];
+						sprintf_s(buff3,"%.4f %.4f %.4f\n",foot_point.X,foot_point.Y-20,foot_point.Z);
+						message.append(buff3);
+						counter++;
+#endif
 					}
-					
 
 					cv::rectangle(top_countours,rect, clr);
 
 				}
 			}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -821,6 +849,22 @@ int main_walkys_top_view(int argc, char* argv[]){
 		}
 
 		
+#ifdef _SOCKETS
+		try{
+			if(counter == 3){
+				size_t request_length = message.size();
+
+				puts(message.data());
+
+				boost::asio::write(s, boost::asio::buffer(message.data(), request_length));
+			}
+		} 
+		catch(std::exception& e)
+		{
+			std::cerr << "Exception: " << e.what() << "\n";
+		}
+#endif
+
 		viewer.addPointCloud(cloud.makeShared(),"cloud");
 		viewer.spinOnce (100);
 		cv::Mat3b cor(480,640);
