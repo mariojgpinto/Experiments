@@ -1,3 +1,5 @@
+#include <_ID.h>
+
 #include "pcl_visualizer.h"
 
 #include <XnOS.h>
@@ -157,6 +159,17 @@ int main_pcl_visualizer(int argc, char* argv[]){
 	cloud.width = 640*480;
 	cloud.height = 1;
 	cloud.points.resize (cloud.width * cloud.height);
+
+	int asc = cloud.size();
+
+	cloud.clear();
+
+	asc = cloud.size();
+
+	bool rea = cloud.empty();
+
+	
+
 	while((ch = cv::waitKey(23)) != 27){
 		XnStatus rc = XN_STATUS_OK;
 
@@ -425,8 +438,14 @@ int main_pcl_visualizer_simple(int argc, char* argv[]){
 	EnumerationErrors errors;
 	//rc = _context.InitFromXmlFile(SAMPLE_XML_PATH, _scriptNode, &errors);
 	rc = _context.Init();
-	//_context.OpenFileRecording("C:\\Dev\\Walkys\\Project\\Data\\Boxes.oni");
+	
+#ifdef _CCG
+	_context.OpenFileRecording("C:\\Dev\\Walkys\\Project\\Data\\Boxes.oni");
+#endif
 
+#ifdef _HOME
+	_context.OpenFileRecording("C:\\Dev\\Kinect\\Data\\ONI\\mirror_papers.oni"); 
+#endif
 	if (rc == XN_STATUS_NO_NODE_PRESENT)
 	{
 		XnChar strError[1024];
@@ -491,7 +510,7 @@ int main_pcl_visualizer_simple(int argc, char* argv[]){
 
 
 	pcl::visualization::CloudViewer viewer("Simple cloud_file Viewer");
-	pcl::PointCloud<pcl::PointXYZRGB> cloud;
+	pcl::PointCloud<pcl::PointXYZ> cloud;
 	cloud.width = 640*480;
 	cloud.height = 1;
 	cloud.points.resize (cloud.width * cloud.height);
@@ -532,7 +551,7 @@ int main_pcl_visualizer_simple(int argc, char* argv[]){
 				XnPoint3D point1;
 				point1.X = x; 
 				point1.Y = y; 
-				point1.Z = depth_ptr[y * XN_VGA_X_RES + x]; 
+				point1.Z = _depthMD[y * XN_VGA_X_RES + x]; 
 
 				pointList[y * XN_VGA_X_RES + x] = point1;
 			}
@@ -540,21 +559,22 @@ int main_pcl_visualizer_simple(int argc, char* argv[]){
 
 		_depth.ConvertProjectiveToRealWorld(XN_VGA_Y_RES*XN_VGA_X_RES, pointList, realWorld); 
 
-		//cloud.points.clear();
+		cloud.points.clear();
 		//int ac = 0;
 		uint8_t* ptr_clr = (uint8_t*)color.data;
 		for(int y=50; y<XN_VGA_Y_RES; y++) { 
 			for(int x=100; x<XN_VGA_X_RES; x++) { 
 				if(realWorld[y * XN_VGA_X_RES + x].Z > 0.0){
-					pcl::PointXYZRGB pt(ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 0],
-										ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 1],
-										ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 2]);
-					pt.x = realWorld[y * XN_VGA_X_RES + x].X;
-					pt.y = -realWorld[y * XN_VGA_X_RES + x].Y;
-					pt.z = realWorld[y * XN_VGA_X_RES + x].Z;
+					//pcl::PointXYZRGB pt(ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 0],
+					//					ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 1],
+					//					ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 2]);
+					//pt.x = realWorld[y * XN_VGA_X_RES + x].X;
+					//pt.y = -realWorld[y * XN_VGA_X_RES + x].Y;
+					//pt.z = realWorld[y * XN_VGA_X_RES + x].Z;
+					//
+					////cloud.points[y * XN_VGA_X_RES + x] = pt;
 					//cloud.push_back(pt);
-					cloud.points[y * XN_VGA_X_RES + x] = pt;
-					//cloud.push_back(pcl::PointXYZ(realWorld[y * XN_VGA_X_RES + x].X,-realWorld[y * XN_VGA_X_RES + x].Y,realWorld[y * XN_VGA_X_RES + x].Z));
+					cloud.push_back(pcl::PointXYZ(realWorld[y * XN_VGA_X_RES + x].X,-realWorld[y * XN_VGA_X_RES + x].Y,realWorld[y * XN_VGA_X_RES + x].Z));
 			//		ac++;
 				}
 			} 

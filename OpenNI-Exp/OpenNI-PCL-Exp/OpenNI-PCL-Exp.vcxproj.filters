@@ -33,6 +33,9 @@
     <ClCompile Include="Walkys-PCL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="pcl_nikinect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pcl_visualizer.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Walkys-PCL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pcl_nikinect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
