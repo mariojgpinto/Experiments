@@ -32,7 +32,7 @@ using boost::asio::ip::tcp;
 char* host = "172.16.30.147";
 char* port = "13000";
 
-#define _SOCKETS
+//#define _SOCKETS
 
 int main_walkys(int argc, char* argv[]){
 	//return main_walkys_skeletonize(argc,argv);
@@ -847,7 +847,29 @@ int main_walkys_top_view(int argc, char* argv[]){
 			cv::imshow("top_w",top_w);
 			cv::imshow("top_contours",top_countours);
 		}
+		else{
+			XnPoint3D point2;
 
+			uchar* ptr = mask_cv.data;
+			for(int y=0; y<XN_VGA_Y_RES; y+=2) { 
+				for(int x=0; x<XN_VGA_X_RES; x+=2) { 
+					XnPoint3D point1;
+					point1.X = x; 
+					point1.Y = y; 
+					point1.Z = _depthMD[y * XN_VGA_X_RES + x]; 
+
+					pointList[y * XN_VGA_X_RES + x] = point1;
+				}
+			} 
+
+			_depth.ConvertProjectiveToRealWorld(XN_VGA_Y_RES*XN_VGA_X_RES, pointList, realWorld); 
+
+			for(int y=0; y<XN_VGA_Y_RES; y+=2) { 
+				for(int x=0; x<XN_VGA_X_RES; x+=2) { 
+					cloud.push_back(pcl::PointXYZ(realWorld[y * XN_VGA_X_RES + x].X,realWorld[y * XN_VGA_X_RES + x].Y,realWorld[y * XN_VGA_X_RES + x].Z));
+				}
+			}
+		}
 		
 #ifdef _SOCKETS
 		try{

@@ -21,7 +21,7 @@ int main(int argc, char* argv[]){
 #endif
 
 #ifdef _HOME
-	result = main_pcl_foot(argc,argv);
+	result = main_pcl_visualizer(argc,argv);
 #endif
 
 	return result;
