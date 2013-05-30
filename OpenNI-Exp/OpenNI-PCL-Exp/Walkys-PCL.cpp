@@ -29,7 +29,7 @@ int main_walkys_top_view(int argc, char* argv[]);
 #include <boost/asio.hpp>
 using boost::asio::ip::tcp;
 
-char* host = "172.16.30.147";
+char* host = "169.254.43.139";
 char* port = "13000";
 
 //#define _SOCKETS
@@ -66,9 +66,9 @@ int main_walkys_top_view(int argc, char* argv[]){
 
 	XnStatus rc;
 
-	int _min_bar = 500;
+	int _min_bar = 350;
 	int _max_bar = 1000;
-	int _thresh = 250;
+	int _thresh = 350;
 	int _thresh_floor = 10;
 	int _floor_range = 10;
 	//int _kernel = 253;
@@ -83,7 +83,7 @@ int main_walkys_top_view(int argc, char* argv[]){
 	
 
 	bool _leg = true;
-	int _leg_height_start = 200;
+	int _leg_height_start = 110;
 	int _leg_height_end = 20;
 
 	cv::namedWindow("Leg");
@@ -108,7 +108,7 @@ int main_walkys_top_view(int argc, char* argv[]){
 	}
 
 	//rc = _context.OpenFileRecording("C:\\Dev\\Walkys\\Project\\Data\\foot_1_right.oni");
-
+	_context.SetGlobalMirror(true);
 	rc = _context.FindExistingNode(XN_NODE_TYPE_DEPTH, _depth);
 	if (rc != XN_STATUS_OK)
 	{
@@ -317,8 +317,8 @@ int main_walkys_top_view(int argc, char* argv[]){
 					b = floorCoords.vNormal.Y;
 					c = floorCoords.vNormal.Z;
 
-					XnPoint3D pt1; pt1.X = 320; pt1.Y = 350; pt1.Z = _depthMD[ 350*640+ 320 ];
-					XnPoint3D pt2;
+					//XnPoint3D pt1; pt1.X = 320; pt1.Y = 350; pt1.Z = _depthMD[ 350*640+ 320 ];
+					//XnPoint3D pt2;
 					XnPoint3D pt3;
 					//_depth.ConvertProjectiveToRealWorld(1,&floorCoords.ptPoint,&pt2);
 					//_depth.ConvertProjectiveToRealWorld(1,&pt1,&pt2);
@@ -378,6 +378,8 @@ int main_walkys_top_view(int argc, char* argv[]){
 			XnPoint3D point2;
 
 			uchar* ptr = mask_cv.data;
+			//uchar* depth_ptr = (uchar*)depthMat8UC1.data;
+			//cv::imshow("deptg",depthMat8UC1);
 			for(int y=0; y<XN_VGA_Y_RES; y+=2) { 
 				for(int x=0; x<XN_VGA_X_RES; x+=2) { 
 					XnPoint3D point1;
@@ -471,6 +473,13 @@ int main_walkys_top_view(int argc, char* argv[]){
 			cv::Mat1b top = cv::Mat::zeros(cv::Size(_width,_height),CV_8UC1);
 			uchar* top_ptr = top.data;
 
+			for(int kx = 0 ; kx < 500 ; kx++){
+				for(int ky = 0 ; ky < 500 ; ky++){
+					_back_positions[kx][ky][0] = 0;
+					_back_positions[kx][ky][1] = 0;
+				}
+			}
+			
 			int _x,_y;
 			for(int y=0; y<XN_VGA_Y_RES; y+=2) { 
 				for(int x=0; x<XN_VGA_X_RES; x+=2) { 
@@ -485,10 +494,22 @@ int main_walkys_top_view(int argc, char* argv[]){
 				}
 			}
 			cv::Mat top_w;
+			cv::Mat top_w_1;
+			cv::Mat top_w_2;
+			cv::Mat top_w_3;
 			cv::dilate(top,top_w,cv::Mat(3,3,CV_8UC1));
 			cv::erode(top_w,top_w,cv::Mat(5,5,CV_8UC1));
+			
+			//MPcv::dilate(top_w,top_w_1,cv::Mat(7,7,CV_8UC1));
+			cv::dilate(top_w,top_w_2,cv::Mat(7,15,CV_8UC1));
+			//MPcv::dilate(top_w,top_w_3,cv::Mat(15,7,CV_8UC1));
+			
 			cv::dilate(top_w,top_w,cv::Mat(7,7,CV_8UC1));
 			//cv::blur(top,top,cv::Size(5,5));
+
+			//MPcv::imshow("7_7",top_w_1);
+			//MPcv::imshow("7_11",top_w_2);
+			//MPcv::imshow("11_7",top_w_3);
 
 
 			cv::Mat top_countours = cv::Mat::zeros(top.size(),CV_8UC1);
@@ -496,7 +517,7 @@ int main_walkys_top_view(int argc, char* argv[]){
 			cv::vector<cv::vector<cv::Point> > contours;
 			cv::vector<cv::Vec4i> hierarchy;
 			
-			cv::findContours( top_w, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
+			cv::findContours( top_w_2, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
 
 			XnPoint3D foot_point;
 			uchar* ptr_cont = top.data;
@@ -548,28 +569,30 @@ int main_walkys_top_view(int argc, char* argv[]){
 
 				//_depth.ConvertRealWorldToProjective(1,ppp,ppp_out);
 
-				cv::Mat color_temp; color2.copyTo(color_temp,leg_temp);
+				//cv::Mat color_temp; color2.copyTo(color_temp,leg_temp);
 
-				char buff1[100];
-				sprintf(buff1," real: %.2f , %.2f , %.2f", ppp[0].X , ppp[0].Y , ppp[0].Z);
-				//char buff2[100];
-				//sprintf(buff2," proj: %.2f , %.2f , %.2f", ppp_out[0].X , ppp_out[0].Y , ppp_out[0].Z);
-				char buff3[100];
-				sprintf(buff3," med : %.2f , %.2f , %.2f", p1 , p2 , p3);
+				//char buff1[100];
+				//sprintf(buff1," real: %.2f , %.2f , %.2f", ppp[0].X , ppp[0].Y , ppp[0].Z);
+				////char buff2[100];
+				////sprintf(buff2," proj: %.2f , %.2f , %.2f", ppp_out[0].X , ppp_out[0].Y , ppp_out[0].Z);
+				//char buff3[100];
+				//sprintf(buff3," med : %.2f , %.2f , %.2f", p1 , p2 , p3);
 
-				cv::putText(color_temp, buff1, cvPoint(30 , 30), cv::FONT_HERSHEY_COMPLEX_SMALL, 1., cvScalar(255,255,255), 1, CV_AA);
-				cv::putText(color_temp, buff3, cvPoint(30 , 60), cv::FONT_HERSHEY_COMPLEX_SMALL, 1., cvScalar(255,255,255), 1, CV_AA);
+				//cv::putText(color_temp, buff1, cvPoint(30 , 30), cv::FONT_HERSHEY_COMPLEX_SMALL, 1., cvScalar(255,255,255), 1, CV_AA);
+				//cv::putText(color_temp, buff3, cvPoint(30 , 60), cv::FONT_HERSHEY_COMPLEX_SMALL, 1., cvScalar(255,255,255), 1, CV_AA);
 				//cv::putText(color_temp, buff2, cvPoint(30 , 90), cv::FONT_HERSHEY_COMPLEX_SMALL, 1., cvScalar(255,255,255), 1, CV_AA);
 
 				//cv::circle(color_temp,cv::Point(ppp_out[0].X, XN_VGA_Y_RES - ppp_out[0].Y),5,cv::Scalar(255,255,255),-1);
-				cv::circle(color_temp,cv::Point(_mid_xx, _mid_yy),5,cv::Scalar(255,255,255),-1);
+				//cv::circle(color_temp,cv::Point(_mid_xx, _mid_yy),5,cv::Scalar(255,255,255),-1);
 				//cv::imshow("Leg",color_temp);
 
 				int mxx = (int)((ppp[0].X - _min_xx)/scale);
 				int myy = (int)((ppp[0].Z + 30 - _min_yy)/scale);	
 
-				cv::circle(top_countours,cv::Point(mxx, myy),5,cv::Scalar(50,50,50),-1);
-				cv::circle(top_countours,cv::Point(mxx, myy),2,cv::Scalar(255,255,255),-1);
+				if(mxx >= 0 && myy >= 0){
+					//MPcv::circle(top_countours,cv::Point(mxx, myy),5,cv::Scalar(50,50,50),-1);
+					//MPcv::circle(top_countours,cv::Point(mxx, myy),2,cv::Scalar(255,255,255),-1);
+				}
 
 				XnPoint3D ptleg; ptleg.X = _mid_x; ptleg.Y = _mid_y; ptleg.Z = _mid_z;
 
@@ -581,15 +604,6 @@ int main_walkys_top_view(int argc, char* argv[]){
 				
 				viewer.addSphere(pcl::PointXYZ(_mid_x,_mid_y,_mid_z+50),10,0,0,255,"Corte1");
 				//viewer.addSphere(pcl::PointXYZ(_mid_x+(a*-leg_dist),_mid_y+(b*-leg_dist)+50,_mid_z+(c*-leg_dist)+50),10,"Leg2");
-
-				//pcl::ModelCoefficients coeffs;
-				//coeffs.values.push_back(a);
-				//coeffs.values.push_back(b);
-				//coeffs.values.push_back(c);
-				//coeffs.values.push_back(d);
-				//viewer.addPlane (coeffs, "plane");
-
-
 				{
 					int _x,_y;
 
@@ -623,8 +637,8 @@ int main_walkys_top_view(int argc, char* argv[]){
 					_mid_yy = (int)((float)_mid_yy/(float)ac);
 
 
-					cv::circle(color_temp,cv::Point(_mid_xx, _mid_yy),5,cv::Scalar(255,255,255),-1);
-					cv::imshow("Leg",color_temp);
+					//cv::circle(color_temp,cv::Point(_mid_xx, _mid_yy),5,cv::Scalar(255,255,255),-1);
+					//cv::imshow("Leg",color_temp);
 
 					double p1 = _temp_x[_mid_yy][_mid_xx];
 					double p2 = _temp_y[_mid_yy][_mid_xx];
@@ -658,10 +672,10 @@ int main_walkys_top_view(int argc, char* argv[]){
 
 					int mxx = (int)((ppp[0].X - _min_xx)/scale);
 					int myy = (int)((ppp[0].Z + 30 - _min_yy)/scale);	
-
-					cv::circle(top_countours,cv::Point(mxx, myy),5,cv::Scalar(50,50,50),-1);
-					cv::circle(top_countours,cv::Point(mxx, myy),2,cv::Scalar(255,255,255),-1);
-
+					if(mxx >= 0 && myy >= 0){
+						//MPcv::circle(top_countours,cv::Point(mxx, myy),5,cv::Scalar(50,50,50),-1);
+						//MPcv::circle(top_countours,cv::Point(mxx, myy),2,cv::Scalar(255,255,255),-1);
+					}
 					XnPoint3D ptleg2; ptleg2.X = _mid_x; ptleg2.Y = _mid_y; ptleg2.Z = _mid_z;
 
 					float leg_dist = distanceToPlane(ptleg2,a,b,c,d);
@@ -695,7 +709,7 @@ int main_walkys_top_view(int argc, char* argv[]){
 
 					viewer.addSphere(pcl::PointXYZ(_mid_x+(_x_x*-leg_dist) + (a* 50),
 												   _mid_y+(_y_y*-leg_dist) + (b* 50),
-												   _mid_z+(_z_z*-leg_dist) + (c* 50) + 50),
+												   _mid_z+50+(_z_z*-leg_dist) + (c* 50)),
 												   10,0,0,255,"Calcanhar");
 #ifdef _SOCKETS
 					char buff2[100];
@@ -801,18 +815,29 @@ int main_walkys_top_view(int argc, char* argv[]){
 					if(acc){
 						xxx /= acc;
 						yyy /= acc;
-
-						cv::circle(top_countours,cv::Point(xxx,yyy),5,cv::Scalar(20),-1);
-						cv::circle(top_countours,cv::Point(xxx,yyy),2,cv::Scalar(255),-1);
-
-						foot_point = realWorld[_back_positions[yyy][xxx][1] * XN_VGA_X_RES + _back_positions[yyy][xxx][0]];
-						viewer.addSphere(pcl::PointXYZ(foot_point.X,foot_point.Y-20,foot_point.Z),10,0,0,255,"PontaDoPe");
+						if(xxx >= 0 && yyy >= 0 && xxx < 490 && yyy < 490){
+							//MPcv::circle(top_countours,cv::Point(xxx,yyy),5,cv::Scalar(20),-1);
+							//MPcv::circle(top_countours,cv::Point(xxx,yyy),2,cv::Scalar(255),-1);
+						
+							int control = 0;
+							while(_back_positions[yyy][xxx][1] == 0 && xxx < 490 && yyy < 490){
+								if(control % 2){
+									xxx++;
+								}
+								else{
+									yyy++;
+								}
+								control++;
+							}
+							foot_point = realWorld[_back_positions[yyy][xxx][1] * XN_VGA_X_RES + _back_positions[yyy][xxx][0]];
+							viewer.addSphere(pcl::PointXYZ(foot_point.X,foot_point.Y-20,foot_point.Z),10,0,0,255,"PontaDoPe");
 #ifdef _SOCKETS					
-						char buff3[100];
-						sprintf_s(buff3,"%.4f %.4f %.4f\n",foot_point.X,foot_point.Y-20,foot_point.Z);
-						message.append(buff3);
-						counter++;
+							char buff3[100];
+							sprintf_s(buff3,"%.4f %.4f %.4f\n",foot_point.X,foot_point.Y-20,foot_point.Z);
+							message.append(buff3);
+							counter++;
 #endif
+						}
 					}
 
 					cv::rectangle(top_countours,rect, clr);
@@ -820,32 +845,23 @@ int main_walkys_top_view(int argc, char* argv[]){
 				}
 			}
 
-
-
-
 					viewer.addLine(	pcl::PointXYZ(ptleg2.X,ptleg2.Y,ptleg2.Z+50),
 									pcl::PointXYZ(_mid_x+(_x_x*-leg_dist) + (a* 50),
 												  _mid_y+(_y_y*-leg_dist) + (b* 50),
-												  _mid_z+(_z_z*-leg_dist) + (c* 50) + 50),
+												  _mid_z+50+(_z_z*-leg_dist) + (c* 50)),
 						            255,0,0,"line_leg");
 
 					viewer.addLine(	pcl::PointXYZ(_mid_x+(_x_x*-leg_dist) + (a* 50),
 												  _mid_y+(_y_y*-leg_dist) + (b* 50),
-												  _mid_z+(_z_z*-leg_dist) + (c* 50) + 50),
+												  _mid_z+50+(_z_z*-leg_dist) + (c* 50)),
 									pcl::PointXYZ(foot_point.X,foot_point.Y-20,foot_point.Z),
 									255,0,0,"line_foot");
-					//pcl::ModelCoefficients coeffs;
-					//coeffs.values.push_back(a);
-					//coeffs.values.push_back(b);
-					//coeffs.values.push_back(c);
-					//coeffs.values.push_back(d);
-					//viewer.addPlane (coeffs, "plane");
 				}
 			//} //END LEG
 
-			cv::imshow("top",top);
-			cv::imshow("top_w",top_w);
-			cv::imshow("top_contours",top_countours);
+			//MPcv::imshow("top",top);
+			//MPcv::imshow("top_w",top_w);
+			//MPcv::imshow("top_contours",top_countours);
 		}
 		else{
 			XnPoint3D point2;
@@ -902,7 +918,7 @@ int main_walkys_top_view(int argc, char* argv[]){
 		//cv::imshow("color",);
 
 		++_frame_counter;
-		if (_frame_counter == 15)
+		if (_frame_counter == 10)
 		{
 			double current_tick = cv::getTickCount();
 			_frame_rate = _frame_counter / ((current_tick - _last_tick)/cv::getTickFrequency());

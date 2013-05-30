@@ -513,9 +513,9 @@ int main_pcl_visualizer_simple(int argc, char* argv[]){
 		_image.GetMetaData(_imageMD);
 		//xn_scene.GetMetaData(_sceneMD);
 
-		//cv::Mat depthMat16UC1(480, 640,CV_16UC1, (void*) _depthMD.Data());
-		//cv::Mat depthMat8UC1;
-		//depthMat16UC1.convertTo(depthMat8UC1, CV_8UC1,0.05);
+		cv::Mat depthMat16UC1(480, 640,CV_16UC1, (void*) _depthMD.Data());
+		cv::Mat depthMat8UC1;
+		depthMat16UC1.convertTo(depthMat8UC1, CV_8UC1,0.05);
 
 		cv::Mat color(480,640,CV_8UC3,(void*) _imageMD.Data());
 		//cv::Mat color2;
@@ -525,14 +525,14 @@ int main_pcl_visualizer_simple(int argc, char* argv[]){
 		//cv::Mat mask_cv;			
 		//cv::inRange(depthMat16UC1,_min_bar,_max_bar,mask_cv);
 
-
+		uchar* depth_ptr = depthMat16UC1.data;
 
 		for(int y=0; y<yres; y++) { 
 			for(int x=0; x<xres; x++) { 
 				XnPoint3D point1;
 				point1.X = x; 
 				point1.Y = y; 
-				point1.Z = _depthMD[y * XN_VGA_X_RES + x]; 
+				point1.Z = depth_ptr[y * XN_VGA_X_RES + x]; 
 
 				pointList[y * XN_VGA_X_RES + x] = point1;
 			}

@@ -52,6 +52,7 @@
     <Import Project="C:\Dev\PropertySheets\BOOST.props" />
     <Import Project="C:\Dev\PropertySheets\VTK_RELEASE.props" />
     <Import Project="..\..\..\PropertySheets\NIKINECT.props" />
+    <Import Project="..\..\..\PropertySheets\OPENGL.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
