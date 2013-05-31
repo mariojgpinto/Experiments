@@ -6,6 +6,7 @@
 #include "pcl_topview.h"
 #include "Walkys-PCL.h"
 #include "pcl_nikinect.h"
+#include "pcl_thread_viewer.h"
 
 int main(int argc, char* argv[]){
 	int result = -1;
@@ -17,9 +18,10 @@ int main(int argc, char* argv[]){
 	//result = main_pcl_topview(argc,argv);
 	//result = main_walkys(argc,argv);
 	//result = main_pcl_ni_kinect(argc,argv);
+	//result = main_thread_viewer(argc,argv);
 	
 #ifdef _CCG
-	result = main_walkys(argc,argv);
+	result = main_thread_viewer(argc,argv);
 #endif
 
 #ifdef _HOME

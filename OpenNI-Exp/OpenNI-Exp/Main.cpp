@@ -13,7 +13,8 @@
 #include "TopView_Movement.h"
 #include "RDCC.h"
 #include "Walkys.h"
-
+#include "multiple_kinect.h"
+#include "multi_NIKinect.h"
 
 
 int main(int argc, char* argv[])
@@ -32,9 +33,11 @@ int main(int argc, char* argv[])
 	//result = main_top_view_movement(argc,argv);
 	//result = main_rdcc(argc,argv);
 	//result = main_walkys(argc,argv);
+	//result = main_multiple_kinect(argc, argv);
+	//result = main_multi_ni_kinect(argc, argv);
 
 #ifdef _CCG
-	result = main_walkys(argc,argv);
+	result = main_multiple_kinect(argc, argv);
 #endif
 
 #ifdef _HOME
@@ -43,3 +46,4 @@ int main(int argc, char* argv[])
 
 	return result;
 }
+

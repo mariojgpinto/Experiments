@@ -95,6 +95,8 @@
     <ClCompile Include="Colorize.cpp" />
     <ClCompile Include="DepthThreshold.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="multiple_kinect.cpp" />
+    <ClCompile Include="multi_NIKinect.cpp" />
     <ClCompile Include="NIKinectTest.cpp" />
     <ClCompile Include="NIOpenCV.cpp" />
     <ClCompile Include="NISimpleViewer.cpp">
@@ -112,6 +114,8 @@
   <ItemGroup>
     <ClInclude Include="Colorize.h" />
     <ClInclude Include="DepthThreshold.h" />
+    <ClInclude Include="multiple_kinect.h" />
+    <ClInclude Include="multi_NIKinect.h" />
     <ClInclude Include="NIKinectTest.h" />
     <ClInclude Include="NIOpenCV.h" />
     <ClInclude Include="NISimpleViewer.h" />

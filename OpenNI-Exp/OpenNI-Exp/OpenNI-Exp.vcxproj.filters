@@ -57,6 +57,12 @@
     <ClCompile Include="Walkys.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="multiple_kinect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_NIKinect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NISimpleViewer.h">
@@ -96,6 +102,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Walkys.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="multiple_kinect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_NIKinect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

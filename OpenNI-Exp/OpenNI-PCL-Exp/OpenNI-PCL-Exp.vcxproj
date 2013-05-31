@@ -99,6 +99,7 @@
     <ClCompile Include="pcl_foot.cpp" />
     <ClCompile Include="pcl_nikinect.cpp" />
     <ClCompile Include="pcl_recording_visualizer.cpp" />
+    <ClCompile Include="pcl_thread_viewer.cpp" />
     <ClCompile Include="pcl_topview.cpp" />
     <ClCompile Include="pcl_visualizer.cpp" />
     <ClCompile Include="Walkys-PCL.cpp" />
@@ -107,6 +108,7 @@
     <ClInclude Include="pcl_foot.h" />
     <ClInclude Include="pcl_nikinect.h" />
     <ClInclude Include="pcl_recording_visualizer.h" />
+    <ClInclude Include="pcl_thread_viewer.h" />
     <ClInclude Include="pcl_topview.h" />
     <ClInclude Include="pcl_visualizer.h" />
     <ClInclude Include="Walkys-PCL.h" />
