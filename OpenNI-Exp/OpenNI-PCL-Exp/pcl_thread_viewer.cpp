@@ -20,6 +20,7 @@ using namespace xn;
 #include <pcl/segmentation/sac_segmentation.h>
 
 #include <boost\thread.hpp>
+#include <exception>
 
 #define SAMPLE_XML_PATH "C:\\Dev\\External\\OpenNI\\Data\\SamplesConfig.xml"
 
@@ -30,7 +31,7 @@ float distanceToPlane(const XnPoint3D& p, float a, float b, float c, float d);
 XnPoint3D * pointList = (XnPoint3D *)malloc(sizeof(XnPoint3D) * XN_VGA_Y_RES * XN_VGA_X_RES); 
 XnPoint3D * realWorld = (XnPoint3D *)malloc(sizeof(XnPoint3D) * XN_VGA_Y_RES * XN_VGA_X_RES); 
 pcl::visualization::CloudViewer viewer("Simple cloud_file Viewer");
-pcl::PointCloud<pcl::PointXYZ> cloud;
+pcl::PointCloud<pcl::PointXYZRGB> cloud;
 	DepthMetaData _depthMD_copy;
 	Context _context;
 	ScriptNode _scriptNode;
@@ -41,6 +42,7 @@ pcl::PointCloud<pcl::PointXYZ> cloud;
 	SceneMetaData _sceneMD;
 	cv::Mat depthMat8UC1;
 	cv::Mat color2;
+	cv::Mat color2_pcl;
 int yres = XN_VGA_Y_RES - 50;
 int xres = XN_VGA_X_RES - 100;
 int ac = 0;
@@ -48,14 +50,22 @@ int ac = 0;
 boost::mutex mtx_;
 
 bool running = true;
-void func(bool* flag){
-	ac++;
 
-	while(true){
-	mtx_.lock();
-	_depthMD_copy.CopyFrom(_depthMD);
-	mtx_.unlock();
-	for(int y=0; y<yres; y++) { 
+
+void pcl_thread_function(){
+	Sleep(100);
+
+	while(running){
+		//Copy new images
+		mtx_.lock();
+	
+		_depthMD_copy.CopyFrom(_depthMD);
+		color2.copyTo(color2_pcl);
+
+		mtx_.unlock();
+
+		//Create buffer
+		for(int y=0; y<yres; y++) { 
 			for(int x=0; x<xres; x++) { 
 				XnPoint3D point1;
 				point1.X = x; 
@@ -65,41 +75,37 @@ void func(bool* flag){
 				pointList[y * XN_VGA_X_RES + x] = point1;
 			}
 		} 
-
+		//Convert points		
 		_depth.ConvertProjectiveToRealWorld(XN_VGA_Y_RES*XN_VGA_X_RES, pointList, realWorld); 
 
+		//Add points to Point Cloud
 		cloud.points.clear();
-		//int ac = 0;
-		//uint8_t* ptr_clr = (uint8_t*)color.data;
-		for(int y=50; y<XN_VGA_Y_RES; y++) { 
-			for(int x=100; x<XN_VGA_X_RES; x++) { 
+		uint8_t* ptr_clr = (uint8_t*)color2_pcl.data;
+		for(int y=0; y<XN_VGA_Y_RES; y++) { 
+			for(int x=0; x<XN_VGA_X_RES; x++) { 
 				if(realWorld[y * XN_VGA_X_RES + x].Z > 0.0){
-					//pcl::PointXYZRGB pt(ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 0],
-					//					ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 1],
-					//					ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 2]);
-					//pt.x = realWorld[y * XN_VGA_X_RES + x].X;
-					//pt.y = -realWorld[y * XN_VGA_X_RES + x].Y;
-					//pt.z = realWorld[y * XN_VGA_X_RES + x].Z;
+					pcl::PointXYZRGB pt(ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 2],
+										ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 1],
+										ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 0]);
+					pt.x = realWorld[y * XN_VGA_X_RES + x].X;
+					pt.y = -realWorld[y * XN_VGA_X_RES + x].Y;
+					pt.z = realWorld[y * XN_VGA_X_RES + x].Z;
 					//
 					////cloud.points[y * XN_VGA_X_RES + x] = pt;
-					//cloud.push_back(pt);
-					cloud.push_back(pcl::PointXYZ(realWorld[y * XN_VGA_X_RES + x].X,-realWorld[y * XN_VGA_X_RES + x].Y,realWorld[y * XN_VGA_X_RES + x].Z));
+					cloud.push_back(pt);
+					//cloud.push_back(pcl::PointXYZ(realWorld[y * XN_VGA_X_RES + x].X,-realWorld[y * XN_VGA_X_RES + x].Y,realWorld[y * XN_VGA_X_RES + x].Z));
 			//		ac++;
 				}
 			} 
 		}
 
 		viewer.showCloud(cloud.makeShared());
-			printf("New Cloud, %d\n",ac%2);
-	}
-	//Sleep(1000);
 
-	*flag = true;
+		printf("New Cloud, %d\n",ac%2);
+	}
 }
 
-void func_kinect(bool* flag){
-	char c = 0;
-
+void kinect_thread_function(){
 	while(running){
 		XnStatus rc = XN_STATUS_OK;
 		
@@ -110,27 +116,21 @@ void func_kinect(bool* flag){
 			printf("Read failed: %s\n", xnGetStatusString(rc));
 			break;
 		}
+
 		mtx_.lock();
+		
 		_depth.GetMetaData(_depthMD);
 		_image.GetMetaData(_imageMD);
 		//xn_scene.GetMetaData(_sceneMD);
-
-
-
-		cv::Mat depthMat16UC1(480, 640,CV_16UC1, (void*) _depthMD.Data());
 		
+		cv::Mat depthMat16UC1(480, 640,CV_16UC1, (void*) _depthMD.Data());
 		depthMat16UC1.convertTo(depthMat8UC1, CV_8UC1,0.05);
 
 		cv::Mat color(480,640,CV_8UC3,(void*) _imageMD.Data());
-		
 		cv::cvtColor(color,color2,CV_RGB2BGR);
+
 		mtx_.unlock();
-		
-
-
 	}
-
-	*flag = false;
 }
 
 
@@ -207,19 +207,6 @@ int main_thread_viewer(int argc, char* argv[]){
 		}
 	}
 
-	_depth.GetMetaData(_depthMD);
-	_image.GetMetaData(_imageMD);
-
-
-
-	cv::Mat depthMat16UC1(480, 640,CV_16UC1, (void*) _depthMD.Data());
-		
-	depthMat16UC1.convertTo(depthMat8UC1, CV_8UC1,0.05);
-
-	cv::Mat color(480,640,CV_8UC3,(void*) _imageMD.Data());
-		
-	cv::cvtColor(color,color2,CV_RGB2BGR);
-
 	// Hybrid mode isn't supported in this sample
 	if (_imageMD.FullXRes() != _depthMD.FullXRes() || _imageMD.FullYRes() != _depthMD.FullYRes())
 	{
@@ -243,44 +230,45 @@ int main_thread_viewer(int argc, char* argv[]){
 	char ch = 0;
 
 
+	_depth.GetMetaData(_depthMD);
+	_depthMD_copy.CopyFrom(_depthMD);
+	_image.GetMetaData(_imageMD);
+
+	cv::Mat depthMat16UC1(480, 640,CV_16UC1, (void*) _depthMD.Data());
+	depthMat16UC1.convertTo(depthMat8UC1, CV_8UC1,0.05);
+
+	cv::Mat color(480,640,CV_8UC3,(void*) _imageMD.Data());
+	cv::cvtColor(color,color2,CV_RGB2BGR);
+
+
 	//pcl::visualization::CloudViewer viewer("Simple cloud_file Viewer");
 	//pcl::PointCloud<pcl::PointXYZ> cloud;
 	cloud.width = 640*480;
 	cloud.height = 1;
 	cloud.points.resize (cloud.width * cloud.height);
 	
-	bool thread_flag = true;
-	
-
-	boost::thread kinectThread(func_kinect,&running);
-
-	_depthMD_copy.CopyFrom(_depthMD);
-	boost::thread workerThread(func,&thread_flag);
-	
-
-
+	boost::thread kinectThread(kinect_thread_function);
 	//Sleep(100);
-
+	boost::thread pclThread(pcl_thread_function);
+	
 	while(running){
-
-		mtx_.lock();
 		cv::Mat clr;
 		cv::Mat dep;
 
+		mtx_.lock();
+		
 		color2.copyTo(clr);
 		depthMat8UC1.copyTo(dep);
-		cv::imshow("Color", clr);
-		cv::imshow("depth", dep);
-		////cv::Mat mask; cv::threshold(depthMat8UC1,mask,1,255,CV_THRESH_BINARY);
-		//cv::Mat mask_cv;			
-		//cv::inRange(depthMat16UC1,_min_bar,_max_bar,mask_cv);
+		
 		mtx_.unlock();
 
+		cv::imshow("Color", clr);
+		cv::imshow("depth", dep);
 
 		ch = cv::waitKey(12);
 		//uchar* depth_ptr = depthMat16UC1.data;
-		if(ch == 27) running = false;
-
+		if(ch == 27) 
+			running = false;
 		
 		++_frame_counter;
 		if (_frame_counter == 15)
@@ -292,4 +280,7 @@ int main_thread_viewer(int argc, char* argv[]){
 			printf("%.2f\n",_frame_rate);
 		}
 	}
+
+	kinectThread.join();
+	pclThread.join();
 }
