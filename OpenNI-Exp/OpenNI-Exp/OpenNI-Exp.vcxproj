@@ -98,6 +98,7 @@
     <ClCompile Include="multiple_kinect.cpp" />
     <ClCompile Include="multi_NIKinect.cpp" />
     <ClCompile Include="NIKinectTest.cpp" />
+    <ClCompile Include="NIKinectThreaded.cpp" />
     <ClCompile Include="NIOpenCV.cpp" />
     <ClCompile Include="NISimpleViewer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -117,6 +118,7 @@
     <ClInclude Include="multiple_kinect.h" />
     <ClInclude Include="multi_NIKinect.h" />
     <ClInclude Include="NIKinectTest.h" />
+    <ClInclude Include="NIKinectThreaded.h" />
     <ClInclude Include="NIOpenCV.h" />
     <ClInclude Include="NISimpleViewer.h" />
     <ClInclude Include="RDCC.h" />

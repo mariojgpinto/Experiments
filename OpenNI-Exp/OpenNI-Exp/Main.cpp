@@ -15,6 +15,7 @@
 #include "Walkys.h"
 #include "multiple_kinect.h"
 #include "multi_NIKinect.h"
+#include "NIKinectThreaded.h"
 
 
 int main(int argc, char* argv[])
@@ -35,13 +36,14 @@ int main(int argc, char* argv[])
 	//result = main_walkys(argc,argv);
 	//result = main_multiple_kinect(argc, argv);
 	//result = main_multi_ni_kinect(argc, argv);
+	//result = main_nikinect_threaded(argc,argv);
 
 #ifdef _CCG
 	result = main_multiple_kinect(argc, argv);
 #endif
 
 #ifdef _HOME
-	result = main_rdcc(argc,argv);
+	result = main_nikinect_threaded(argc,argv);
 #endif
 
 	return result;

@@ -18,7 +18,7 @@ int main_multi_ni_kinect(int argc, char* argv[]){
 #endif
 
 #ifdef _HOME
-	result = kinect->init("C:\\Dev\\Kinect\\Data\\ONI\\mirror_papers.oni", NIKinect::DEPTH_G + NIKinect::IMAGE_G + NIKinect::SCENE_A + NIKinect::USER_G);
+	result = kinect1->init("C:\\Dev\\Kinect\\Data\\ONI\\mirror_papers.oni", NIKinect::DEPTH_G + NIKinect::IMAGE_G + NIKinect::SCENE_A + NIKinect::USER_G);
 #endif
 	
 

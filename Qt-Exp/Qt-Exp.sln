@@ -7,6 +7,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Viewer", "Viewer\Viewer.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NIViewer", "NIViewer\NIViewer.vcxproj", "{C164917F-9ACC-4C4F-A6A1-98D302711C81}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ThreadedGUI", "ThreadedGUI\ThreadedGUI.vcxproj", "{5C42C86E-3303-4CE1-BB80-C27A089C2F7C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Loader", "Loader\Loader.vcxproj", "{54DC3DEF-270A-452C-B89D-982C39B470CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -25,6 +29,14 @@ Global
 		{C164917F-9ACC-4C4F-A6A1-98D302711C81}.Debug|Win32.Build.0 = Debug|Win32
 		{C164917F-9ACC-4C4F-A6A1-98D302711C81}.Release|Win32.ActiveCfg = Release|Win32
 		{C164917F-9ACC-4C4F-A6A1-98D302711C81}.Release|Win32.Build.0 = Release|Win32
+		{5C42C86E-3303-4CE1-BB80-C27A089C2F7C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5C42C86E-3303-4CE1-BB80-C27A089C2F7C}.Debug|Win32.Build.0 = Debug|Win32
+		{5C42C86E-3303-4CE1-BB80-C27A089C2F7C}.Release|Win32.ActiveCfg = Release|Win32
+		{5C42C86E-3303-4CE1-BB80-C27A089C2F7C}.Release|Win32.Build.0 = Release|Win32
+		{54DC3DEF-270A-452C-B89D-982C39B470CA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{54DC3DEF-270A-452C-B89D-982C39B470CA}.Debug|Win32.Build.0 = Debug|Win32
+		{54DC3DEF-270A-452C-B89D-982C39B470CA}.Release|Win32.ActiveCfg = Release|Win32
+		{54DC3DEF-270A-452C-B89D-982C39B470CA}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

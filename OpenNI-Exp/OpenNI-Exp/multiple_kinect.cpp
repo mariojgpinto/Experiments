@@ -238,7 +238,7 @@ int main_multiple_kinect(int argc, char* argv[]){
 
 		}
 
-		if(c == '2'
+		//if(c == '2'
 		
 		for (int i = 0; i<_nKinects; i++) {
 			cv::Mat depthMat16UC1(480, 640,CV_16UC1, (void*) _g_depthMD[i]->Data());

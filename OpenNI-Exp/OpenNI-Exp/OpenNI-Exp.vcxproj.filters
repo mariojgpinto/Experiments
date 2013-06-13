@@ -63,6 +63,9 @@
     <ClCompile Include="multi_NIKinect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NIKinectThreaded.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NISimpleViewer.h">
@@ -108,6 +111,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="multi_NIKinect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NIKinectThreaded.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
