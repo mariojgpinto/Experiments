@@ -30,8 +30,8 @@ public:
     //ntk::RGBDImage* get_RGBDImage(){return this->_kinect_image;}
 
     //Global Variables
-    void set_min_depth(double min){this->_min_depth = min;}
-    void set_max_depth(double max){this->_max_depth = max;}
+	void set_min_depth(double min){this->_min_depth = min;this->_kinect->get_kinect()->set_min_depth((int)(min*1000));}
+    void set_max_depth(double max){this->_max_depth = max;this->_kinect->get_kinect()->set_max_depth((int)(max*1000));}
 
     double get_min_depth(){return this->_min_depth;}
     double get_max_depth(){return this->_max_depth;}

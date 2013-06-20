@@ -21,6 +21,9 @@ public:
 	Viewer(Controller *c, QApplication *a, QWidget *parent = 0, Qt::WFlags flags = 0);
 	~Viewer();
 
+	
+	
+
 public slots:
     //Update Slot Method
     void update_window();
