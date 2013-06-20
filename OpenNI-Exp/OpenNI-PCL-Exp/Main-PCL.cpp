@@ -23,7 +23,7 @@ int main(int argc, char* argv[]){
 	//result = main_nithreadedkinect(argc,argv);
 	
 #ifdef _CCG
-	result = main_thread_viewer(argc,argv);
+	result = main_walkys(argc,argv);
 #endif
 
 #ifdef _HOME

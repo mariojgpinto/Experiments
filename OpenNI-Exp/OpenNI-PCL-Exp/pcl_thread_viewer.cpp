@@ -48,6 +48,7 @@ int xres = XN_VGA_X_RES - 100;
 int ac = 0;
 
 boost::mutex mtx_;
+boost::mutex mtx_2;
 
 bool running = true;
 
@@ -79,6 +80,7 @@ void pcl_thread_function(){
 		_depth.ConvertProjectiveToRealWorld(XN_VGA_Y_RES*XN_VGA_X_RES, pointList, realWorld); 
 
 		//Add points to Point Cloud
+		//mtx_2.lock();
 		cloud.points.clear();
 		uint8_t* ptr_clr = (uint8_t*)color2_pcl.data;
 		for(int y=0; y<XN_VGA_Y_RES; y++) { 
@@ -98,7 +100,10 @@ void pcl_thread_function(){
 				}
 			} 
 		}
-
+		//viewer.removePointCloud("cloud"); 
+		//viewer.addPointCloud(cloud.makeShared(),"cloud");
+		//viewer.spinOnce (100);
+		//mtx_2.unlock();
 		viewer.showCloud(cloud.makeShared());
 
 		printf("New Cloud, %d\n",ac%2);

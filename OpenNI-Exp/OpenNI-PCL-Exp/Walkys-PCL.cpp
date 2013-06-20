@@ -212,6 +212,18 @@ int main_walkys_top_view(int argc, char* argv[]){
 		}
 	}
 
+	//3D
+	bool _new_foot_info_3d = false;
+	float _leg_3d_xx;		float _leg_3d_yy;		float _leg_3d_zz;
+	float _heel_3d_xx;		float _heel_3d_yy;		float _heel_3d_zz;
+	float _tiptoe_3d_xx;	float _tiptoe_3d_yy;	float _tiptoe_3d_zz;
+
+	//2D
+	bool _new_foot_info_2d = false;
+	float _leg_2d_xx;		float _leg_2d_yy;
+	float _heel_2d_xx;		float _heel_2d_yy;
+	float _tiptoe_2d_xx;	float _tiptoe_2d_yy;
+
 
 	float _max_xx = -FLT_MAX;
 	float _max_yy = -FLT_MAX;
@@ -686,6 +698,12 @@ int main_walkys_top_view(int argc, char* argv[]){
 				
 					viewer.addSphere(pcl::PointXYZ(ptleg2.X,ptleg2.Y,ptleg2.Z+50),10,0,0,255,"Corte2");
 					//viewer.addSphere(pcl::PointXYZ(_mid_x+(a*-leg_dist),_mid_y+(b*-leg_dist)+50,_mid_z+(c*-leg_dist)+50),10,"Leg2");
+
+										
+					//LEG POINT OUT
+					_leg_3d_xx = ptleg2.X;
+					_leg_3d_yy = ptleg2.Y;
+					_leg_3d_zz = ptleg2.Z;
 #ifdef _SOCKETS
 					char buff1[100];
 					message.append("#");
@@ -711,6 +729,11 @@ int main_walkys_top_view(int argc, char* argv[]){
 												   _mid_y+(_y_y*-leg_dist) + (b* 50),
 												   _mid_z+50+(_z_z*-leg_dist) + (c* 50)),
 												   10,0,0,255,"Calcanhar");
+
+					//HEEL POINT OUT
+					_heel_3d_xx = _mid_x+(_x_x*-leg_dist) + (a* 50);
+					_heel_3d_yy = _mid_y+(_y_y*-leg_dist) + (b* 50);
+					_heel_3d_zz = _mid_z+(_z_z*-leg_dist) + (c* 50) + 50;
 #ifdef _SOCKETS
 					char buff2[100];
 					sprintf_s(buff2,"%.4f %.4f %.4f|",_mid_x+(_x_x*-leg_dist) + (a* 50),
@@ -831,6 +854,12 @@ int main_walkys_top_view(int argc, char* argv[]){
 							}
 							foot_point = realWorld[_back_positions[yyy][xxx][1] * XN_VGA_X_RES + _back_positions[yyy][xxx][0]];
 							viewer.addSphere(pcl::PointXYZ(foot_point.X,foot_point.Y-20,foot_point.Z),10,0,0,255,"PontaDoPe");
+
+							//TIPTOE POINT OUT
+							_tiptoe_3d_xx = foot_point.X;
+							_tiptoe_3d_yy = foot_point.Y;
+							_tiptoe_3d_zz = foot_point.Z;
+
 #ifdef _SOCKETS					
 							char buff3[100];
 							sprintf_s(buff3,"%.4f %.4f %.4f\n",foot_point.X,foot_point.Y-20,foot_point.Z);
