@@ -13,10 +13,12 @@
   <ItemGroup>
     <ClCompile Include="chessboard.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Mapping.cpp" />
     <ClCompile Include="Skeletonize.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="chessboard.h" />
+    <ClInclude Include="Mapping.h" />
     <ClInclude Include="Skeletonize.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -43,11 +45,13 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="C:\Dev\PropertySheets\OPENCV_245_DEBUG.props" />
     <Import Project="..\..\..\PropertySheets\INCLUDE_MYLIB.props" />
+    <Import Project="..\..\..\PropertySheets\TOOLBOXCV.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="C:\Dev\PropertySheets\OPENCV_245_RELEASE.props" />
     <Import Project="..\..\..\PropertySheets\INCLUDE_MYLIB.props" />
+    <Import Project="..\..\..\PropertySheets\TOOLBOXCV.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

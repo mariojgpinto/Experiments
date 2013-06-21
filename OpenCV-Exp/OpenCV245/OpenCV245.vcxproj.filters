@@ -24,12 +24,18 @@
     <ClCompile Include="Skeletonize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Mapping.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="chessboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Skeletonize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mapping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
