@@ -14,6 +14,7 @@
     <ClCompile Include="chessboard.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mapping.cpp" />
+    <ClCompile Include="MappingPoints.cpp" />
     <ClCompile Include="Skeletonize.cpp" />
   </ItemGroup>
   <ItemGroup>

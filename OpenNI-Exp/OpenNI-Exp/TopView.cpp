@@ -73,7 +73,7 @@ int main_top_view(int argc, char* argv[]){
 		return (rc);
 	}
 
-	rc = _context.OpenFileRecording("C:\\Dev\\Walkys\\Project\\Data\\foot_1_left.oni");
+	//rc = _context.OpenFileRecording("C:\\Dev\\Walkys\\Project\\Data\\foot_1_left.oni");
 
 	rc = _context.FindExistingNode(XN_NODE_TYPE_DEPTH, _depth);
 	if (rc != XN_STATUS_OK)

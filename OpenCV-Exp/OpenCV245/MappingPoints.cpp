@@ -100,7 +100,7 @@ bool get_perspective_transform(cv::Mat& trans_out, std::vector<cv::Point*>* poin
 	return true;
 }
 
-int main_mapping(int argc, char* argv[]){
+int main_mapping_points(int argc, char* argv[]){
 	cv::Mat3b _original_map = cv::imread("map.png");
 	//cv::Mat1b _top_view_1b = cv::imread("object_map.png");
 	cv::Mat3b _top_view_3b = cv::imread("top.png");

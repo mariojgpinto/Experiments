@@ -36,8 +36,10 @@ int main( int argc, char* argv[] )
 	//main_cv_remapping(argc,argv);
 	//main_cv_homography(argc,argv);
 
+	int result;
+
 #ifdef _CCG
-	result = main_cam_shift(argc,argv);
+	result = main_mapping(argc,argv);
 #endif
 
 #ifdef _HOME

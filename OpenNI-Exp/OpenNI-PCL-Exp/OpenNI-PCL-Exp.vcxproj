@@ -40,8 +40,8 @@
     <Import Project="C:\Dev\PropertySheets\VTK_DEBUG.props" />
     <Import Project="..\..\..\PropertySheets\OPENGL.props" />
     <Import Project="..\..\..\PropertySheets\TOOLBOXPCL.props" />
-    <Import Project="..\..\..\PropertySheets\NITHREADEDKINECT .props" />
     <Import Project="..\..\..\PropertySheets\PCL_1.6.0_DEBUG.props" />
+    <Import Project="..\..\..\PropertySheets\NITHREADEDKINECT.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -54,8 +54,8 @@
     <Import Project="C:\Dev\PropertySheets\VTK_RELEASE.props" />
     <Import Project="..\..\..\PropertySheets\OPENGL.props" />
     <Import Project="..\..\..\PropertySheets\TOOLBOXPCL.props" />
-    <Import Project="..\..\..\PropertySheets\NITHREADEDKINECT .props" />
     <Import Project="..\..\..\PropertySheets\PCL_1.6.0_RELEASE.props" />
+    <Import Project="..\..\..\PropertySheets\NITHREADEDKINECT.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

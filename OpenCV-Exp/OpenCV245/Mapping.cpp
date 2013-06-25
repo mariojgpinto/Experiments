@@ -37,6 +37,17 @@ static void on_tracker_ground_mouse(int event, int x, int y, int flags, void *vo
     //imshow(data->window_name, data->image);
 }
 
+static void on_tracker_ground_mouse2(int event, int x, int y, int flags, void *void_data)
+{
+    if (event != CV_EVENT_LBUTTONUP)
+        return;
+
+    TrackerGroundMouseData* data = (TrackerGroundMouseData*)void_data;
+    data->points.push_back(cv::Point(x, y));
+    circle(data->image, cv::Point(x,y), 3, cv::Scalar(255,0,0,255));
+    imshow(data->window_name, data->image);
+}
+
 }
 
 
@@ -101,10 +112,23 @@ int main_mapping(int argc, char* argv[]){
 
 	cv::Rect roi_resize;
 
-	double orig_ratio = ToolBoxCV::fitt_image(map_crop,map_resize,img_width,img_height,&roi_resize);
+	//double orig_ratio = ToolBoxCV::fitt_image(map_crop,map_resize,img_width,img_height,&roi_resize);
+	map_resize = cv::imread("AAL\\map.png");
+
+	//cv::imwrite("map.png",map_resize);
+
 
 	cv::setMouseCallback("Plant Resized", on_tracker_ground_mouse);
 	cv::RotatedRect rect;
+
+	center_x = 678;
+	center_y = 91;
+	size = 90;
+	degrees = 0;
+	center_x = 678;
+	center_y = 91;
+	size = 90;
+	degrees = 0;
 	while(cv::waitKey(12) != 27){
 		cv::Mat copy;
 		map_resize.copyTo(copy);
@@ -112,8 +136,12 @@ int main_mapping(int argc, char* argv[]){
 		rect.size = cv::Size2f(size,size);
 		rect.angle = degrees;
 		cv::Point2f rect_points[4]; rect.points( rect_points );
-		for( int j = 0; j < 4; j++ )
+		for( int j = 0; j < 4; j++ ){
+			char buff[8];
+			itoa(j,buff,10);
+			cv::putText(copy,buff,cv::Point(rect_points[j].x,rect_points[j].y),CV_FONT_HERSHEY_SIMPLEX,0.8,cvScalar(0,255,0),2);
 			line( copy, rect_points[j], rect_points[(j+1)%4], cv::Scalar(0,0,255), 3, 8 );
+		}
 	
 		//cv::Mat over = cv::Mat::zeros(cv::Size(img_width,img_height),CV_8UC3);
 		//cv::rectangle(over,rect,cv::Scalar(255,0,0,255),-1);
@@ -128,11 +156,17 @@ int main_mapping(int argc, char* argv[]){
 
 	cv::RotatedRect orig_rect = rect;
 
-	cv::Mat top_view2 = cv::imread("AAL\\TopView.png");
+	cv::Mat top_view2 = cv::imread("AAL\\top.png");
 	cv::Mat top_view;
 	double top_view_ratio = ToolBoxCV::fitt_image(top_view2,top_view,img_width,img_height,&roi_resize);
 
+	cv::imwrite("top.png",top_view);
+
 	//cv::setMouseCallback("Plant Resized", on_tracker_ground_mouse);
+	center_x = 341;
+	center_y = 412;
+	size = 145;
+	degrees = 46;
 
 	while(cv::waitKey(12) != 27){
 		cv::Mat copy;
@@ -143,8 +177,12 @@ int main_mapping(int argc, char* argv[]){
 		rect.angle = degrees;
 
 		cv::Point2f rect_points[4]; rect.points( rect_points );
-		for( int j = 0; j < 4; j++ )
+		for( int j = 0; j < 4; j++ ){
+			char buff[8];
+			itoa(j,buff,10);
+			cv::putText(copy,buff,cv::Point(rect_points[j].x,rect_points[j].y),CV_FONT_HERSHEY_SIMPLEX,0.8,cvScalar(0,255,0),2);
 			line( copy, rect_points[j], rect_points[(j+1)%4], cv::Scalar(0,0,255), 3, 8 );
+		}
 	
 		//cv::Mat over = cv::Mat::zeros(cv::Size(img_width,img_height),CV_8UC3);
 		//cv::rectangle(over,rect,cv::Scalar(255,0,0,255),-1);
@@ -160,6 +198,72 @@ int main_mapping(int argc, char* argv[]){
 	cv::RotatedRect top_view_rect = rect;
 
 	printf("");
+
+	cv::Point2f* points_src = (cv::Point2f*)malloc(sizeof(cv::Point2f) * 4);
+	cv::Point2f* points_top = (cv::Point2f*)malloc(sizeof(cv::Point2f) * 4);
+
+	orig_rect.points(points_src);
+	top_view_rect.points(points_top);
+
+	std::vector<cv::Point> input_original;
+	std::vector<cv::Point> input_top_view;
+
+	for(int i = 0 ; i < 4 ; ++i){
+		input_original.push_back(cv::Point(points_src[i].x,points_src[i].y));
+		input_top_view.push_back(cv::Point(points_top[i].x,points_top[i].y));
+	}
+
+	if(input_original.size() && (input_original.size() == input_top_view.size())){
+		cv::Mat trans;
+		cv::Mat _mat_perpective;
+
+		trans = cv::getPerspectiveTransform(points_top,points_src);
+		cv::warpPerspective(top_view,_mat_perpective,trans,cv::Size(map_resize.cols,map_resize.rows));
+		int asd1 = map_resize.type();
+		int asd2 = _mat_perpective.type();
+		int asd3 = top_view.type();
+
+		int asd4 = CV_16UC1;
+		int asd5 = CV_16UC3;
+		int asd6 = CV_32FC1;
+		int asd7 = CV_32FC3;
+		int asd8 = CV_8UC1;
+		int asd9 = CV_8UC3;
+		int asd10 = CV_64FC1;
+		int asd11 = CV_64FC3;
+
+		cv::imshow("perspective",_mat_perpective);
+
+		_mat_perpective += (map_resize*0.5);
+
+
+		TrackerGroundMouseData ground_mouse_data3;
+		ground_mouse_data3.window_name = "top";
+		cv::namedWindow(ground_mouse_data3.window_name,1);
+		ground_mouse_data3.image = top_view;
+		imshow(ground_mouse_data3.window_name, ground_mouse_data3.image);
+		cv::setMouseCallback(ground_mouse_data3.window_name, on_tracker_ground_mouse2, &ground_mouse_data3);
+
+
+		int old_size = 0;
+		while(cv::waitKey(33) != 27){
+			if(ground_mouse_data3.points.size() != old_size){
+				//cv::circle(_top_view_color,cv::Point(100,100),4,cv::Scalar(0,255,0),-1);
+				cv::Point2f pt1(ground_mouse_data3.points.at(ground_mouse_data3.points.size()-1).x,
+								ground_mouse_data3.points.at(ground_mouse_data3.points.size()-1).y);
+				std::vector<cv::Point2f> obj_src(1);
+				std::vector<cv::Point2f> obj_dst(1);
+				obj_src[0] = pt1;
+
+				cv::perspectiveTransform(obj_src,obj_dst,trans);
+				cv::circle(_mat_perpective,cv::Point((int)obj_dst[0].x,(int)obj_dst[0].y),4,cv::Scalar(0,255,0),-1);
+			}
+			cv::imshow("top",ground_mouse_data3.image);
+			cv::imshow("persp",_mat_perpective);
+		}
+	}
+
+
 	//cv::waitKey();
 
 	/*
