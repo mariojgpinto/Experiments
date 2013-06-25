@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{601835F8-D404-4B4D-AA17-AE0F8DFA444E}</ProjectGuid>
+    <ProjectGuid>{9E69C4E4-99E7-4930-890F-480FDA27A01A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>OpenNIPCLExp</RootNamespace>
+    <RootNamespace>PCLExp2</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -32,30 +32,27 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="C:\Dev\PropertySheets\OPENNI.props" />
-    <Import Project="C:\Dev\PropertySheets\OPENCV_245_DEBUG.props" />
-    <Import Project="C:\Dev\PropertySheets\INCLUDE_MYLIB.props" />
-    <Import Project="C:\Dev\PropertySheets\EIGEN.props" />
-    <Import Project="C:\Dev\PropertySheets\BOOST.props" />
-    <Import Project="C:\Dev\PropertySheets\VTK_DEBUG.props" />
-    <Import Project="..\..\..\PropertySheets\OPENGL.props" />
-    <Import Project="..\..\..\PropertySheets\TOOLBOXPCL.props" />
-    <Import Project="..\..\..\PropertySheets\NITHREADEDKINECT .props" />
+    <Import Project="..\..\..\PropertySheets\INCLUDE_MYLIB.props" />
+    <Import Project="..\..\..\PropertySheets\OPENNI.props" />
+    <Import Project="..\..\..\PropertySheets\OPENCV_245_DEBUG.props" />
     <Import Project="..\..\..\PropertySheets\PCL_1.6.0_DEBUG.props" />
+    <Import Project="..\..\..\PropertySheets\EIGEN.props" />
+    <Import Project="..\..\..\PropertySheets\VTK_DEBUG.props" />
+    <Import Project="..\..\..\PropertySheets\BOOST.props" />
+    <Import Project="..\..\..\PropertySheets\NITHREADEDKINECT .props" />
+    <Import Project="..\..\..\PropertySheets\TOOLBOXPCL.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="C:\Dev\PropertySheets\OPENNI.props" />
-    <Import Project="C:\Dev\PropertySheets\OPENCV_245_RELEASE.props" />
-    <Import Project="C:\Dev\PropertySheets\INCLUDE_MYLIB.props" />
-    <Import Project="C:\Dev\PropertySheets\PCL_RELEASE.props" />
-    <Import Project="C:\Dev\PropertySheets\EIGEN.props" />
-    <Import Project="C:\Dev\PropertySheets\BOOST.props" />
-    <Import Project="C:\Dev\PropertySheets\VTK_RELEASE.props" />
-    <Import Project="..\..\..\PropertySheets\OPENGL.props" />
-    <Import Project="..\..\..\PropertySheets\TOOLBOXPCL.props" />
-    <Import Project="..\..\..\PropertySheets\NITHREADEDKINECT .props" />
+    <Import Project="..\..\..\PropertySheets\INCLUDE_MYLIB.props" />
+    <Import Project="..\..\..\PropertySheets\OPENNI.props" />
+    <Import Project="..\..\..\PropertySheets\OPENCV_245_RELEASE.props" />
     <Import Project="..\..\..\PropertySheets\PCL_1.6.0_RELEASE.props" />
+    <Import Project="..\..\..\PropertySheets\EIGEN.props" />
+    <Import Project="..\..\..\PropertySheets\VTK_RELEASE.props" />
+    <Import Project="..\..\..\PropertySheets\BOOST.props" />
+    <Import Project="..\..\..\PropertySheets\NITHREADEDKINECT .props" />
+    <Import Project="..\..\..\PropertySheets\TOOLBOXPCL.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -75,7 +72,6 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -96,25 +92,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Main-PCL.cpp" />
-    <ClCompile Include="pcl_foot.cpp" />
-    <ClCompile Include="pcl_nikinect.cpp" />
-    <ClCompile Include="pcl_nithreadedkinect.cpp" />
-    <ClCompile Include="pcl_recording_visualizer.cpp" />
-    <ClCompile Include="pcl_thread_viewer.cpp" />
-    <ClCompile Include="pcl_topview.cpp" />
-    <ClCompile Include="pcl_visualizer.cpp" />
-    <ClCompile Include="Walkys-PCL.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="pcl_foot.h" />
-    <ClInclude Include="pcl_nikinect.h" />
-    <ClInclude Include="pcl_nithreadedkinect.h" />
-    <ClInclude Include="pcl_recording_visualizer.h" />
-    <ClInclude Include="pcl_thread_viewer.h" />
-    <ClInclude Include="pcl_topview.h" />
-    <ClInclude Include="pcl_visualizer.h" />
-    <ClInclude Include="Walkys-PCL.h" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

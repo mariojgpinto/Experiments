@@ -1,8 +1,4 @@
-#include "pcl_nithreadedkinect.h"
-
 #include <_ID.h>
-#include <NIThreadedKinect.h>
-
 #include <XnCppWrapper.h>
 using namespace xn;
 
@@ -13,29 +9,83 @@ using namespace xn;
 #include <pcl/point_types.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/visualization/cloud_viewer.h>
+#include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/sample_consensus/ransac.h>
 #include <pcl/ModelCoefficients.h>
 #include <pcl/segmentation/sac_segmentation.h>
 
+#include <NIThreadedKinect.h>
+
+#include <boost\thread\thread.hpp>
+
 #include <ToolBoxPCL.h>
 
-int main_nithreadedkinect(int argc, char *argv[]){
+bool new_cloud = true;
+
+
+void func_pcl(NIThreadedKinect* kinect, pcl::visualization::CloudViewer* viewer, bool *running){
+	pcl::PointCloud<pcl::PointXYZ>* cloud_ptr;
+	
+	pcl::PointCloud<pcl::PointXYZ> cloud;
+	cloud.width = 640*480;
+	cloud.height = 1;
+	cloud.points.resize (cloud.width * cloud.height);
+
+	while(*running){
+		if(kinect->mutex_try_lock(NIThreadedKinect::POINT_CLOUD_T)){
+			if(kinect->copy_point_cloud(cloud)){
+				//FILE* fp = fopen("points.txt","w+");
+				//for(int i = 0 ; i < cloud.size() ; i++){
+				//	fprintf(fp,"%.4f , %.4f , %.4f\n",cloud[i].x,cloud[i].y,cloud[i].z);
+				//}
+				//fclose(fp);
+				
+				//New Cloud
+				viewer->showCloud(cloud.makeShared());
+			}
+			kinect->mutex_unlock(NIThreadedKinect::POINT_CLOUD_T);
+		}
+	}
+}
+
+void func_kinect(NIThreadedKinect* kinect, bool running){
+	cv::Mat depth;
+	cv::Mat depth8;
+	cv::Mat color;
+
+	while(running){
+		if(kinect->mutex_try_lock(NIThreadedKinect::CAPTURE_T)){
+			kinect->get_color(color);
+			kinect->get_depth(depth);
+			kinect->mutex_unlock(NIThreadedKinect::CAPTURE_T);
+
+			depth.convertTo(depth8,CV_8UC1,0.05);
+			cv::imshow("Color", color);
+			cv::imshow("Depth", depth8);
+		}
+	}
+}
+
+int main_nithreadedkinect(int argc, char* argv[]){
 	double _last_tick = 0;
 	int _frame_counter = 0;
 	float _frame_rate = 0;
 
 	NIThreadedKinect* kinect = new NIThreadedKinect();
+	
+	pcl::PointCloud<pcl::PointXYZ> cloud;
+	pcl::PointCloud<pcl::PointXYZ>* cloud_ptr;// = new pcl::PointCloud<pcl::PointXYZ>();
 
 	cv::Mat depth;
 	cv::Mat depth8;
 	cv::Mat color;
 
-	XnPoint3D * realWorld = (XnPoint3D *)malloc(sizeof(XnPoint3D) * XN_VGA_Y_RES * XN_VGA_X_RES); 
+	//Windows
+	//pcl::visualization::PCLVisualizer viewer("Simple cloud_file Viewer");
 	pcl::visualization::CloudViewer viewer("Simple cloud_file Viewer");
-	pcl::PointCloud<pcl::PointXYZ> cloud;
-
-	cv::namedWindow("Depth");
+	
 	cv::namedWindow("Color");
+	cv::namedWindow("Depth");
 
 #ifdef _CCG
 	kinect->init();
@@ -49,63 +99,47 @@ int main_nithreadedkinect(int argc, char *argv[]){
 
 	kinect->set_3d_analysis_step(1);
 
+	//cloud.width = 640*480;
+	//cloud.height = 1;
+	//cloud.points.resize (cloud.width * cloud.height);
 
+	//Init Kinect
 	kinect->start_thread(NIThreadedKinect::CAPTURE_T);
-	Sleep(1000);
+	Sleep(100);
 	kinect->start_thread(NIThreadedKinect::POINT_CLOUD_T);
 	Sleep(100);
-	//pcl::visualization::CloudViewer viewer("Simple cloud_file Viewer");
-	//pcl::PointCloud<pcl::PointXYZ> cloud;
-	cloud.width = 640*480;
-	cloud.height = 1;
-	cloud.points.resize (cloud.width * cloud.height);
-	
-	
+	//viewer.runOnVisualizationThreadOnce(viewerOneOff);
+	//viewer.runOnVisualizationThread (viewerPsycho);
+
+	boost::thread t(&func_pcl,kinect,&viewer,&running);
 
 	while(running){
+		//Update Images
 		kinect->mutex_lock(NIThreadedKinect::CAPTURE_T);
-		
-		kinect->get_color(color);
-		kinect->get_depth(depth);
-
-		if(kinect->get_3d_copy(realWorld)){
-			cloud.points.clear();
-
-			//for(int y=0; y<XN_VGA_Y_RES; y++) { 
-			//	for(int x=0; x<XN_VGA_X_RES; x++) { 
-			//		if(realWorld[y * XN_VGA_X_RES + x].Z > 0.0){
-			//			//pcl::PointXYZRGB pt(ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 2],
-			//			//					ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 1],
-			//			//					ptr_clr[y * XN_VGA_X_RES * 3 + x* 3 + 0]);
-			//			//pt.x = realWorld[y * XN_VGA_X_RES + x].X;
-			//			//pt.y = -realWorld[y * XN_VGA_X_RES + x].Y;
-			//			//pt.z = realWorld[y * XN_VGA_X_RES + x].Z;
-			//			//
-			//			//cloud.points[y * XN_VGA_X_RES + x] = pt;
-			//			//cloud.push_back(pt);
-			//			cloud.push_back(pcl::PointXYZ(realWorld[y * XN_VGA_X_RES + x].X,-realWorld[y * XN_VGA_X_RES + x].Y,realWorld[y * XN_VGA_X_RES + x].Z));
-			//	//		ac++;
-			//		}
-			//	} 
-			//}
-			ToolBoxPCL::convert_points_to_mesh(XN_VGA_Y_RES*XN_VGA_X_RES,realWorld,cloud);
-
-			printf("New Cloud\n");
-		}
-
+			kinect->get_color(color);
+			kinect->get_depth(depth);
 		kinect->mutex_unlock(NIThreadedKinect::CAPTURE_T);
 
+		//Update Point Cloud
+		//kinect->mutex_lock(NIThreadedKinect::POINT_CLOUD_T);
+		//	if((cloud_ptr = kinect->get_point_cloud())){
+		//		viewer.showCloud(cloud_ptr->makeShared());
+		//	}
+		//kinect->mutex_unlock(NIThreadedKinect::POINT_CLOUD_T);
+
+		//Show Images
 		depth.convertTo(depth8,CV_8UC1,0.05);
 		cv::imshow("Color", color);
 		cv::imshow("Depth", depth8);
-		ch = cv::waitKey(12);
-		viewer.showCloud(cloud.makeShared());
 
-		
-		//uchar* depth_ptr = depthMat16UC1.data;
+		//Update and Keys 
+		ch = cv::waitKey(21);
 		if(ch == 27) 
 			running = false;
 		
+		if(ch == ' ') 
+			new_cloud = true;
+
 		++_frame_counter;
 		if (_frame_counter == 15)
 		{
@@ -113,9 +147,11 @@ int main_nithreadedkinect(int argc, char *argv[]){
 			_frame_rate = _frame_counter / ((current_tick - _last_tick)/cv::getTickFrequency());
 			_last_tick = current_tick;
 			_frame_counter = 0;
-			printf("%.2f\n",_frame_rate);
+			printf("FrameRate %.2f\n",_frame_rate);
 		}
 	}
+
+	t.join();
 
 	return 0;
 }

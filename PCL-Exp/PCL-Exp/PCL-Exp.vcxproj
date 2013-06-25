@@ -32,14 +32,18 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="C:\Dev\PropertySheets\PCL_DEBUG.props" />
     <Import Project="C:\Dev\PropertySheets\EIGEN_DEBUG.props" />
     <Import Project="C:\Dev\PropertySheets\BOOST_DEBUG.props" />
     <Import Project="C:\Dev\PropertySheets\VTK_DEBUG.props" />
+    <Import Project="..\..\..\PropertySheets\OPENNI.props" />
+    <Import Project="..\..\..\PropertySheets\FLANN_DEBUG.props" />
+    <Import Project="..\..\..\PropertySheets\PCL_DEBUG.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="C:\Dev\PropertySheets\PCL_RELEASE.props" />
+    <Import Project="..\..\..\PropertySheets\OPENNI.props" />
+    <Import Project="..\..\..\PropertySheets\FLANN_DEBUG.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
