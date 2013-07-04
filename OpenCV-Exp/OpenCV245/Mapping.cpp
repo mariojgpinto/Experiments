@@ -112,14 +112,15 @@ int main_mapping(int argc, char* argv[]){
 
 	cv::Rect roi_resize;
 
-	//double orig_ratio = ToolBoxCV::fitt_image(map_crop,map_resize,img_width,img_height,&roi_resize);
-	map_resize = cv::imread("AAL\\map.png");
+	double orig_ratio = ToolBoxCV::fitt_image(map_crop,map_resize,img_width,img_height,&roi_resize);
+	//map_resize = cv::imread("AAL\\map.png");
 
 	//cv::imwrite("map.png",map_resize);
 
 
 	cv::setMouseCallback("Plant Resized", on_tracker_ground_mouse);
 	cv::RotatedRect rect;
+
 
 	center_x = 678;
 	center_y = 91;
@@ -155,10 +156,10 @@ int main_mapping(int argc, char* argv[]){
 	}
 
 	cv::RotatedRect orig_rect = rect;
-
+	cv::Rect roi_resize_top;
 	cv::Mat top_view2 = cv::imread("AAL\\top.png");
 	cv::Mat top_view;
-	double top_view_ratio = ToolBoxCV::fitt_image(top_view2,top_view,img_width,img_height,&roi_resize);
+	double top_view_ratio = ToolBoxCV::fitt_image(top_view2,top_view,img_width,img_height,&roi_resize_top);
 
 	cv::imwrite("top.png",top_view);
 
@@ -209,7 +210,14 @@ int main_mapping(int argc, char* argv[]){
 	std::vector<cv::Point> input_top_view;
 
 	for(int i = 0 ; i < 4 ; ++i){
-		input_original.push_back(cv::Point(points_src[i].x,points_src[i].y));
+		points_src[i].x = ((points_src[i].x - roi_resize.x) / orig_ratio) + roi.x;
+		points_src[i].y = ((points_src[i].y - roi_resize.y) / orig_ratio) + roi.y;
+
+		points_top[i].x = ((points_top[i].x - roi_resize_top.x) / top_view_ratio);
+		points_top[i].y = ((points_top[i].y - roi_resize_top.y) / top_view_ratio);
+
+		input_original.push_back(cv::Point(	((points_src[i].x - roi_resize.x) * orig_ratio) + roi.x,
+											((points_src[i].y - roi_resize.y) * orig_ratio) + roi.y));
 		input_top_view.push_back(cv::Point(points_top[i].x,points_top[i].y));
 	}
 
@@ -240,7 +248,7 @@ int main_mapping(int argc, char* argv[]){
 		TrackerGroundMouseData ground_mouse_data3;
 		ground_mouse_data3.window_name = "top";
 		cv::namedWindow(ground_mouse_data3.window_name,1);
-		ground_mouse_data3.image = top_view;
+		ground_mouse_data3.image = top_view2;
 		imshow(ground_mouse_data3.window_name, ground_mouse_data3.image);
 		cv::setMouseCallback(ground_mouse_data3.window_name, on_tracker_ground_mouse2, &ground_mouse_data3);
 
@@ -256,7 +264,13 @@ int main_mapping(int argc, char* argv[]){
 				obj_src[0] = pt1;
 
 				cv::perspectiveTransform(obj_src,obj_dst,trans);
+
+				//float cx = ((obj_dst[0].x - roi_resize.y) / orig_ratio) + roi.x;
+				//float cy = ((obj_dst[0].y - roi_resize.x) / orig_ratio) + roi.y;
+
 				cv::circle(_mat_perpective,cv::Point((int)obj_dst[0].x,(int)obj_dst[0].y),4,cv::Scalar(0,255,0),-1);
+
+				old_size = ground_mouse_data3.points.size();
 			}
 			cv::imshow("top",ground_mouse_data3.image);
 			cv::imshow("persp",_mat_perpective);
