@@ -27,16 +27,24 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\..\PropertySheets\BOOST.props" />
-    <Import Project="..\..\..\PropertySheets\QNIKINECT.props" />
     <Import Project="..\..\..\PropertySheets\OPENNI.props" />
     <Import Project="..\..\..\PropertySheets\OPENCV_245_DEBUG.props" />
+    <Import Project="..\..\..\PropertySheets\TOOLBOXQT.props" />
+    <Import Project="..\..\..\PropertySheets\NITHREADEDKINECT.props" />
+    <Import Project="..\..\..\PropertySheets\PCL_1.6.0_DEBUG.props" />
+    <Import Project="..\..\..\PropertySheets\EIGEN.props" />
+    <Import Project="..\..\..\PropertySheets\VTK_DEBUG.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\..\PropertySheets\BOOST.props" />
-    <Import Project="..\..\..\PropertySheets\QNIKINECT.props" />
     <Import Project="..\..\..\PropertySheets\OPENNI.props" />
     <Import Project="..\..\..\PropertySheets\OPENCV_245_RELEASE.props" />
+    <Import Project="..\..\..\PropertySheets\TOOLBOXQT.props" />
+    <Import Project="..\..\..\PropertySheets\NITHREADEDKINECT.props" />
+    <Import Project="..\..\..\PropertySheets\PCL_1.6.0_RELEASE.props" />
+    <Import Project="..\..\..\PropertySheets\EIGEN.props" />
+    <Import Project="..\..\..\PropertySheets\VTK_RELEASE.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -91,13 +99,16 @@
     <ProjectReference Include="..\ThreadedGUI\ThreadedGUI.vcxproj">
       <Project>{5c42c86e-3303-4ce1-bb80-c27a089c2f7c}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\ThreadedPCL\ThreadedPCL.vcxproj">
+      <Project>{eb913484-7f18-4a7e-9882-0e8a28f70623}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties UicDir=".\GeneratedFiles" MocDir=".\GeneratedFiles\$(ConfigurationName)" MocOptions="" RccDir=".\GeneratedFiles" lupdateOnBuild="0" lupdateOptions="" lreleaseOptions="" QtVersion_x0020_Win32="4.8.2" />
+      <UserProperties UicDir=".\GeneratedFiles" MocDir=".\GeneratedFiles\$(ConfigurationName)" MocOptions="" RccDir=".\GeneratedFiles" lupdateOnBuild="0" lupdateOptions="" lreleaseOptions="" QtVersion_x0020_Win32="4.8.1" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

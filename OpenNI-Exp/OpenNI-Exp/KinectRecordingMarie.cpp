@@ -1,5 +1,4 @@
-#include "Colorize.h"
-#include "RemoveFloor.h"
+#include "KinectRecordingMarie.h"
 
 #include <XnOS.h>
 #include <math.h>
@@ -11,102 +10,23 @@ using namespace xn;
 
 #define SAMPLE_XML_PATH "C:\\Dev\\External\\OpenNI\\Data\\SamplesConfig.xml"
 
-void compute_color_encoded_depth(const cv::Mat1f& depth_im, cv::Mat3b& color_depth_im,
-                                     double* i_min_val, double* i_max_val)
-{
-	double min_val, max_val;
-	if (i_min_val && i_max_val)
-	{
-		min_val = *i_min_val;
-		max_val = *i_max_val;
-	}
-	else
-	{
-		minMaxLoc(depth_im, &min_val, &max_val);
-	}
 
-	color_depth_im.create(depth_im.size());
-	for (int r = 0; r < depth_im.rows; ++r)
-	{
-		const float* depth_data = depth_im.ptr<float>(r);
-		cv::Vec3b* depth_color_data = color_depth_im.ptr<cv::Vec3b>(r);
-		for (int c = 0; c < depth_im.cols; ++c)
-		{
-			int v = 255*6*(depth_data[c]-min_val)/(max_val-min_val);
-			if (v < 0) v = 0;
-			char r,g,b;
-			int lb = v & 0xff;
-			switch (v / 256) {
-			case 0:
-				r = 255;
-				g = 255-lb;
-				b = 255-lb;
-				break;
-			case 1:
-				r = 255;
-				g = lb;
-				b = 0;
-				break;
-			case 2:
-				r = 255-lb;
-				g = 255;
-				b = 0;
-				break;
-			case 3:
-				r = 0;
-				g = 255;
-				b = lb;
-				break;
-			case 4:
-				r = 0;
-				g = 255-lb;
-				b = 255;
-				break;
-			case 5:
-				r = 0;
-				g = 0;
-				b = 255-lb;
-				break;
-			default:
-				r = 0;
-				g = 0;
-				b = 0;
-				break;
-			}
-			if (v == 0)
-			{
-				r = g = b = 0;
-			}
-			depth_color_data[c] = cv::Vec3b(b,g,r);
-		}
-	}
-}
+int main_kinect_recording_marie(int argc, char* argv[]){
+	XnStatus rc;
 
-int main_colorize(int argc, char* argv[]){
+	
 	Context _context;
 	ScriptNode _scriptNode;
 	DepthGenerator _depth;
 	ImageGenerator _image;
-
 	DepthMetaData _depthMD;
 	ImageMetaData _imageMD;
+	SceneMetaData _sceneMD;
 
 	double _last_tick = 0;
 	int _frame_counter = 0;
 	float _frame_rate = 0;
 
-	XnStatus rc;
-
-	int _min_bar = 400;
-	int _max_bar = 1500;
-
-	cv::namedWindow("Ranged Image");
-	cv::createTrackbar("MinDepth", "Ranged Image", &_min_bar, 15000, NULL);
-	cv::createTrackbar("MaxDepth", "Ranged Image", &_max_bar, 15000, NULL);
-
-	cv::Mat color_rgb;
-	
-	{
 	EnumerationErrors errors;
 	//rc = _context.InitFromXmlFile(SAMPLE_XML_PATH, _scriptNode, &errors);
 	rc = _context.Init();
@@ -170,10 +90,15 @@ int main_colorize(int argc, char* argv[]){
 	_depth.GetAlternativeViewPointCap().SetViewPoint(_image);
 
 	_context.StartGeneratingAll();
-	}
+
+	int counter = 0;
+	bool recording = false;
+	
 
 	char c = 0;
 	while((c = cv::waitKey(23)) != 27){
+		XnStatus rc = XN_STATUS_OK;
+
 		// Read a new frame
 		rc = _context.WaitAnyUpdateAll();
 		if (rc != XN_STATUS_OK)
@@ -186,22 +111,49 @@ int main_colorize(int argc, char* argv[]){
 		_image.GetMetaData(_imageMD);
 
 		cv::Mat depthMat16UC1(480, 640,CV_16UC1, (void*) _depthMD.Data());
+		cv::Mat depthMat8UC1;
+		depthMat16UC1.convertTo(depthMat8UC1, CV_8UC1,0.05);
+
 		cv::Mat color(480,640,CV_8UC3,(void*) _imageMD.Data());
-		cv::cvtColor(color,color_rgb,CV_RGB2BGR);
-		
-		cv::Mat3b colorize;
-		double _min = _min_bar;
-		double _max = _max_bar;
-		compute_color_encoded_depth(depthMat16UC1,colorize,&_min,&_max);
-		
-		cv::Mat mask_cv;			
-		cv::inRange(depthMat16UC1,_min_bar,_max_bar,mask_cv);
+		cv::Mat color2;
+		cv::cvtColor(color,color2,CV_RGB2BGR);
 
-		cv::Mat color_range;
-		color_rgb.copyTo(color_range,mask_cv);
+		cv::Mat mask; cv::threshold(depthMat8UC1,mask,1,255,CV_THRESH_BINARY);
+		cv::Mat color3;
 
-		cv::imshow("Ranged Image",colorize);
-		//cv::imshow("Rcolori",colorize);
+		color2.copyTo(color3,mask);
+
+		cv::imshow("depth",depthMat8UC1);
+		cv::imshow("color",color3);
+		//cv::imshow("color",);
+
+		if(recording){
+			char buff[100];
+			if(counter < 10){
+				sprintf(buff,"image00%d.png",counter);
+			}
+			else{
+				if(counter < 100){
+					sprintf(buff,"image0%d.png",counter);
+				}
+				else{
+					sprintf(buff,"image%d.png",counter);
+				}
+			}
+
+			char buff1[100];
+			sprintf(buff1,"Marie8\\%s",buff);
+			cv::imwrite(buff1,depthMat8UC1);
+
+			char buff2[100];
+			sprintf(buff2,"Marie16\\%s",buff);
+			cv::imwrite(buff2,depthMat16UC1);
+
+			counter++;
+		}
+
+		if(c == ' ')
+			recording = !recording;
 
 		++_frame_counter;
 		if (_frame_counter == 15)

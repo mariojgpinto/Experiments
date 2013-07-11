@@ -11,13 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{8AB92BCF-D55F-42D8-80AB-314E27BC5648}</ProjectGuid>
+    <ProjectGuid>{EB913484-7F18-4A7E-9882-0E8A28F70623}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>OpenNIExp</RootNamespace>
+    <RootNamespace>ThreadedPCL</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -32,25 +32,28 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="C:\Dev\PropertySheets\OPENNI.props" />
-    <Import Project="C:\Dev\PropertySheets\OPENGL.props" />
-    <Import Project="C:\Dev\PropertySheets\OPENCV_245_DEBUG.props" />
-    <Import Project="C:\Dev\PropertySheets\INCLUDE_MYLIB.props" />
-    <Import Project="..\..\..\PropertySheets\NIKINECT.props" />
+    <Import Project="..\..\..\PropertySheets\NITHREADEDKINECT.props" />
     <Import Project="..\..\..\PropertySheets\BOOST.props" />
+    <Import Project="..\..\..\PropertySheets\EIGEN.props" />
+    <Import Project="..\..\..\PropertySheets\PCL_1.6.0_DEBUG.props" />
+    <Import Project="..\..\..\PropertySheets\VTK_DEBUG.props" />
+    <Import Project="..\..\..\PropertySheets\OPENNI.props" />
+    <Import Project="..\..\..\PropertySheets\OPENCV_245_DEBUG.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="C:\Dev\PropertySheets\OPENNI.props" />
-    <Import Project="C:\Dev\PropertySheets\OPENGL.props" />
-    <Import Project="C:\Dev\PropertySheets\OPENCV_245_RELEASE.props" />
-    <Import Project="C:\Dev\PropertySheets\INCLUDE_MYLIB.props" />
-    <Import Project="..\..\..\PropertySheets\NIKINECT.props" />
+    <Import Project="..\..\..\PropertySheets\NITHREADEDKINECT.props" />
     <Import Project="..\..\..\PropertySheets\BOOST.props" />
+    <Import Project="..\..\..\PropertySheets\EIGEN.props" />
+    <Import Project="..\..\..\PropertySheets\PCL_1.6.0_RELEASE.props" />
+    <Import Project="..\..\..\PropertySheets\VTK_RELEASE.props" />
+    <Import Project="..\..\..\PropertySheets\OPENNI.props" />
+    <Import Project="..\..\..\PropertySheets\OPENCV_245_RELEASE.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)$(Configuration)</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -62,15 +65,10 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <StackReserveSize>
-      </StackReserveSize>
-      <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -88,55 +86,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>NIKinect.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Colorize.cpp" />
-    <ClCompile Include="DepthThreshold.cpp" />
-    <ClCompile Include="KinectRecordingMarie.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="multiple_kinect.cpp" />
-    <ClCompile Include="multi_NIKinect.cpp" />
-    <ClCompile Include="NIKinectTest.cpp" />
-    <ClCompile Include="NIKinectThreaded.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="NIOpenCV.cpp" />
-    <ClCompile Include="NISimpleViewer.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="RDCC.cpp" />
-    <ClCompile Include="ReadFromFile.cpp" />
-    <ClCompile Include="RemoveFloor.cpp" />
-    <ClCompile Include="Skeletonize.cpp" />
-    <ClCompile Include="Slice.cpp" />
-    <ClCompile Include="TopView.cpp" />
-    <ClCompile Include="TopView_Movement.cpp" />
-    <ClCompile Include="Walkys.cpp" />
+    <ClInclude Include="Viewer3D.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Colorize.h" />
-    <ClInclude Include="DepthThreshold.h" />
-    <ClInclude Include="KinectRecordingMarie.h" />
-    <ClInclude Include="multiple_kinect.h" />
-    <ClInclude Include="multi_NIKinect.h" />
-    <ClInclude Include="NIKinectTest.h" />
-    <ClInclude Include="NIKinectThreaded.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="NIOpenCV.h" />
-    <ClInclude Include="NISimpleViewer.h" />
-    <ClInclude Include="RDCC.h" />
-    <ClInclude Include="ReadFromFile.h" />
-    <ClInclude Include="RemoveFloor.h" />
-    <ClInclude Include="Skeletonize.h" />
-    <ClInclude Include="Slice.h" />
-    <ClInclude Include="TopView.h" />
-    <ClInclude Include="TopView_Movement.h" />
-    <ClInclude Include="Walkys.h" />
+    <ClCompile Include="Viewer3D.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

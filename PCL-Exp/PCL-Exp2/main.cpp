@@ -17,37 +17,72 @@ using namespace xn;
 #include <NIThreadedKinect.h>
 
 #include <boost\thread\thread.hpp>
+#include <boost\thread\condition_variable.hpp>
 
 #include <ToolBoxPCL.h>
 
 bool new_cloud = true;
+boost::mutex mutex_viewer;
+boost::condition_variable condition_viewer;
+boost::mutex mutex_consumer;
+boost::condition_variable condition_consumer;
 
 
-void func_pcl(NIThreadedKinect* kinect, pcl::visualization::CloudViewer* viewer,bool *running){
-	pcl::PointCloud<pcl::PointXYZ>* cloud_ptr;
-	
-	pcl::PointCloud<pcl::PointXYZ> cloud;
-	cloud.width = 640*480;
-	cloud.height = 1;
-	cloud.points.resize (cloud.width * cloud.height);
+double start_t;
+double end_t;
+
+void func_pcl_viewer(NIThreadedKinect* kinect, pcl::visualization::CloudViewer* viewer,pcl::PointCloud<pcl::PointXYZ> *cloud, bool *running){
+	//pcl::PointCloud<pcl::PointXYZ>* cloud_ptr;
+	//
+	//pcl::PointCloud<pcl::PointXYZ> cloud;
+	//cloud.width = 640*480;
+	//cloud.height = 1;
+	//cloud.points.resize (cloud.width * cloud.height);
+
+
+	double _last_tick = 0;
+	int _frame_counter = 0;
+	float _frame_rate = 0;
+
 
 	while(*running){
-		if(kinect->mutex_try_lock(NIThreadedKinect::POINT_CLOUD_T)){
-			if(kinect->copy_point_cloud(cloud)){
-				//FILE* fp = fopen("points.txt","w+");
-				//for(int i = 0 ; i < cloud.size() ; i++){
-				//	fprintf(fp,"%.4f , %.4f , %.4f\n",cloud[i].x,cloud[i].y,cloud[i].z);
-				//}
-				//fclose(fp);
-				
-				//New Cloud
-				viewer->showCloud(cloud.makeShared());
-			}
-			kinect->mutex_unlock(NIThreadedKinect::POINT_CLOUD_T);
+		
+		viewer->showCloud(cloud->makeShared());
+		{
+			boost::mutex::scoped_lock lock(mutex_viewer);
+			//start_t = cv::getTickCount();
+			condition_viewer.wait(lock);
+			//end_t = cv::getTickCount();
+			//printf("Slept for %.4f seconds\n",((end_t - start_t)/cv::getTickFrequency()));
+		}
+
+		++_frame_counter;
+		if (_frame_counter == 15)
+		{
+			double current_tick = cv::getTickCount();
+			_frame_rate = _frame_counter / ((current_tick - _last_tick)/cv::getTickFrequency());
+			_last_tick = current_tick;
+			_frame_counter = 0;
+			printf("\t\t PCL FrameRate %.2f\n",_frame_rate);
 		}
 	}
 }
 
+void func_pcl_consumer(NIThreadedKinect* kinect,pcl::PointCloud<pcl::PointXYZ> *cloud, bool *running){
+	while(*running){
+
+		kinect->mutex_lock(NIThreadedKinect::POINT_CLOUD_T);
+			if(kinect->consume_copy_point_cloud(*cloud)){
+				//New Cloud
+				condition_viewer.notify_all();
+			}
+		kinect->mutex_unlock(NIThreadedKinect::POINT_CLOUD_T);
+		{
+			boost::mutex::scoped_lock lock(mutex_consumer);
+			condition_consumer.wait(lock);
+		}
+	}
+}
 void func_kinect(NIThreadedKinect* kinect, bool running){
 	cv::Mat depth;
 	cv::Mat depth8;
@@ -73,8 +108,10 @@ int main(int argc, char* argv[]){
 
 	NIThreadedKinect* kinect = new NIThreadedKinect();
 	
-	//pcl::PointCloud<pcl::PointXYZ> cloud;
-	//pcl::PointCloud<pcl::PointXYZ>* cloud_ptr;// = new pcl::PointCloud<pcl::PointXYZ>();
+	pcl::PointCloud<pcl::PointXYZ> cloud;
+	cloud.width = 640*480;
+	cloud.height = 1;
+	cloud.points.resize (cloud.width * cloud.height);
 
 	cv::Mat depth;
 	cv::Mat depth8;
@@ -105,7 +142,8 @@ int main(int argc, char* argv[]){
 	kinect->start_thread(NIThreadedKinect::POINT_CLOUD_T);
 	Sleep(100);
 
-	boost::thread t(&func_pcl,kinect,&viewer,&running);
+	boost::thread t_viewer(&func_pcl_viewer,kinect,&viewer,&cloud,&running);
+	boost::thread t_pcl(&func_pcl_consumer,kinect,&cloud,&running);
 
 	while(running){
 		//Update Images
@@ -114,6 +152,9 @@ int main(int argc, char* argv[]){
 			kinect->get_depth(depth);
 		kinect->mutex_unlock(NIThreadedKinect::CAPTURE_T);
 
+		if(kinect->new_point_cloud()){
+			condition_consumer.notify_all();
+		}
 		//Update Point Cloud
 		//kinect->mutex_lock(NIThreadedKinect::POINT_CLOUD_T);
 		//	if((cloud_ptr = kinect->get_point_cloud())){
@@ -144,8 +185,11 @@ int main(int argc, char* argv[]){
 			printf("FrameRate %.2f\n",_frame_rate);
 		}
 	}
+	condition_viewer.notify_all();
+	condition_consumer.notify_all();
 
-	t.join();
+	t_viewer.join();
+	t_pcl.join();
 
 	return 0;
 }

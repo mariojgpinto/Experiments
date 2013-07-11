@@ -18,6 +18,8 @@ Viewer::Viewer(Controller *c, QApplication *a, QWidget *parent, Qt::WFlags flags
     this->setup_windows();
     this->setup_connections();
     this->_controller->set_paused(false);
+
+	flag_color = false;
 }
 
 Viewer::~Viewer()
@@ -53,7 +55,7 @@ void Viewer::setup_windows(){
 }
 
 void Viewer::setup_connections(){
-    connect(this->_controller->get_kinect(), SIGNAL(kinect_image()),this, SLOT(update_window()));
+    //connect(this->_controller->get_kinect(), SIGNAL(kinect_image()),this, SLOT(update_window()));
 
 	this->ui->main_action_quit->setShortcut(Qt::Key_Escape);
 	connect(this->ui->main_action_quit,SIGNAL(triggered()),this,SLOT(on_close()));
@@ -89,6 +91,7 @@ void Viewer::update_window(){
 }
 
 void Viewer::on_preferences_gui(){
+	flag_color = !flag_color;
 	this->_controller->get_preferences_window()->show(); 
 }
 
@@ -110,8 +113,8 @@ void Viewer::process_image()
 
 void Viewer::show_images()
 {
-	this->_ntk_widget_right->setImage((cv::Mat3b)*this->_controller->get_color_image());
-	this->_ntk_widget_left->setImage((cv::Mat1f)*this->_controller->get_depth_image());
+	//this->_ntk_widget_right->setImage((cv::Mat3b)*this->_controller->get_color_image());
+	//this->_ntk_widget_left->setImage((cv::Mat1f)*this->_controller->get_depth_image());
 	//this->_ntk_widget_right->setImage(*this->_controller->get_depth_as_color());
 
 	this->_controller->show_images();

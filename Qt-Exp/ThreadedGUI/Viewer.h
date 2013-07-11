@@ -22,8 +22,10 @@ public:
 	~Viewer();
 
 	
-	
+	ToolBoxQT::CVWidget *_ntk_widget_right;
+	ToolBoxQT::CVWidget *_ntk_widget_left;
 
+	bool flag_color;
 public slots:
     //Update Slot Method
     void update_window();
@@ -51,8 +53,8 @@ private:
 	Controller* _controller;
 
 	//Windows
-	ToolBoxQT::CVWidget *_ntk_widget_left;
-	ToolBoxQT::CVWidget *_ntk_widget_right;
+	
+	
 
 	//timer
 	double _last_tick;

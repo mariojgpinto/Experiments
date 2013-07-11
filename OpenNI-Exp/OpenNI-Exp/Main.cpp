@@ -16,7 +16,7 @@
 #include "multiple_kinect.h"
 #include "multi_NIKinect.h"
 #include "NIKinectThreaded.h"
-
+#include "KinectRecordingMarie.h"
 
 int main(int argc, char* argv[])
 {
@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
 #endif
 
 #ifdef _HOME
-	result = main_nikinect_threaded(argc,argv);
+	result = main_colorize(argc,argv);
 #endif
 
 	return result;

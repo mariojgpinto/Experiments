@@ -10,7 +10,7 @@ class Preferences;
 
 class __declspec(dllexport)Controller{
 public:
-    Controller(QNIKinect* k);
+    Controller(/*QNIKinect* k*/);
     ~Controller();
 
     void set_viewer_window(Viewer* window){this->_main_window = window;}
@@ -19,7 +19,7 @@ public:
     Viewer* get_viewer_window(){return this->_main_window;}
 	Preferences* get_preferences_window(){return this->_preferences_window;}
     
-    QNIKinect* get_kinect(){return this->_kinect;} 
+    //QNIKinect* get_kinect(){return this->_kinect;} 
 
     //Global Images
     cv::Mat* get_color_image(){return &this->_color_image;}
@@ -30,8 +30,8 @@ public:
     //ntk::RGBDImage* get_RGBDImage(){return this->_kinect_image;}
 
     //Global Variables
-	void set_min_depth(double min){this->_min_depth = min;this->_kinect->get_kinect()->set_min_depth((int)(min*1000));}
-    void set_max_depth(double max){this->_max_depth = max;this->_kinect->get_kinect()->set_max_depth((int)(max*1000));}
+	//void set_min_depth(double min){this->_min_depth = min;this->_kinect->get_kinect()->set_min_depth((int)(min*1000));}
+    //void set_max_depth(double max){this->_max_depth = max;this->_kinect->get_kinect()->set_max_depth((int)(max*1000));}
 
     double get_min_depth(){return this->_min_depth;}
     double get_max_depth(){return this->_max_depth;}
@@ -60,7 +60,7 @@ private:
 	Preferences* _preferences_window;
 
     //Global Variables
-    QNIKinect *_kinect;
+    //QNIKinect *_kinect;
 
     //Global Images
     cv::Mat _color_image;

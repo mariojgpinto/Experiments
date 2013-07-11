@@ -60,8 +60,8 @@ void compute_color_encoded_depth2(const cv::Mat1f& depth_im, cv::Mat& color_dept
 //------------------------------------------------
 // CONSTRUCTORS
 //------------------------------------------------
-Controller::Controller(QNIKinect* k){
-    this->_kinect = k;
+Controller::Controller(/*QNIKinect* k*/){
+    //this->_kinect = k;
 
     this->_paused = false;
 
@@ -130,9 +130,9 @@ void Controller::update(){
 
         //ntk::compute_color_encoded_depth(*this->_depth_image, *this->_depth_as_color, &this->_min_depth, &this->_max_depth);
 
-		this->_kinect->get_kinect()->get_color(this->_color_image);
-		this->_kinect->get_kinect()->get_depth(this->_depth_image);
-		this->_kinect->get_kinect()->get_depth_as_color(this->_depth_as_color);
+		//this->_kinect->get_kinect()->get_color(this->_color_image);
+		//this->_kinect->get_kinect()->get_depth(this->_depth_image);
+		//this->_kinect->get_kinect()->get_depth_as_color(this->_depth_as_color);
 		//double min = 400, max = 1500;
 		//compute_color_encoded_depth2((cv::Mat1f)_depth_image,(cv::Mat3b)_depth_as_color,&min,&max);
 		

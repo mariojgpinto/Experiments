@@ -79,42 +79,42 @@ void Preferences::on_close(){
  *
  */
 void Preferences::min_slider_change(int value){
-    double read_value = value/100.0;
+    //double read_value = value/100.0;
 
-    this->_controller->set_min_depth(this->_min_value + read_value * this->_max_value);
+    //this->_controller->set_min_depth(this->_min_value + read_value * this->_max_value);
 	
-    this->ui->preferences_label_min_depth->setText(QString("Min Depth: %1 m").arg(this->_controller->get_min_depth(), 0, 'f', 2));
+    //this->ui->preferences_label_min_depth->setText(QString("Min Depth: %1 m").arg(this->_controller->get_min_depth(), 0, 'f', 2));
 
-    if(this->ui->preferences_check_box_diff->isChecked()){
-        double diff = value - this->_min_depth_old;
+    //if(this->ui->preferences_check_box_diff->isChecked()){
+    //    double diff = value - this->_min_depth_old;
 
-        this->_controller->set_max_depth(this->_controller->get_max_depth() + diff/100.0);
-        this->ui->preferences_slider_max_depth->setValue(this->_max_depth_old + diff);
-        this->ui->preferences_label_max_depth->setText(QString("Max Depth: %1 m").arg(this->_controller->get_max_depth(), 0, 'f', 2));
-    }
+    //    this->_controller->set_max_depth(this->_controller->get_max_depth() + diff/100.0);
+    //    this->ui->preferences_slider_max_depth->setValue(this->_max_depth_old + diff);
+    //    this->ui->preferences_label_max_depth->setText(QString("Max Depth: %1 m").arg(this->_controller->get_max_depth(), 0, 'f', 2));
+    //}
 
-    this->_min_depth_old = value;
+    //this->_min_depth_old = value;
 }
 
 /**
  *
  */
 void Preferences::max_slider_change(int value){
-    double read_value = value/100.0;
+    //double read_value = value/100.0;
 
-    this->_controller->set_max_depth(this->_min_value + read_value * this->_max_value);
+    //this->_controller->set_max_depth(this->_min_value + read_value * this->_max_value);
 
-    this->ui->preferences_label_max_depth->setText(QString("Max Depth: %1 m").arg(this->_controller->get_max_depth(), 0, 'f', 2));
+    //this->ui->preferences_label_max_depth->setText(QString("Max Depth: %1 m").arg(this->_controller->get_max_depth(), 0, 'f', 2));
 
-    if(this->ui->preferences_check_box_diff->isChecked()){
-        double diff = value - this->_max_depth_old;
+    //if(this->ui->preferences_check_box_diff->isChecked()){
+    //    double diff = value - this->_max_depth_old;
 
-        this->_controller->set_min_depth(this->_controller->get_min_depth() + diff/100.0);
-        this->ui->preferences_slider_min_depth->setValue(this->_min_depth_old + diff);
-        this->ui->preferences_label_min_depth->setText(QString("Min Depth: %1 m").arg(this->_controller->get_min_depth(), 0, 'f', 2));
-    }
+    //    this->_controller->set_min_depth(this->_controller->get_min_depth() + diff/100.0);
+    //    this->ui->preferences_slider_min_depth->setValue(this->_min_depth_old + diff);
+    //    this->ui->preferences_label_min_depth->setText(QString("Min Depth: %1 m").arg(this->_controller->get_min_depth(), 0, 'f', 2));
+    //}
 
-    this->_max_depth_old = value;
+    //this->_max_depth_old = value;
 }
 
 //-----------------------------------------------------------------------------

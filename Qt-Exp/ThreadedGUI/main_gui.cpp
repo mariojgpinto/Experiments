@@ -59,10 +59,10 @@ void MainGUI::add_kinect(NIKinect* kinect){
 void MainGUI::run(int argc, char** argv){
 	a = new QApplication(argc,argv);
 
-	kinect = new QNIKinect("C:\\Dev\\Kinect\\Data\\ONI\\mirror_papers.oni");
-	kinect->get_kinect()->set_processing_flag(NIKinect::DEPTH_COLOR, true);
-
-	controller = new Controller(kinect);
+	//kinect = new QNIKinect("C:\\Dev\\Kinect\\Data\\ONI\\mirror_papers.oni");
+	//kinect->get_kinect()->set_processing_flag(NIKinect::DEPTH_COLOR, true);
+	
+	controller = new Controller();
 
 	preferences = new Preferences(controller);
 	viewer = new Viewer(controller,a);

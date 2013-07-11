@@ -39,7 +39,7 @@
     <Import Project="..\..\..\PropertySheets\EIGEN.props" />
     <Import Project="..\..\..\PropertySheets\VTK_DEBUG.props" />
     <Import Project="..\..\..\PropertySheets\BOOST.props" />
-    <Import Project="..\..\..\PropertySheets\NITHREADEDKINECT .props" />
+    <Import Project="..\..\..\PropertySheets\NITHREADEDKINECT.props" />
     <Import Project="..\..\..\PropertySheets\TOOLBOXPCL.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -51,7 +51,7 @@
     <Import Project="..\..\..\PropertySheets\EIGEN.props" />
     <Import Project="..\..\..\PropertySheets\VTK_RELEASE.props" />
     <Import Project="..\..\..\PropertySheets\BOOST.props" />
-    <Import Project="..\..\..\PropertySheets\NITHREADEDKINECT .props" />
+    <Import Project="..\..\..\PropertySheets\NITHREADEDKINECT.props" />
     <Import Project="..\..\..\PropertySheets\TOOLBOXPCL.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
