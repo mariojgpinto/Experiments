@@ -3,6 +3,7 @@
 #include "chessboard.h"
 #include "Skeletonize.h"
 #include "Mapping.h"
+#include "HeadTracker.h"
 
 int main(int argc, char* argv[]){
 	int result = -1;
@@ -11,9 +12,10 @@ int main(int argc, char* argv[]){
 	//result = main_skeletonize_net(argc,argv);
 	//result = main_skeletonize(argc,argv);
 	//result = main_mapping(argc,argv);
+	result = main_head_tracker(argc,argv);
 
 #ifdef _CCG
-	result = main_mapping(argc,argv);
+	result = main_head_tracker(argc,argv);
 #endif
 
 #ifdef _HOME
