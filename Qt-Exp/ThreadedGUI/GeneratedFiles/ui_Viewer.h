@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'Viewer.ui'
 **
-** Created: Tue 25. Jun 22:00:21 2013
+** Created: Sun 21. Jul 17:39:45 2013
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -19,6 +19,7 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenu>
 #include <QtGui/QMenuBar>
+#include <QtGui/QPushButton>
 #include <QtGui/QStatusBar>
 #include <QtGui/QToolBar>
 #include <QtGui/QWidget>
@@ -34,6 +35,7 @@ public:
     QWidget *main_widget_left;
     QWidget *main_widget_right;
     QFrame *line;
+    QPushButton *pushButton;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuPreferences;
@@ -44,7 +46,7 @@ public:
     {
         if (ViewerClass->objectName().isEmpty())
             ViewerClass->setObjectName(QString::fromUtf8("ViewerClass"));
-        ViewerClass->resize(980, 420);
+        ViewerClass->resize(980, 452);
         main_action_quit = new QAction(ViewerClass);
         main_action_quit->setObjectName(QString::fromUtf8("main_action_quit"));
         main_action_preferences = new QAction(ViewerClass);
@@ -62,6 +64,9 @@ public:
         line->setGeometry(QRect(480, 0, 21, 361));
         line->setFrameShape(QFrame::VLine);
         line->setFrameShadow(QFrame::Sunken);
+        pushButton = new QPushButton(centralWidget);
+        pushButton->setObjectName(QString::fromUtf8("pushButton"));
+        pushButton->setGeometry(QRect(10, 370, 75, 23));
         ViewerClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(ViewerClass);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
@@ -93,6 +98,7 @@ public:
         ViewerClass->setWindowTitle(QApplication::translate("ViewerClass", "Viewer", 0, QApplication::UnicodeUTF8));
         main_action_quit->setText(QApplication::translate("ViewerClass", "Quit", 0, QApplication::UnicodeUTF8));
         main_action_preferences->setText(QApplication::translate("ViewerClass", "Preferences", 0, QApplication::UnicodeUTF8));
+        pushButton->setText(QApplication::translate("ViewerClass", "PushButton1", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("ViewerClass", "File", 0, QApplication::UnicodeUTF8));
         menuPreferences->setTitle(QApplication::translate("ViewerClass", "Preferences", 0, QApplication::UnicodeUTF8));
     } // retranslateUi

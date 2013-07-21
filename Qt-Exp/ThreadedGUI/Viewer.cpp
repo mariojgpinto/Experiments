@@ -27,6 +27,10 @@ Viewer::~Viewer()
 	delete ui;
 }
 
+void Viewer::add_kinect(NIKinect* kinect){
+	this->kinect = kinect;
+}
+
 //-----------------------------------------------------------------------------
 // Setup
 //-----------------------------------------------------------------------------
@@ -90,9 +94,28 @@ void Viewer::update_window(){
 
 }
 
+//bool _floor = false;
+
 void Viewer::on_preferences_gui(){
 	flag_color = !flag_color;
-	this->_controller->get_preferences_window()->show(); 
+	this->_controller->get_preferences_window()->show();
+
+	//if(!_floor){
+	//	kinect->init_scene_analyzer();
+	//	_floor = true;
+	//}
+	//else{
+	//	double _a,_b,_c,_d;
+	//	bool result = kinect->get_floor_plane(&_a,&_b,&_c,&_d);
+
+	//	if(result){
+	//		printf("Floor Plane (%.4d,%.4d,%.4d,%.4d)\n",_a,_b,_c,_d);
+	//	}
+	//	else{
+	//		printf("No Floor\n");
+	//	}
+	//}
+	
 }
 
 void Viewer::on_close(){

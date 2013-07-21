@@ -1,6 +1,6 @@
 #include "Viewer3D.h"
 
-Viewer3D::Viewer3D(NIThreadedKinect* kinect){
+Viewer3D::Viewer3D(NIKinect* kinect){
 	kinect = kinect;
 	cloud.width = 640*480;
 	cloud.height = 1;

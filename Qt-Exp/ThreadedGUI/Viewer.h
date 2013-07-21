@@ -25,12 +25,16 @@ public:
 	ToolBoxQT::CVWidget *_ntk_widget_right;
 	ToolBoxQT::CVWidget *_ntk_widget_left;
 
+	void add_kinect(NIKinect* kinect);
+
 	bool flag_color;
 public slots:
     //Update Slot Method
     void update_window();
 
 	void on_preferences_gui();
+
+	//void on_push_button1();
 
 	void on_close();
 
@@ -48,7 +52,7 @@ protected:
 private:
 	Ui::ViewerClass *ui;
 	QApplication *app;
-
+	NIKinect *kinect;
 
 	Controller* _controller;
 

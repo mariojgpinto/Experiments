@@ -16,9 +16,10 @@ class __declspec(dllexport) MainGUI{
 		void update_cycle();
 
 		Viewer *viewer;
+
 	private:
 		QApplication *a;
-		//QNIKinect *kinect;
+		NIKinect *kinect;
 		Controller *controller;
 		Preferences *preferences;
 		

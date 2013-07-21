@@ -7,6 +7,7 @@
 
 int main_gui(int argc, char *argv[])
 {
+	
 	//QApplication a(argc, argv);
 	////getchar();
 
@@ -53,12 +54,12 @@ void MainGUI::update_cycle(){
 }
 
 void MainGUI::add_kinect(NIKinect* kinect){
-	//this->kinect = kinect;
+	this->kinect = kinect;
 }
 
 void MainGUI::run(int argc, char** argv){
 	a = new QApplication(argc,argv);
-
+	//cv::namedWindow("Color");
 	//kinect = new QNIKinect("C:\\Dev\\Kinect\\Data\\ONI\\mirror_papers.oni");
 	//kinect->get_kinect()->set_processing_flag(NIKinect::DEPTH_COLOR, true);
 	

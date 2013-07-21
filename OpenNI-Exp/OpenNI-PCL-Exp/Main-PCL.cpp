@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
 #endif
 
 #ifdef _HOME
-	result = main_nithreadedkinect(argc,argv);
+	result = main_thread_viewer(argc,argv);
 #endif
 
 	return result;
