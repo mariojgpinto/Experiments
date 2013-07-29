@@ -46,6 +46,12 @@ int _mk_init() {
 
 	for (xn::NodeInfoList::Iterator nodeIt = node_info_list.Begin (); nodeIt != node_info_list.End (); ++nodeIt) {
 		_nKinects++;
+		xn::NodeInfo info = *nodeIt;
+		const XnProductionNodeDescription& description = info.GetDescription();
+		printf("image: vendor (%s) name (%s), \ninstance (%s), \ndescription (%s)\n\n\n",	description.strVendor, 
+																				description.strName, 
+																				info.GetInstanceName(),
+																				info.GetCreationInfo());
 	}
 
 	status = _g_context.EnumerateProductionTrees (XN_NODE_TYPE_IMAGE, NULL, image_nodes, NULL);
@@ -77,7 +83,7 @@ int _mk_init() {
 		const XnProductionNodeDescription& description = info.GetDescription();
 
 		
-		printf("image: vendor (%s) name (%s), instance (%s), description (%s)\n",	description.strVendor, 
+		printf("image: vendor (%s) name (%s), \ninstance (%s), \ndescription (%s)\n\n\n",	description.strVendor, 
 																				description.strName, 
 																				info.GetInstanceName(),
 																				info.GetCreationInfo());
@@ -122,7 +128,7 @@ int _mk_init() {
 		//XnChar serial[1024];
   //      device.GetIdentificationCap().GetSerialNumber(serial, 1024);
 		//printf("vendor_id (%s), product_if(%s), creiat(%s)\n",vendor_id,product_id,cas);
-		printf("image: vendor (%s) name (%s), instance (%s), description (%s)\n",	description.strVendor, 
+		printf("image: vendor (%s) name (%s), \ninstance (%s), \ndescription (%s)\n\n\n",	description.strVendor, 
 																				description.strName, 
 																				info.GetInstanceName(),
 																				info.GetAdditionalData());
