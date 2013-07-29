@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
 #endif
 
 #ifdef _HOME
-	result = main_colorize(argc,argv);
+	result = main_top_view(argc,argv);
 #endif
 
 	return result;

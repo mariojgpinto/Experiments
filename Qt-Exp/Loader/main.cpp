@@ -44,7 +44,7 @@ void my_pcl_consumer(NIKinect* kinect, bool* running){
 	double _last_tick = 0;
 	int _frame_counter = 0;
 	float _frame_rate = 0;
-
+	pcl::PointCloud<pcl::PointXYZ> cloud;
 	while(*running){
 		{
 			boost::mutex::scoped_lock lock(mutex_condition_viewer);
@@ -52,8 +52,10 @@ void my_pcl_consumer(NIKinect* kinect, bool* running){
 		}
 
 		mutex_pcl.lock();
-			viewer3d->viewer->showCloud(viewer3d->cloud.makeShared());
+			cloud = viewer3d->cloud;
 		mutex_pcl.unlock();
+
+		viewer3d->viewer->showCloud(cloud.makeShared());
 
 		++_frame_counter;
 		if (_frame_counter == 15)
