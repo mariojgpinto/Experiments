@@ -33,7 +33,7 @@ void func_pcl(NIThreadedKinect* kinect, pcl::visualization::CloudViewer* viewer,
 
 	while(*running){
 		if(kinect->mutex_try_lock(NIThreadedKinect::POINT_CLOUD_T)){
-			if(kinect->copy_point_cloud(cloud)){
+			if(kinect->consume_copy_point_cloud(cloud)){
 				//FILE* fp = fopen("points.txt","w+");
 				//for(int i = 0 ; i < cloud.size() ; i++){
 				//	fprintf(fp,"%.4f , %.4f , %.4f\n",cloud[i].x,cloud[i].y,cloud[i].z);
@@ -88,7 +88,7 @@ int main_nithreadedkinect(int argc, char* argv[]){
 	cv::namedWindow("Depth");
 
 #ifdef _CCG
-	kinect->init();
+	kinect->init("C:\\Dev\\Walkys\\Project\\Data\\Mirrors\\mirro_mirror_boxes.oni");
 #endif
 
 #ifdef _HOME

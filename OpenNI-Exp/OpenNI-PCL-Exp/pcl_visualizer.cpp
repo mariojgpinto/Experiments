@@ -440,7 +440,7 @@ int main_pcl_visualizer_simple(int argc, char* argv[]){
 	rc = _context.Init();
 	
 #ifdef _CCG
-	_context.OpenFileRecording("C:\\Dev\\Walkys\\Project\\Data\\Boxes.oni");
+	_context.OpenFileRecording("C:\\Dev\\Walkys\\Project\\Data\\Mirrors\\mirro_mirror_boxes.oni");
 #endif
 
 #ifdef _HOME

@@ -107,7 +107,7 @@ int main_walkys_top_view(int argc, char* argv[]){
 		return (rc);
 	}
 
-	//rc = _context.OpenFileRecording("C:\\Dev\\Walkys\\Project\\Data\\foot_1_right.oni");
+	rc = _context.OpenFileRecording("C:\\Dev\\Walkys\\Project\\Data\\Mirrors\\mirro_mirror_boxes.oni");
 	_context.SetGlobalMirror(true);
 	rc = _context.FindExistingNode(XN_NODE_TYPE_DEPTH, _depth);
 	if (rc != XN_STATUS_OK)

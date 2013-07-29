@@ -1,3 +1,6 @@
+#include "pcl_mirror.h"
+
+
 #include <_ID.h>
 
 #include "pcl_visualizer.h"
@@ -139,8 +142,7 @@ void kinect_thread_function(){
 }
 
 
-
-int main_thread_viewer(int argc, char* argv[]){
+int main_pcl_mirrors(int argc, char* argv[]){
 	//Context _context;
 	//ScriptNode _scriptNode;
 	////DepthGenerator _depth;

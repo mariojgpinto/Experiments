@@ -5,7 +5,7 @@
 
 class __declspec(dllexport) MainGUI{
 	public:
-		MainGUI(int argc, char* argv[]);
+		MainGUI(int argc, char** argv);
 		~MainGUI();
 
 		void add_kinect(NIKinect* kinect);

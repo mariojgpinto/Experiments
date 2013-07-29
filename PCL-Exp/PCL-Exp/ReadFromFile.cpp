@@ -44,7 +44,7 @@ int
 main (int argc, char** argv)
 {
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_file (new pcl::PointCloud<pcl::PointXYZ>);
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud2 (new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::PointCloud<pcl::PointXYZ> cloud2;// (new pcl::PointCloud<pcl::PointXYZ>);
   
   // write();
   if (pcl::io::loadPCDFile<pcl::PointXYZ> ("file.pcd", *cloud_file) == -1) //* load the file
@@ -84,11 +84,23 @@ main (int argc, char** argv)
 	 cloud.height = 1;
 	 cloud.points.resize (cloud.width * cloud.height);
 
+
+	 cloud2.width = cloud_file->size();
+	 cloud2.height = 1;
+	 cloud2.points.resize (cloud2.width * cloud2.height);
+
+	 long long zzz = 0;
+	 int ac = 0;
 	 for(int i = 0 ; i < cloud_file->size() ; i++){
 		 pcl::PointXYZ pt = cloud_file->at(i);
 
 		 cloud.push_back(pcl::PointXYZ(pt));
+		 zzz+=pt.z;
+		 ac++;
+		 cloud2.push_back(pcl::PointXYZ(pt.x/1000.0,pt.y/1000.0,pt.z/1000.0));
 	 }
+
+	 double res = zzz / ac;
   //// Fill in the cloud data
   //cloud.width  = 1500;
   //cloud.height = 1;
@@ -121,10 +133,10 @@ main (int argc, char** argv)
   seg.setOptimizeCoefficients (true);
   // Mandatory
   seg.setModelType (pcl::SACMODEL_PLANE);
-  seg.setMethodType (pcl::SAC_RANSAC);
+  seg.setMethodType (pcl::SAC_PROSAC);
   seg.setDistanceThreshold (0.01);
 
-  seg.setInputCloud (cloud.makeShared());
+  seg.setInputCloud (cloud2.makeShared());
   seg.segment (*inliers, *coefficients);
 
   if (inliers->indices.size () == 0)
@@ -154,22 +166,26 @@ main (int argc, char** argv)
 
   
    //... populate cloud_file
-   pcl::visualization::CloudViewer viewer("Simple cloud_file Viewer");
+	pcl::visualization::CloudViewer viewer("Simple cloud_file Viewer");
  
-   boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer2 (new pcl::visualization::PCLVisualizer ("3D Viewer"));
-   viewer2->addPointCloud (cloud.makeShared(), "cloud");
-   viewer2->addPlane (*coefficients.get(), "plane");
-   viewer2->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "cloud");
+	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer2 (new pcl::visualization::PCLVisualizer ("3D Viewer"));
+   viewer2->initCameraParameters ();
+	
+	viewer2->addPointCloud (cloud2.makeShared(), "cloud");
 	viewer2->addCoordinateSystem (1.0);
-	viewer2->initCameraParameters ();
-   viewer.showCloud(cloud.makeShared());
-   //pcl::visualization::CloudViewer viewer2("DownSampled cloud_file Viewer");
-   //viewer2.showCloud(cloud2);
-   while (!viewer.wasStopped()) // && !viewer2.wasStopped()
-   {
-	   viewer2->spinOnce (100);
-   // boost::this_thread::sleep (boost::posix_time::microseconds (100000));
-   }
+
+	viewer2->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "cloud");
+	
+	
+	viewer2->addPlane (*coefficients.get(), "plane");
+	viewer.showCloud(cloud.makeShared());
+	//pcl::visualization::CloudViewer viewer2("DownSampled cloud_file Viewer");
+	//viewer2.showCloud(cloud2);
+	while (!viewer.wasStopped()) // && !viewer2.wasStopped()
+	{
+		viewer2->spinOnce (100);
+	// boost::this_thread::sleep (boost::posix_time::microseconds (100000));
+	}
 
 
   return (0);

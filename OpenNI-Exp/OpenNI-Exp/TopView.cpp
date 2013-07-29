@@ -460,7 +460,7 @@ int main_top_view(int argc, char* argv[]){
 
 		cv::imshow("Ranged Image",color3);
 		//cv::imshow("Depth Image",depthMat8UC1);
-		//cv::imshow("Color Image",color2);
+		cv::imshow("Color Image",color2);
 		
 		//cv::imshow("color",);
 

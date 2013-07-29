@@ -66,6 +66,7 @@ void my_pcl_consumer(NIKinect* kinect, bool* running){
 			_frame_counter = 0;
 			printf("\t\t PCLViewer FrameRate %.2f\n",_frame_rate);
 		}
+		}
 	}
 }
 
@@ -165,7 +166,7 @@ int main(int argc, char* argv[]){
 	cv::Mat depth8;
 	cv::Mat color;
 
-	kinect->init("C:\\Dev\\Kinect\\Data\\ONI\\mirror_papers.oni");
+	kinect->init("C:\\Dev\\Walkys\\Project\\Data\\Mirrors\\mirro_mirror_boxes.oni");
 
 	bool running = true;
 	char ch = 0;
