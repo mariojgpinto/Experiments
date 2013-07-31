@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 	//result = main_nikinect_threaded(argc,argv);
 
 #ifdef _CCG
-	result = main_multi_ni_kinect(argc, argv);
+	result = main_top_view(argc, argv);
 #endif
 
 #ifdef _HOME

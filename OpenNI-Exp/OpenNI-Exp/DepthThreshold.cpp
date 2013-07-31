@@ -41,8 +41,10 @@ int main_depth_threshold(int argc, char* argv[]){
 
 	{
 	EnumerationErrors errors;
-	rc = _context.InitFromXmlFile(SAMPLE_XML_PATH, _scriptNode, &errors);
-	//rc = _context.Init();
+	//rc = _context.InitFromXmlFile(SAMPLE_XML_PATH, _scriptNode, &errors);
+	rc = _context.Init();
+	rc = _context.OpenFileRecording("C:\\Dev\\Walkys\\Project\\Data\\Mirrors\\mirror_mirror_legs.oni");
+
 	if (rc == XN_STATUS_NO_NODE_PRESENT)
 	{
 		XnChar strError[1024];

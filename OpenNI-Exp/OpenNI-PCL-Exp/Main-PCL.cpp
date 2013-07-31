@@ -25,7 +25,7 @@ int main(int argc, char* argv[]){
 	//result = main_pcl_mirrors(argc,argv);
 	
 #ifdef _CCG
-	result = main_pcl_mirrors(argc,argv);
+	result = main_walkys(argc,argv);
 #endif
 
 #ifdef _HOME

@@ -73,7 +73,7 @@ int main_top_view(int argc, char* argv[]){
 		return (rc);
 	}
 
-	//rc = _context.OpenFileRecording("C:\\Dev\\Walkys\\Project\\Data\\foot_1_left.oni");
+	//rc = _context.OpenFileRecording("C:\\Dev\\Walkys\\Project\\Data\\Mirrors\\mirror_mirror_legs.oni");
 
 	rc = _context.FindExistingNode(XN_NODE_TYPE_DEPTH, _depth);
 	if (rc != XN_STATUS_OK)
@@ -242,6 +242,8 @@ int main_top_view(int argc, char* argv[]){
 					_depth.ConvertRealWorldToProjective(1,&floorCoords.ptPoint,&pt3);
 
 					d = -(a*floorCoords.ptPoint.X + b*floorCoords.ptPoint.Y + c*floorCoords.ptPoint.Z);
+
+					printf("Floor (%.4f  %.4f  %.4f  %.4f)\n",a,b,c,d);
 
 					floorPoint = floorCoords.ptPoint;
 					floorPoint.Z-=_thresh_floor;

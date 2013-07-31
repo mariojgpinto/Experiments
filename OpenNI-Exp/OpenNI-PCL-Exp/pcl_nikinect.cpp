@@ -38,7 +38,7 @@ int main_pcl_ni_kinect(int argc, char* argv[]){
 	//kinect->set_processing_flag(NIKinect::DEPTH_COLOR, true);
 	kinect->set_processing_flag(NIKinect::POINT_CLOUD, true);
 
-	xn::DepthGenerator _depth_generator = kinect->get_depth_generator();	
+	xn::DepthGenerator _depth_generator = *kinect->get_depth_generator();	
 
 	XnPoint3D * pointList = (XnPoint3D *)malloc(sizeof(XnPoint3D) * XN_VGA_Y_RES * XN_VGA_X_RES); 
 	XnPoint3D * realWorld;// = (XnPoint3D *)malloc(sizeof(XnPoint3D) * XN_VGA_Y_RES * XN_VGA_X_RES); 

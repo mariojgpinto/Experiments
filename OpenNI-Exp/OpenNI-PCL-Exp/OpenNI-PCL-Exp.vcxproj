@@ -102,7 +102,9 @@
     <ClCompile Include="pcl_nikinect.cpp" />
     <ClCompile Include="pcl_nithreadedkinect.cpp" />
     <ClCompile Include="pcl_recording_visualizer.cpp" />
-    <ClCompile Include="pcl_thread_viewer.cpp" />
+    <ClCompile Include="pcl_thread_viewer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="pcl_topview.cpp" />
     <ClCompile Include="pcl_visualizer.cpp" />
     <ClCompile Include="Walkys-PCL.cpp" />
@@ -113,7 +115,9 @@
     <ClInclude Include="pcl_nikinect.h" />
     <ClInclude Include="pcl_nithreadedkinect.h" />
     <ClInclude Include="pcl_recording_visualizer.h" />
-    <ClInclude Include="pcl_thread_viewer.h" />
+    <ClInclude Include="pcl_thread_viewer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="pcl_topview.h" />
     <ClInclude Include="pcl_visualizer.h" />
     <ClInclude Include="Walkys-PCL.h" />

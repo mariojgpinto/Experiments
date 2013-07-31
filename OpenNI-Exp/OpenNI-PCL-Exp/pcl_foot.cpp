@@ -122,7 +122,7 @@ int main_pcl_foot(int argc, char* argv[]){
 			}
 		} 
 		//cv::imshow("Depth",depthMat8UC1);
-		kinect->get_depth_generator().ConvertProjectiveToRealWorld(XN_VGA_Y_RES*XN_VGA_X_RES, pointList, realWorld); 
+		kinect->get_depth_generator()->ConvertProjectiveToRealWorld(XN_VGA_Y_RES*XN_VGA_X_RES, pointList, realWorld); 
 
 		if(remove_floor){
 			_thresh_floor = _thresh + _floor_range;
@@ -199,7 +199,7 @@ int main_pcl_foot(int argc, char* argv[]){
 				//result = kinect->init_scene_analyzer();
 
 				xn::SceneAnalyzer _scene;
-				rc = kinect->get_context().FindExistingNode(XN_NODE_TYPE_SCENE,_scene);
+				rc = kinect->get_context()->FindExistingNode(XN_NODE_TYPE_SCENE,_scene);
 
 				xn::SceneMetaData md;
 				_scene.GetMetaData(md);
@@ -218,7 +218,7 @@ int main_pcl_foot(int argc, char* argv[]){
 					XnPoint3D pt3;
 					//_depth.ConvertProjectiveToRealWorld(1,&floorCoords.ptPoint,&pt2);
 					//_depth.ConvertProjectiveToRealWorld(1,&pt1,&pt2);
-					kinect->get_depth_generator().ConvertRealWorldToProjective(1,&floorCoords.ptPoint,&pt3);
+					kinect->get_depth_generator()->ConvertRealWorldToProjective(1,&floorCoords.ptPoint,&pt3);
 
 					d = -(a*floorCoords.ptPoint.X + b*floorCoords.ptPoint.Y + c*floorCoords.ptPoint.Z);
 

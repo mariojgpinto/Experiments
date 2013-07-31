@@ -27,7 +27,7 @@ int main_pcl_recording_visualizer(int argc, char* argv[]){
 	cv::Mat depthMat16UC1;
 	cv::Mat depth_as_color;
 
-	xn::DepthGenerator _depth = kinect->get_depth_generator();
+	xn::DepthGenerator _depth = *kinect->get_depth_generator();
 	xn::SceneAnalyzer xn_scene = kinect->get_scene_analyzer();
 	xn::DepthMetaData _depth_md;
 
