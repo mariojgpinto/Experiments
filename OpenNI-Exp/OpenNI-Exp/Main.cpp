@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
 #endif
 
 #ifdef _HOME
-	result = main_top_view(argc,argv);
+	result = main_walkys(argc,argv);
 #endif
 
 	return result;
