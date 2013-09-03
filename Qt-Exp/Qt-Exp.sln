@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Loader", "Loader\Loader.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ThreadedPCL", "ThreadedPCL\ThreadedPCL.vcxproj", "{EB913484-7F18-4A7E-9882-0E8A28F70623}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PointSelection", "PointSelection\PointSelection.vcxproj", "{731179CA-D7EE-4594-9C3C-431AB36C3D9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -43,6 +45,10 @@ Global
 		{EB913484-7F18-4A7E-9882-0E8A28F70623}.Debug|Win32.Build.0 = Debug|Win32
 		{EB913484-7F18-4A7E-9882-0E8A28F70623}.Release|Win32.ActiveCfg = Release|Win32
 		{EB913484-7F18-4A7E-9882-0E8A28F70623}.Release|Win32.Build.0 = Release|Win32
+		{731179CA-D7EE-4594-9C3C-431AB36C3D9C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{731179CA-D7EE-4594-9C3C-431AB36C3D9C}.Debug|Win32.Build.0 = Debug|Win32
+		{731179CA-D7EE-4594-9C3C-431AB36C3D9C}.Release|Win32.ActiveCfg = Release|Win32
+		{731179CA-D7EE-4594-9C3C-431AB36C3D9C}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
