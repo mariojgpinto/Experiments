@@ -252,20 +252,20 @@ int main_multiple_kinect(int argc, char* argv[]){
 			cv::Mat color_rgb;
 			cv::cvtColor(color,color_rgb,CV_RGB2BGR);
 		
-			cv::Mat3b colorize;
-			double _min = _min_bar[i];
-			double _max = _max_bar[i];
-			compute_color_encoded_depth(depthMat16UC1,colorize,&_min,&_max);
+			//cv::Mat3b colorize;
+			//double _min = _min_bar[i];
+			//double _max = _max_bar[i];
+			//compute_color_encoded_depth(depthMat16UC1,colorize,&_min,&_max);
 
-			cv::Mat mask_cv;			
-			cv::inRange(depthMat16UC1,_min_bar[i],_max_bar[i],mask_cv);
+			//cv::Mat mask_cv;			
+			//cv::inRange(depthMat16UC1,_min_bar[i],_max_bar[i],mask_cv);
 
 			//cv::Mat color_range;
 			//color_rgb.copyTo(color_range,mask_cv);
 
-			char buff[100];
-			sprintf_s(buff,"Ranged Image (%d)",i);
-			cv::imshow(buff,colorize);
+			//char buff[100];
+			//sprintf_s(buff,"Ranged Image (%d)",i);
+			//cv::imshow(buff,colorize);
 
 			char buff2[100];
 			sprintf_s(buff2,"Color (%d)",i);

@@ -33,6 +33,9 @@ cv::Point click;
 
 int fill_flag = 0;
 
+uchar* ptr;
+uchar* ptr_obj;
+
 #define PRINT_THRESH(min,max) printf("min:%d max:%d\n",(min),(max));
 
 void process_key(char c){
@@ -68,7 +71,7 @@ void process_key(char c){
 	}
 }
 
-/*
+
 void fill_space(int x, int y){
 	int xx = x,yy = y;
 
@@ -97,8 +100,8 @@ void fill_space(int x, int y){
 		}
 	}
 }
-*/
 
+/*
 void fill_space(int x, int y, int my_min, int my_max){
 	//Check if in range
 	//if(x > 0 && y > 0 && x < img0.size().width && y < img0.size().height){
@@ -107,15 +110,18 @@ void fill_space(int x, int y, int my_min, int my_max){
 		//	return;
 
 		//check if inside threshold
-		uchar value = img0.at<uchar>(y,x);
+		uchar value = ptr[y * 640 + x];
 
 		if(value >= my_min && value <= my_max){
-			object.at<uchar>(y,x) = 255;
+			ptr_obj[y * 640 + x] = 255;
 
 			//Check neighborhood
 			int _min = value - THRESHOLD_RANGE;
 			int _max = value + THRESHOLD_RANGE;
 
+			printf("coiso\n");
+			cv::imshow("result",object);
+			cv::waitKey(1);
 			//fill_space(x+1, y  ,_min,_max);
 			//fill_space(x+1, y+1,_min,_max);
 			//fill_space(x  , y+1,_min,_max);
@@ -125,14 +131,14 @@ void fill_space(int x, int y, int my_min, int my_max){
 			//fill_space(x+1, y-1,_min,_max);
 			//fill_space(x-1, y+1,_min,_max);
 
-			if(!object.at<uchar>(y  ,x+1)) fill_space(x+1, y  ,_min,_max);
-			if(!object.at<uchar>(y+1,x+1)) fill_space(x+1, y+1,_min,_max);
-			if(!object.at<uchar>(y+1,x  )) fill_space(x  , y+1,_min,_max);
-			if(!object.at<uchar>(y  ,x-1)) fill_space(x-1, y  ,_min,_max);
-			if(!object.at<uchar>(y-1,x-1)) fill_space(x-1, y-1,_min,_max);
-			if(!object.at<uchar>(y-1,x  )) fill_space(x  , y-1,_min,_max);
-			if(!object.at<uchar>(y-1,x+1)) fill_space(x+1, y-1,_min,_max);
-			if(!object.at<uchar>(y+1,x-1)) fill_space(x-1, y+1,_min,_max);
+			if(!ptr_obj[(y  )* 640 + (x+1)]) fill_space(x+1, y  ,_min,_max);
+			if(!ptr_obj[(y+1)* 640 + (x+1)]) fill_space(x+1, y+1,_min,_max);
+			if(!ptr_obj[(y+1)* 640 + (x  )]) fill_space(x  , y+1,_min,_max);
+			if(!ptr_obj[(y  )* 640 + (x-1)]) fill_space(x-1, y  ,_min,_max);
+			if(!ptr_obj[(y-1)* 640 + (x-1)]) fill_space(x-1, y-1,_min,_max);
+			if(!ptr_obj[(y-1)* 640 + (x  )]) fill_space(x  , y-1,_min,_max);
+			if(!ptr_obj[(y-1)* 640 + (x+1)]) fill_space(x+1, y-1,_min,_max);
+			if(!ptr_obj[(y+1)* 640 + (x-1)]) fill_space(x-1, y+1,_min,_max);
 
 			//if(x > 0 && y > 0 && x+1 < img0.size().width && y < img0.size().height)if(!object.at<uchar>(y  ,x+1)) fill_space(x+1, y  ,_min,_max);
 			//if(x > 0 && y > 0 && x+1 < img0.size().width && y+1 < img0.size().height)if(!object.at<uchar>(y+1,x+1)) fill_space(x+1, y+1,_min,_max);
@@ -145,42 +151,47 @@ void fill_space(int x, int y, int my_min, int my_max){
 		}
 	//}
 }
+*/
+//static void on_tracker_ground_mouse(int event, int x, int y, int flags, void *void_data){
+//	if (event != CV_EVENT_LBUTTONUP)
+//        return;
+//
+//	click.x = x;
+//	click.y = y;
+//	//flag = true;
+//
+//	//cv::circle(img0, cv::Point(x,y), 5, cv::Scalar(255,255,255,255));
+//	
+//	ptr = img0.data;
+//
+//	uchar value = img0.at<uchar>(y,x);
+//	int _min = value - THRESHOLD_RANGE;
+//	int _max = value + THRESHOLD_RANGE;
+//
+//	//Create All Black Mask
+//	object = cv::Mat::zeros(cv::Size(640,480),CV_8UC1);
+//	ptr_obj = object.data;
+//	//for(int i = 0 ; i < img0.rows ; i++){
+//	//	for(int j = 0 ; j < img0.cols; j++){
+//	//		ptr_obj[i * 640 + i] = 0;
+//	//	}
+//	//}
+//
+//	
+//
+//	double t = (double)cv::getTickCount();
+//	
+//	fill_space(x,y,_min,_max);
+//	
+//	t = (double)cv::getTickCount() - t;
+//    printf( "execution time = %gms\n", t*1000./cv::getTickFrequency() );
+//
+//	cv::imshow("result",object);
+//	cv::waitKey();
+//
+//}
 
-static void on_tracker_ground_mouse(int event, int x, int y, int flags, void *void_data){
-	if (event != CV_EVENT_LBUTTONUP)
-        return;
 
-	click.x = x;
-	click.y = y;
-	//flag = true;
-
-	//cv::circle(img0, cv::Point(x,y), 5, cv::Scalar(255,255,255,255));
-	
-	uchar value = img0.at<uchar>(y,x);
-	int _min = value - THRESHOLD_RANGE;
-	int _max = value + THRESHOLD_RANGE;
-
-	//Create All Black Mask
-	object.create(img0.size());
-	for(int i = 0 ; i < img0.rows ; i++){
-		for(int j = 0 ; j < img0.cols; j++){
-			object.at<uchar>(i,j) = 0;
-		}
-	}
-
-	double t = (double)cv::getTickCount();
-	
-	fill_space(x,y,_min,_max);
-	
-	t = (double)cv::getTickCount() - t;
-    printf( "execution time = %gms\n", t*1000./cv::getTickFrequency() );
-
-	cv::imshow("result",object);
-	cv::waitKey();
-
-}
-
-/*
 
 
 static void on_tracker_ground_mouse(int event, int x, int y, int flags, void *void_data)
@@ -383,15 +394,15 @@ static void on_tracker_ground_mouse(int event, int x, int y, int flags, void *vo
 		}
 	}
 }
-*/
+
 
 int main(int argc, char*argv[]){
-	char* filename = argc >= 2 ? argv[1] : (char*)"dep.png";//"depth_masked1.png";
+	char* filename = argc >= 2 ? argv[1] : (char*)"image0.png";//"depth_masked1.png";
     img0 = cv::imread(filename, 0);
 	imgGray.create(img0.size());
 
 	cv::namedWindow("orig");
-	cv::moveWindow("orig",1280,0);
+	cv::moveWindow("orig",640,0);
 	cv::setMouseCallback("orig", on_tracker_ground_mouse);
 	
 	while((c = cv::waitKey(30)) != 27){
