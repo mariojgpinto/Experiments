@@ -47,7 +47,7 @@ main (int argc, char** argv)
   pcl::PointCloud<pcl::PointXYZ> cloud2;// (new pcl::PointCloud<pcl::PointXYZ>);
   
   // write();
-  if (pcl::io::loadPCDFile<pcl::PointXYZ> ("file.pcd", *cloud_file) == -1) //* load the file
+  if (pcl::io::loadPCDFile<pcl::PointXYZ> ("speculum.pcd", *cloud_file) == -1) //* load the file
   {
     PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
     return (-1);
@@ -168,22 +168,22 @@ main (int argc, char** argv)
    //... populate cloud_file
 	pcl::visualization::CloudViewer viewer("Simple cloud_file Viewer");
  
-	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer2 (new pcl::visualization::PCLVisualizer ("3D Viewer"));
-   viewer2->initCameraParameters ();
-	
-	viewer2->addPointCloud (cloud2.makeShared(), "cloud");
-	viewer2->addCoordinateSystem (1.0);
+	//boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer2 (new pcl::visualization::PCLVisualizer ("3D Viewer"));
+ //  viewer2->initCameraParameters ();
+	//
+	//viewer2->addPointCloud (cloud2.makeShared(), "cloud");
+	//viewer2->addCoordinateSystem (1.0);
 
-	viewer2->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "cloud");
-	
-	
-	viewer2->addPlane (*coefficients.get(), "plane");
+	//viewer2->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "cloud");
+	//
+	//
+	//viewer2->addPlane (*coefficients.get(), "plane");
 	viewer.showCloud(cloud.makeShared());
 	//pcl::visualization::CloudViewer viewer2("DownSampled cloud_file Viewer");
 	//viewer2.showCloud(cloud2);
 	while (!viewer.wasStopped()) // && !viewer2.wasStopped()
 	{
-		viewer2->spinOnce (100);
+		//viewer2->spinOnce (100);
 	// boost::this_thread::sleep (boost::posix_time::microseconds (100000));
 	}
 
