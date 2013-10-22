@@ -5,6 +5,10 @@
 #include <opencv2\opencv.hpp>
 
 int main_simple_user_viewer(int argc, char* argv[]){
+	double _last_tick = 0;
+	int _frame_counter = 0;
+	float _frame_rate = 0;
+
 	openni::Status rc = openni::STATUS_OK;
 
 	openni::Device device;
@@ -111,6 +115,16 @@ int main_simple_user_viewer(int argc, char* argv[]){
 
 		cv::imshow("Depth",depthMat8UC1);
 		cv::imshow("Depth_nite",temp);
+
+		++_frame_counter;
+		if (_frame_counter == 15)
+		{
+			double current_tick = cv::getTickCount();
+			_frame_rate = _frame_counter / ((current_tick - _last_tick)/cv::getTickFrequency());
+			_last_tick = current_tick;
+			_frame_counter = 0;
+			printf("%.2f\n",_frame_rate);
+		}
 	}
 
 	m_depthStream.stop();

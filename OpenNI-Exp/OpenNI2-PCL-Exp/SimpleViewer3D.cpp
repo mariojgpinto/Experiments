@@ -1,9 +1,12 @@
-#include "SimpleViewer.h"
+#include "SimpleViewer3D.h"
 
 #include <OpenNI.h>
 #include <opencv2\opencv.hpp>
 
-int main_simple_viewer(int argc, char* argv[]){
+#include <pcl/point_types.h>
+#include <pcl/visualization/cloud_viewer.h>
+
+int main_simple_viewer_3d(int argc, char* argv[]){
 	double _last_tick = 0;
 	int _frame_counter = 0;
 	float _frame_rate = 0;
@@ -85,8 +88,20 @@ int main_simple_viewer(int argc, char* argv[]){
 	m_streams[0] = &m_depthStream;
 	m_streams[1] = &m_colorStream;
 		
+
+	pcl::visualization::CloudViewer viewer("Simple cloud_file Viewer");
+	pcl::PointCloud<pcl::PointXYZRGB> cloud;
+	cloud.width = 640*480;
+	cloud.height = 1;
+	cloud.points.resize (cloud.width * cloud.height);
+
+
+
 	char c = 0;
 	while((c = cv::waitKey(12)) != 27){
+		//****************************************************************
+		//* UPDATE OPENNI
+		//****************************************************************
 		int changedIndex;
 		openni::Status rc = openni::OpenNI::waitForAnyStream(m_streams, 2, &changedIndex);
 		if (rc != openni::STATUS_OK)
@@ -112,6 +127,46 @@ int main_simple_viewer(int argc, char* argv[]){
 		cv::imshow("Depth",depthMat8UC1);
 		cv::imshow("color",color3);
 
+		//****************************************************************
+		//* 3D
+		//****************************************************************
+		cloud.points.clear();
+		
+		uint16_t* ptr = (uint16_t*)m_depthFrame.getData();
+		openni::RGB888Pixel* ptr_clr = (openni::RGB888Pixel*)m_colorFrame.getData();
+		
+
+		for(int y=0; y<480; y++) { 
+			for(int x=0; x<640; x++) {
+				float d_x = x;
+				float d_y = y;
+				float d_z =  ptr[y * 640 + x];
+				float w_x = 0;
+				float w_y = 0;
+				float w_z = 0;
+
+				if(d_z > 0){
+					openni::CoordinateConverter::convertDepthToWorld(m_depthStream,d_x,d_y,d_z,&w_x,&w_y,&w_z);
+
+					pcl::PointXYZRGB pt(ptr_clr[y * 640 + x].r,
+										ptr_clr[y * 640 + x].g,
+										ptr_clr[y * 640 + x].b);
+					pt.x = w_x;
+					pt.y = w_y;
+					pt.z = w_z;
+
+					cloud.push_back(pcl::PointXYZRGB(pt));
+				}
+			}
+		} 
+
+		viewer.showCloud(cloud.makeShared());
+
+
+
+		//****************************************************************
+		//* UPDATE FPS
+		//****************************************************************
 		++_frame_counter;
 		if (_frame_counter == 15)
 		{

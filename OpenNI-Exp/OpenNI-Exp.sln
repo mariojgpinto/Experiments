@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenNI-PCL-Exp", "OpenNI-PC
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenNI2-Exp", "OpenNI2-Exp\OpenNI2-Exp.vcxproj", "{3257B7DD-B117-4764-B769-E9E17A0D427C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenNI2-PCL-Exp", "OpenNI2-PCL-Exp\OpenNI2-PCL-Exp.vcxproj", "{A1F9100E-9242-488F-A295-26E23B37E49B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -25,6 +27,10 @@ Global
 		{3257B7DD-B117-4764-B769-E9E17A0D427C}.Debug|Win32.Build.0 = Debug|Win32
 		{3257B7DD-B117-4764-B769-E9E17A0D427C}.Release|Win32.ActiveCfg = Release|Win32
 		{3257B7DD-B117-4764-B769-E9E17A0D427C}.Release|Win32.Build.0 = Release|Win32
+		{A1F9100E-9242-488F-A295-26E23B37E49B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A1F9100E-9242-488F-A295-26E23B37E49B}.Debug|Win32.Build.0 = Debug|Win32
+		{A1F9100E-9242-488F-A295-26E23B37E49B}.Release|Win32.ActiveCfg = Release|Win32
+		{A1F9100E-9242-488F-A295-26E23B37E49B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

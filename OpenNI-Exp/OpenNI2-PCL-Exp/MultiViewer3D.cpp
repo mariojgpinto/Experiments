@@ -1,11 +1,14 @@
-#include "MultiViewer.h"
+#include "MultiViewer3D.h"
 
 #include <OpenNI.h>
 #include <opencv2\opencv.hpp>
 
-const bool flag_color = false;
+#include <pcl/point_types.h>
+#include <pcl/visualization/cloud_viewer.h>
 
-int main_multi_viewer(int argc, char* argv[]){	
+const bool flag_color = true;
+
+int main_multi_viewer_3d(int argc, char* argv[]){	
 	double _last_tick = 0;
 	int _frame_counter = 0;
 	float _frame_rate = 0;
@@ -103,7 +106,7 @@ int main_multi_viewer(int argc, char* argv[]){
 			}		
 		}
 	}
-	
+
 	for(int i = 0 ; i < n_kinects ; ++i){
 		rc = devices[i]->setImageRegistrationMode(openni::IMAGE_REGISTRATION_DEPTH_TO_COLOR );
 		rc = devices[i]->setDepthColorSyncEnabled(true);
@@ -148,6 +151,12 @@ int main_multi_viewer(int argc, char* argv[]){
 		mat_depth[i] = new cv::Mat(640,480,CV_8UC1);
 		mat_color[i] = new cv::Mat(640,480,CV_8UC3);
 	}
+
+	pcl::visualization::CloudViewer viewer("Simple cloud_file Viewer");
+	pcl::PointCloud<pcl::PointXYZRGB> cloud;
+	cloud.width = 640*480;
+	cloud.height = 1;
+	cloud.points.resize (cloud.width * cloud.height);
 
 	char c = 0;
 	while((c = cv::waitKey(12)) != 27){
@@ -194,6 +203,56 @@ int main_multi_viewer(int argc, char* argv[]){
 				cv::imshow(win_color,*mat_color[i]);
 			}
 		}
+
+		//****************************************************************
+		//* 3D
+		//****************************************************************
+		cloud.points.clear();
+		
+		for(int i = 0 ; i < n_kinects ; i++){
+			uint16_t* ptr = (uint16_t*)depth_frame[i]->getData();
+			openni::RGB888Pixel* ptr_clr = NULL;
+			
+			if(flag_color){
+				ptr_clr = (openni::RGB888Pixel*)color_frame[i]->getData();
+			}		
+
+			for(int y=0; y<480; y++) { 
+				for(int x=0; x<640; x++) {
+					float d_x = x;
+					float d_y = y;
+					float d_z =  ptr[y * 640 + x];
+					float w_x = 0;
+					float w_y = 0;
+					float w_z = 0;
+
+					if(d_z > 0){
+						openni::CoordinateConverter::convertDepthToWorld(*depth_stream[i],d_x,d_y,d_z,&w_x,&w_y,&w_z);
+
+						pcl::PointXYZRGB pt;
+
+						if(flag_color){
+							pt.r = ptr_clr[y * 640 + x].r;
+							pt.g = ptr_clr[y * 640 + x].g;
+							pt.b = ptr_clr[y * 640 + x].b;
+						}
+						else{
+							pt.r = 255;
+							pt.g = 255;
+							pt.b = 255;
+						}
+
+						pt.x = w_x;
+						pt.y = w_y;
+						pt.z = w_z;
+
+						cloud.push_back(pcl::PointXYZRGB(pt));
+					}
+				}
+			} 
+		}
+
+		viewer.showCloud(cloud.makeShared());
 	}
 
 	exit(0);
