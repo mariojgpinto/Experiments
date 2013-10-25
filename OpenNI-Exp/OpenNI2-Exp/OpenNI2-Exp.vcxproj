@@ -36,6 +36,7 @@
     <Import Project="..\..\..\PropertySheets\OPENNI2.props" />
     <Import Project="..\..\..\PropertySheets\OPENCV_245_DEBUG.props" />
     <Import Project="..\..\..\PropertySheets\NITE2.props" />
+    <Import Project="..\..\..\PropertySheets\NIKINECT2.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -43,6 +44,7 @@
     <Import Project="..\..\..\PropertySheets\OPENNI2.props" />
     <Import Project="..\..\..\PropertySheets\OPENCV_245_RELEASE.props" />
     <Import Project="..\..\..\PropertySheets\NITE2.props" />
+    <Import Project="..\..\..\PropertySheets\NIKINECT2.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -85,12 +87,14 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MultiUserViewer.cpp" />
     <ClCompile Include="MultiViewer.cpp" />
+    <ClCompile Include="MultiNIKinect2.cpp" />
     <ClCompile Include="SimpleUserViewer.cpp" />
     <ClCompile Include="SimpleViewer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MultiUserViewer.h" />
     <ClInclude Include="MultiViewer.h" />
+    <ClInclude Include="MultiNIKinect2.h" />
     <ClInclude Include="SimpleUserViewer.h" />
     <ClInclude Include="SimpleViewer.h" />
   </ItemGroup>

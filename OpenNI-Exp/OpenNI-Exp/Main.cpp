@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 	//result = main_multi_kinect_usergen(argc,argv);
 
 #ifdef _CCG
-	result = 	main_multiple_kinect(argc, argv);
+	result = 	main_colorize(argc, argv);
 #endif
 
 #ifdef _HOME

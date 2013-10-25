@@ -44,5 +44,11 @@
     <ClInclude Include="MultiUserViewer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MultiNIKinect2.cpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiNIKinect2.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

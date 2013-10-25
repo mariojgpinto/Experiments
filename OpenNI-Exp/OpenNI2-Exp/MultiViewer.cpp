@@ -3,7 +3,7 @@
 #include <OpenNI.h>
 #include <opencv2\opencv.hpp>
 
-const bool flag_color = false;
+const bool flag_color = true;
 
 int main_multi_viewer(int argc, char* argv[]){	
 	double _last_tick = 0;
@@ -106,7 +106,8 @@ int main_multi_viewer(int argc, char* argv[]){
 	
 	for(int i = 0 ; i < n_kinects ; ++i){
 		rc = devices[i]->setImageRegistrationMode(openni::IMAGE_REGISTRATION_DEPTH_TO_COLOR );
-		rc = devices[i]->setDepthColorSyncEnabled(true);
+		//rc = devices[i]->setDepthColorSyncEnabled(true);
+		//rc = devices[i]->
 	}
 
 	//****************************************************************
@@ -120,13 +121,13 @@ int main_multi_viewer(int argc, char* argv[]){
 	for(int i = 0 ; i < n_kinects ; ++i){
 		openni::VideoStream& depth_stream_temp(*depth[i]);
 		depth_stream[i] = &depth_stream_temp;
-			//new openni::VideoStream(depth[i]);
 		depth_frame[i] = new openni::VideoFrameRef();
 
 		if(flag_color){
 			openni::VideoStream& color_stream_temp(*color[i]);
 			color_stream[i] = &color_stream_temp;
-				//new openni::VideoStream(color[i]);
+			depth_stream[i]->setMirroringEnabled(true);
+
 			color_frame[i] = new openni::VideoFrameRef();
 		}
 	}
@@ -176,8 +177,10 @@ int main_multi_viewer(int argc, char* argv[]){
 					
 			if(flag_color){
 				cv::Mat color_aux1(480,640,CV_8UC3,(void*) color_frame[i]->getData());
-				cv::Mat color1,color1_aux;
-				cv::cvtColor(color_aux1,*mat_color[i],CV_RGB2BGR);
+				cv::Mat color1,color2;
+				cv::cvtColor(color_aux1,color1,CV_RGB2BGR);
+				color1.copyTo(color2,*mat_depth[i]);
+				color2.assignTo(*mat_color[i]);
 			}
 		}
 
@@ -193,6 +196,16 @@ int main_multi_viewer(int argc, char* argv[]){
 			
 				cv::imshow(win_color,*mat_color[i]);
 			}
+		}
+
+		++_frame_counter;
+		if (_frame_counter == 15)
+		{
+			double current_tick = cv::getTickCount();
+			_frame_rate = _frame_counter / ((current_tick - _last_tick)/cv::getTickFrequency());
+			_last_tick = current_tick;
+			_frame_counter = 0;
+			printf("%.2f\n",_frame_rate);
 		}
 	}
 

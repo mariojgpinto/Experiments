@@ -9,6 +9,7 @@
 #include "pcl_thread_viewer.h"
 #include "pcl_nithreadedkinect.h"
 #include "pcl_mirror.h"
+#include "pcl_multi_kinect.h"
 
 int main(int argc, char* argv[]){
 	int result = -1;
@@ -23,9 +24,10 @@ int main(int argc, char* argv[]){
 	//result = main_thread_viewer(argc,argv);
 	//result = main_nithreadedkinect(argc,argv);
 	//result = main_pcl_mirrors(argc,argv);
-	
+	//result = main_pcl_multi_kinect(argc,argv);
+
 #ifdef _CCG
-	result = main_walkys(argc,argv);
+	result = main_pcl_multi_kinect(argc,argv);
 #endif
 
 #ifdef _HOME

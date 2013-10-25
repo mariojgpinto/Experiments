@@ -12,8 +12,7 @@ int main_simple_user_viewer(int argc, char* argv[]){
 	openni::Status rc = openni::STATUS_OK;
 
 	openni::Device device;
-	openni::VideoStream depth;
-
+	openni::VideoStream depth, color;
 	const char* deviceURI = openni::ANY_DEVICE;
 	if (argc > 1)
 	{
@@ -23,11 +22,14 @@ int main_simple_user_viewer(int argc, char* argv[]){
 	rc = openni::OpenNI::initialize();
 
 	printf("After initialization:\n%s\n", openni::OpenNI::getExtendedError());
-
+	
 	rc = device.open(deviceURI);
+	
+	
 	if (rc != openni::STATUS_OK)
 	{
 		printf("SimpleViewer: Device open failed:\n%s\n", openni::OpenNI::getExtendedError());
+		getchar();
 		openni::OpenNI::shutdown();
 		return 1;
 	}
@@ -41,21 +43,54 @@ int main_simple_user_viewer(int argc, char* argv[]){
 			printf("SimpleViewer: Couldn't start depth stream:\n%s\n", openni::OpenNI::getExtendedError());
 			depth.destroy();
 		}
+		else{
+			depth.setMirroringEnabled(false);
+		}
 	}
 	else
 	{
 		printf("SimpleViewer: Couldn't find depth stream:\n%s\n", openni::OpenNI::getExtendedError());
 	}
 
-	openni::VideoMode depthVideoMode;
-	openni::VideoStream& m_depthStream(depth);
+	rc = color.create(device, openni::SENSOR_COLOR);
+	if (rc == openni::STATUS_OK)
+	{
+		rc = color.start();
+		if (rc != openni::STATUS_OK)
+		{
+			printf("SimpleViewer: Couldn't start color stream:\n%s\n", openni::OpenNI::getExtendedError());
+			color.destroy();
+		}
+		else{
+			//color.setMirroringEnabled(false);
+		}
+	}
+	else
+	{
+		printf("SimpleViewer: Couldn't find color stream:\n%s\n", openni::OpenNI::getExtendedError());
+	}
 
-	depthVideoMode = m_depthStream.getVideoMode();
+	if (!depth.isValid() || !color.isValid())
+	{
+		printf("SimpleViewer: No valid streams. Exiting\n");
+		openni::OpenNI::shutdown();
+		return 2;
+	}
+
+	rc = device.setImageRegistrationMode(openni::IMAGE_REGISTRATION_DEPTH_TO_COLOR );
+	rc = device.setDepthColorSyncEnabled(true);
+
+	openni::VideoMode depthVideoMode;
+	openni::VideoMode colorVideoMode;
+	openni::VideoStream& m_depthStream(depth);
+	openni::VideoStream& m_colorStream(color);
 
 	openni::VideoFrameRef		m_depthFrame;
-
-	openni::VideoStream**		m_streams = new openni::VideoStream*[1];
+	openni::VideoFrameRef		m_colorFrame;
+		
+	openni::VideoStream**		m_streams = new openni::VideoStream*[2];
 	m_streams[0] = &m_depthStream;
+	m_streams[1] = &m_colorStream;
 
 
 
@@ -79,7 +114,7 @@ int main_simple_user_viewer(int argc, char* argv[]){
 	char c = 0;
 	while((c = cv::waitKey(12)) != 27){
 		int changedIndex;
-		openni::Status rc = openni::OpenNI::waitForAnyStream(m_streams, 1, &changedIndex);
+		openni::Status rc = openni::OpenNI::waitForAnyStream(m_streams, 2, &changedIndex);
 		if (rc != openni::STATUS_OK)
 		{
 			printf("Wait failed\n");
@@ -108,13 +143,44 @@ int main_simple_user_viewer(int argc, char* argv[]){
 		cv::Mat depthMat8UC1_nite;
 		depthMat16UC1_nite.convertTo(depthMat8UC1_nite, CV_8UC1);
 
-		cv::Mat temp;
+		double min, max;
+		cv::minMaxIdx(depthMat8UC1_nite,&min,&max);
 
-		depthMat8UC1.copyTo(temp,depthMat8UC1_nite);
 
+		rc = m_colorStream.readFrame(&m_colorFrame);
+
+		cv::Mat color(480,640,CV_8UC3,(void*) m_colorFrame.getData());
+		cv::Mat color2;
+		cv::cvtColor(color,color2,CV_RGB2BGR);
+		cv::Mat color3;
+		color2.copyTo(color3,depthMat8UC1_nite);
+
+
+		
+
+
+		const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
+
+		if(users.getSize()){
+			for(int i = 0 ; i < users.getSize() ; ++i){
+				int id = users[i].getId();
+				const nite::BoundingBox bbox = users[i].getBoundingBox();
+				const nite::Point3f cm = users[i].getCenterOfMass();
+				printf("");
+
+				float px,py,pz;
+				openni::CoordinateConverter::convertWorldToDepth(depth,cm.x,cm.y,cm.z,&px,&py,&pz);
+
+				cv::rectangle(color3,cv::Rect(bbox.min.x,bbox.min.y,bbox.max.x - bbox.min.x, bbox.max.y - bbox.min.y),
+									 cv::Scalar(255,0,0),3);
+
+				cv::circle(color3, cv::Point(px,py), 5, cv::Scalar(0,0,255), -1);
+			}
+		}
 
 		cv::imshow("Depth",depthMat8UC1);
-		cv::imshow("Depth_nite",temp);
+		cv::imshow("Depth_nite",depthMat8UC1_nite);
+		cv::imshow("User_mask",color3);
 
 		++_frame_counter;
 		if (_frame_counter == 15)
@@ -126,6 +192,8 @@ int main_simple_user_viewer(int argc, char* argv[]){
 			printf("%.2f\n",_frame_rate);
 		}
 	}
+
+	exit(0);
 
 	m_depthStream.stop();
 	m_depthStream.destroy();

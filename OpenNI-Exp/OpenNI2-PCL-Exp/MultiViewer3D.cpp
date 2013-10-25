@@ -253,6 +253,16 @@ int main_multi_viewer_3d(int argc, char* argv[]){
 		}
 
 		viewer.showCloud(cloud.makeShared());
+
+		++_frame_counter;
+		if (_frame_counter == 15)
+		{
+			double current_tick = cv::getTickCount();
+			_frame_rate = _frame_counter / ((current_tick - _last_tick)/cv::getTickFrequency());
+			_last_tick = current_tick;
+			_frame_counter = 0;
+			printf("%.2f\n",_frame_rate);
+		}
 	}
 
 	exit(0);

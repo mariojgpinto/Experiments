@@ -27,6 +27,9 @@
     <ClCompile Include="User3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TopView2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SimpleViewer3D.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="User3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TopView2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

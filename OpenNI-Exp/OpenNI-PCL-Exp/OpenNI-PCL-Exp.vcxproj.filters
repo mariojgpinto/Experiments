@@ -45,6 +45,9 @@
     <ClCompile Include="pcl_mirror.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="pcl_multi_kinect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pcl_visualizer.h">
@@ -72,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pcl_mirror.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pcl_multi_kinect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -93,11 +93,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MultiViewer3D.cpp" />
     <ClCompile Include="SimpleViewer3D.cpp" />
+    <ClCompile Include="TopView2.cpp" />
     <ClCompile Include="User3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MultiViewer3D.h" />
     <ClInclude Include="SimpleViewer3D.h" />
+    <ClInclude Include="TopView2.h" />
     <ClInclude Include="User3D.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

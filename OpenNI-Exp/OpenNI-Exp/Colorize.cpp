@@ -123,7 +123,7 @@ int main_colorize(int argc, char* argv[]){
 		return (rc);
 	}
 
-	rc = _context.OpenFileRecording("C:\\Dev\\Kinect\\Data\\ONI\\mirror_papers.oni");
+	//rc = _context.OpenFileRecording("C:\\Dev\\Kinect\\Data\\ONI\\mirror_papers.oni");
 
 	rc = _context.FindExistingNode(XN_NODE_TYPE_DEPTH, _depth);
 	if (rc != XN_STATUS_OK)
