@@ -89,6 +89,18 @@ bool activate_color(){
 
 	openni::Status rc = color.create(device, openni::SENSOR_COLOR);
 
+	const openni::Array<openni::VideoMode> &modes = device.getSensorInfo(openni::SensorType::SENSOR_COLOR)->getSupportedVideoModes();
+
+	openni::VideoMode vid0 = modes[0];
+	openni::VideoMode vid1 = modes[1];
+	openni::VideoMode vid2 = modes[2];
+
+	openni::VideoMode vid;
+	vid.setFps(12);
+	vid.setResolution(1280,960);
+	vid.setPixelFormat(openni::PixelFormat(ONI_PIXEL_FORMAT_RGB888));
+	rc = color.setVideoMode(vid);
+
 	if (rc == openni::STATUS_OK)	{
 		rc = color.start();
 		if (rc != openni::STATUS_OK){
@@ -223,7 +235,7 @@ int main_simple_viewer(int argc, char* argv[]){
 		if(kinect._flags[Kinect2::COLOR]){
 			rc = kinect.color.readFrame(&kinect.m_colorFrame);
 
-			cv::Mat color(480,640,CV_8UC3,(void*) kinect.m_colorFrame.getData());
+			cv::Mat color(960,1280,CV_8UC3,(void*) kinect.m_colorFrame.getData());
 			cv::Mat color2;
 			cv::cvtColor(color,color2,CV_RGB2BGR);
 			cv::Mat color3;

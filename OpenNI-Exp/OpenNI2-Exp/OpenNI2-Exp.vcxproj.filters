@@ -30,6 +30,12 @@
     <ClCompile Include="MultiUserViewer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MultiNIKinect2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FaceTracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SimpleViewer.h">
@@ -44,11 +50,11 @@
     <ClInclude Include="MultiUserViewer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MultiNIKinect2.cpp">
+    <ClInclude Include="FaceTracker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MultiNIKinect2.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
