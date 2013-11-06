@@ -7,7 +7,8 @@
 #include "MultiUserViewer.h"
 #include "MultiNIKinect2.h"
 #include "FaceTracker.h"
-
+#include "MultiTracking.h"
+#include "FaceTemplateMatch.h"
 
 int main(int argc, char* argv[]){
 	int result = -1;
@@ -18,9 +19,11 @@ int main(int argc, char* argv[]){
 	//result = main_multi_user_viewer(argc, argv);
 	//result = main_multi_nikinect2(argc, argv);
 	//result = main_face_tracker(argc, argv);
+	//result = main_multi_tracking(argc, argv);
+	//result = main_face_template_match(argc, argv);
 
 #ifdef _CCG
-	result = main_face_tracker(argc, argv);
+	result = main_multi_tracking(argc, argv);
 #endif
 
 #ifdef _HOME

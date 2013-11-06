@@ -1,10 +1,11 @@
-#include "FaceTracker.h"
+#include "FaceTemplateMatch.h"
 
 #include <NIKinect2.h>
 
 #include <direct.h> //mkdir()
 
 namespace{
+NIKinect2* kinect;
 
 cv::CascadeClassifier face_cascade_lbp;
 cv::CascadeClassifier face_cascade_haar;
@@ -12,8 +13,6 @@ cv::CascadeClassifier right_eye_cascade_haar;
 cv::CascadeClassifier left_eye_cascade_haar;
 cv::CascadeClassifier mouth_cascade_haar;
 cv::CascadeClassifier nose_cascade_haar;
-
-NIKinect2* kinect;
 
 
 class User{
@@ -39,6 +38,18 @@ public:
 	bool nose_flag;
 	cv::Rect nose_rect;
 };
+
+bool train_user = false;
+bool user_detection = false;
+int training_idx = 0;
+std::vector<std::vector<cv::Mat>> training_faces;
+std::vector<std::vector<cv::Mat>> training_faces_orig;
+std::vector<std::vector<cv::Mat>> training_faces_mask;
+std::vector<std::vector<cv::Rect>> training_faces_rect;
+
+std::vector<int> training_tags;
+
+int img_size = 200;
 
 
 bool face_detection(cv::Mat &color, User* user){
@@ -137,17 +148,7 @@ bool face_features_detection(User* user){
 #define DEFAUL_FILE_PATH "FaceRec/training_data.txt"
 
 
-bool train_user = false;
-bool user_detection = false;
-int training_idx = 0;
-std::vector<std::vector<cv::Mat>> training_faces;
-std::vector<std::vector<cv::Mat>> training_faces_orig;
-std::vector<std::vector<cv::Mat>> training_faces_mask;
-std::vector<std::vector<cv::Rect>> training_faces_rect;
 
-std::vector<int> training_tags;
-
-int img_size = 100;
 
 cv::Ptr<cv::FaceRecognizer> model = cv::createFisherFaceRecognizer();
 
@@ -252,7 +253,6 @@ bool online_save_images(){
 		return false;
 }
 
-
 bool save_images(){
 	if(training_idx && training_faces.size() && training_faces.size() == training_tags.size()){
 		mkdir(DEFAUL_PATH);
@@ -336,7 +336,7 @@ bool train_face_rec_db(){
 bool init_load(){
 	FILE* file = fopen("FaceRec\\training_data.txt","r");
 
-	int max_id = 0;
+	int max_id = -1;
 	char buff[1024];
 	while(fgets(buff,1024,file)){
 		char path[256];
@@ -345,19 +345,37 @@ bool init_load(){
 		sscanf(buff,"%s ; %d\n",&path,&id);
 
 		if(id > max_id){
+			training_tags.push_back(id);
+			training_faces.push_back(*(new std::vector<cv::Mat>()));
+			training_faces_mask.push_back(*(new std::vector<cv::Mat>()));
+			training_faces_orig.push_back(*(new std::vector<cv::Mat>()));
+			training_faces_rect.push_back(*(new std::vector<cv::Rect>()));
 			max_id = id;
 		}
+
+		cv::Mat img = cv::imread(path,0);
+		cv::Mat img_resize,img_norm,img_color;
+
+		//cv::Mat gray;
+		
+		cv::resize(img,img_resize,cv::Size(img_size,img_size));
+		cv::equalizeHist(img_resize,img_norm);
+
+		training_faces[id].push_back(img_norm);
+		//labels.push_back(id);
+
+
 	}
 
 	fclose(file);
 
-	for(int i = 0 ; i <= max_id ; ++i){
-		training_tags.push_back(i);
-		training_faces.push_back(*(new std::vector<cv::Mat>()));
-		training_faces_mask.push_back(*(new std::vector<cv::Mat>()));
-		training_faces_orig.push_back(*(new std::vector<cv::Mat>()));
-		training_faces_rect.push_back(*(new std::vector<cv::Rect>()));
-	}
+	//for(int i = 0 ; i <= max_id ; ++i){
+	//	training_tags.push_back(i);
+	//	training_faces.push_back(*(new std::vector<cv::Mat>()));
+	//	training_faces_mask.push_back(*(new std::vector<cv::Mat>()));
+	//	training_faces_orig.push_back(*(new std::vector<cv::Mat>()));
+	//	training_faces_rect.push_back(*(new std::vector<cv::Rect>()));
+	//}
 
 	training_idx = max_id+1;
 
@@ -428,7 +446,7 @@ bool load_face_db(){
 
 }
 
-int main_face_tracker(int argc, char* argv[]){
+int main_face_template_match(int argc, char* argv[]){
 	NIKinect2::ni_initialize();
 
 	kinect = new NIKinect2();
@@ -536,31 +554,7 @@ int main_face_tracker(int argc, char* argv[]){
 					//user.com.y = py;
 
 					if(face_detection(image_color, &user)){
-
-						//if(face_features_detection(&user)){
-						//	if(user.mouth_flag){ //Red
-						//		cv::rectangle(user.face_mat,user.mouth_rect,cv::Scalar(0,0,255),1);
-						//	}
-						//	if(user.nose_flag){ //Yellow
-						//		cv::rectangle(user.face_mat,user.nose_rect,cv::Scalar(0,255,255),1);
-						//	}
-						//	if(user.left_eye_flag){ //Blue
-						//		cv::rectangle(user.face_mat,user.left_eye_rect,cv::Scalar(255,0,0),1);
-						//	}
-						//	if(user.right_eye_flag){ //Green
-						//		cv::rectangle(user.face_mat,user.right_eye_rect,cv::Scalar(0,255,0),1);
-						//	}
-						//}
-
-						if(train_user){
-							train_add_image(&user,image_color_orig,mask_user);
-
-							if(training_faces[training_idx].size() == 75){
-								printf("Fifty shades of someone\n");
-								c = 'r';
-							}
-						}
-
+						
 						if(user_detection){
 							cv::Mat face_resized;
 							cv::Mat gray, normalized;
@@ -568,139 +562,112 @@ int main_face_tracker(int argc, char* argv[]){
 							//cv::normalize(gray,normalized, 0, 255, cv::NORM_MINMAX, CV_8UC1);
 							cv::equalizeHist(gray,normalized);
 							cv::resize(normalized, face_resized, cv::Size(img_size, img_size), 1.0, 1.0, cv::INTER_CUBIC);
+
 							// Now perform the prediction, see how easy that is:
-							int prediction;
-							double conf = 0.0;
 
-							model->predict(face_resized,prediction,conf);
-
-							//printf("Prediction: %d\n",prediction);
-							char box_text[1024]; 
-							if(prediction >= 0){
-								if(conf <= 300){
-									int as = (int)conf/100;
-									name_ac[prediction][(int)((int)conf/100)]++;
-									sprintf(box_text,"%d(%s), Conf: %.2f",	prediction,
-																			/*(prediction == 0) ? "Creepy" : 
-																			(prediction == 1) ? "Normal" :  
-																			(prediction == 2) ? "Sad" : "UNKNOWN",conf);*/
-																			(prediction == 0) ? "Mario" : 
-																			(prediction == 1) ? "Nelson" :  
-																			(prediction == 2) ? "Rui" :  
-																			(prediction == 3) ? "Andre" : 
-																			(prediction == 4) ? "Abel" : "UNKNOWN",conf);
-								}
-								else
-								if(conf < 550){
- 									name_ac[prediction][3]++;
-									sprintf(box_text,"%d(%s), Conf: %.2f",	prediction,"UNKNOWN",conf);
-								}
-								// Calculate the position for annotated text (make sure we don't
-								// put illegal values in there):
-							}
-							int pos_x = std::max(user.face_rect.tl().x - 20, 0);
-							int pos_y = std::max(user.face_rect.tl().y - 20, 0);
-							// And now put it into the image:
-							cv::rectangle(image_color,cv::Rect(pos_x,pos_y-30,400,50),cv::Scalar(255,255,255),-1);
-							cv::putText(image_color, box_text, cv::Point(pos_x, pos_y), cv::FONT_HERSHEY_DUPLEX, 1, CV_RGB(0,0,0), 1.0);
-
+							cv::Mat range,range_inv;
+							cv::inRange(face_resized,0,0,range);
+							cv::threshold(range,range_inv,0,1,CV_THRESH_BINARY_INV);
+						
+							cv::vector<cv::vector<cv::Point> > contours;
+							cv::vector<cv::Vec4i> hierarchy;
 
 							
-						}
+							/// Find contours
+							cv::findContours(range_inv, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
+							int max = 0, max_id = 0;
 
-						char win_users[128];
-						sprintf(win_users,"Users(%d) ID(%d)",i,data.getId());
-						cv::rectangle(image_color,user.face_rect,cv::Scalar(255,0,0),1);
-						cv::imshow(win_users,user.face_mat);
+
+							for( int i = 0; i < contours.size(); i++ ){
+								if(contours[i].size() > max){
+									max = contours[i].size();
+									max_id = i;
+								}
+							}
+
+							cv::Rect r = boundingRect( cv::Mat(contours[max_id]) );
+							r.x += r.width/7;
+							r.y += r.height/7;
+
+							r.width -= 2 * r.width/7;
+							r.height -= 2 * r.height/7;
+
+							
+							cv::rectangle(face_resized,r,cv::Scalar::all(255));
+							cv::Mat toShow;
+							face_resized(r).copyTo(toShow);
+							
+							int min_idx_i = 0, min_idx_j = 0, min_value = INT_MAX;
+
+							for(int faces_i = 0 ; faces_i < training_faces.size() ; ++faces_i){
+								for(int faces_j = 0 ; faces_j < training_faces[i].size() ; ++faces_j){
+									int match_method = CV_TM_SQDIFF;
+									cv::Mat result;
+									int result_cols =  training_faces[faces_i][faces_j].cols - toShow.cols + 1;
+									int result_rows = training_faces[faces_i][faces_j].rows  - toShow.rows + 1;
+
+									result.create( result_cols, result_rows, CV_32FC1 );
+
+									cv::Mat img_copy; toShow.copyTo(img_copy);
+									cv::Mat img_copy2; training_faces[faces_i][faces_j].copyTo(img_copy2);
+									
+									cv::matchTemplate( img_copy, img_copy2, result,0 );
+									cv::normalize( result, result, 0, 1, cv::NORM_MINMAX, -1, cv::Mat() );
+
+									/// Localizing the best match with minMaxLoc
+									double minVal; double maxVal; cv::Point minLoc; cv::Point maxLoc;
+									cv::Point matchLoc;
+
+									cv::minMaxLoc( result, &minVal, &maxVal, &minLoc, &maxLoc, cv::Mat() );
+
+									if( match_method  == CV_TM_SQDIFF || match_method == CV_TM_SQDIFF_NORMED )
+									{ matchLoc = minLoc; }
+									else
+									{ matchLoc = maxLoc; }
+
+									//cv::rectangle( img_copy, matchLoc, cv::Point( matchLoc.x + img_copy.cols , matchLoc.y + img_copy.rows ), cv::Scalar::all(255), 2, 8, 0 );
+									//cv::rectangle( img_copy2, matchLoc, cv::Point( matchLoc.x + img_copy.cols , matchLoc.y + img_copy.rows ), cv::Scalar::all(255), 2, 8, 0 );
+ 
+									cv::Mat crop, sub;
+									img_copy2(cv::Rect(matchLoc.x, matchLoc.y, img_copy.cols, img_copy.rows)).copyTo(crop);
+
+									cv::absdiff(crop,img_copy,sub);
+
+									cv::Scalar x_sum = cv::sum(sub);
+
+									if(x_sum.val[0] < min_value){
+										min_idx_i = faces_i;
+										min_idx_j = faces_j;
+										min_value = x_sum.val[0];
+									}
+
+									//printf("Sum: %.2f, %.2f, %.2f, %.2f\n",x_sum.val[0],x_sum.val[1],x_sum.val[2],x_sum.val[3]);
+									//char comp_str[128];
+									//sprintf(comp_str,"ID(%d)Face(%d)",faces_i,faces_j);
+									//cv::imshow("Detected",img_copy);
+									//cv::imshow("DB_Face",crop);
+									//cv::imshow("Result",sub);
+									//cv::waitKey(50);
+
+								}
+							}
+							printf("Best Match: [%d][%d] - %d\n",min_idx_i,min_idx_j,min_value);
+							cv::imshow("BestMatch",training_faces[min_idx_i][min_idx_j]);
+							cv::waitKey();
+
+							cv::imshow("Detected",face_resized);
+							cv::imshow("Range",toShow);
+						}
 					}
 				}
 			}
 		}
-
-		char name_0[128]; 
-		sprintf(name_0,"0 Mario  - %d  %d  %d  %d",name_ac[0][0], name_ac[0][1], name_ac[0][2], name_ac[0][3]);
-		char name_1[128]; 
-		sprintf(name_1,"1 Nelson - %d  %d  %d  %d",name_ac[1][0], name_ac[1][1], name_ac[1][2], name_ac[1][3]);
-		char name_2[128]; 
-		sprintf(name_2,"2 Rui     - %d  %d  %d  %d",name_ac[2][0], name_ac[2][1], name_ac[2][2], name_ac[2][3]);
-		char name_3[128]; 
-		sprintf(name_3,"3 Andre  - %d  %d  %d  %d",name_ac[3][0], name_ac[3][1], name_ac[3][2], name_ac[3][3]);
-		char name_4[128]; 
-		sprintf(name_4,"4 Abel    - %d  %d  %d  %d",name_ac[4][0], name_ac[4][1], name_ac[4][2], name_ac[4][3]);
-
-		cv::rectangle(image_color,cv::Rect(0,0,250,80),cv::Scalar(255,255,255),-1);
-
-		cv::putText(image_color, name_0, cv::Point(10, 10), cv::FONT_HERSHEY_DUPLEX, 0.5, CV_RGB(0,0,0), 1.0);
-		cv::putText(image_color, name_1, cv::Point(10, 25), cv::FONT_HERSHEY_DUPLEX, 0.5, CV_RGB(0,0,0), 1.0);
-		cv::putText(image_color, name_2, cv::Point(10, 40), cv::FONT_HERSHEY_DUPLEX, 0.5, CV_RGB(0,0,0), 1.0);
-		cv::putText(image_color, name_3, cv::Point(10, 55), cv::FONT_HERSHEY_DUPLEX, 0.5, CV_RGB(0,0,0), 1.0);
-		cv::putText(image_color, name_4, cv::Point(10, 70), cv::FONT_HERSHEY_DUPLEX, 0.5, CV_RGB(0,0,0), 1.0);
-
 		cv::imshow("Depth",image_depth);
 		cv::imshow("Color",image_color);
-
-		
-		//if(user){
-		//	cv::imshow("User",image_user);
-		//}
-
-		if(c == 'r'){
-			if(train_user){
-				if(training_faces[training_idx].size()){
-					training_tags.push_back(training_idx);
-					
-					online_save_images();
-					
-					training_faces_mask[training_idx].clear();
-					training_faces_orig[training_idx].clear();
-					training_faces[training_idx].clear();
-					training_faces_rect[training_idx].clear();
-					training_idx++;
-				}
-
-				train_user = false;
-			}
-			else{
-				printf("Start Recording Images\n");
-				training_faces.push_back(*(new std::vector<cv::Mat>()));
-				training_faces_mask.push_back(*(new std::vector<cv::Mat>()));
-				training_faces_orig.push_back(*(new std::vector<cv::Mat>()));
-				training_faces_rect.push_back(*(new std::vector<cv::Rect>()));
-				train_user = true;
-			}
-		}
-
-		if(c == 't'){
-			printf("Start trainning\n");
-
-			printf("%s\n", (train_face_rec_db()) ? "Trainning Successful" : "Trainning Failed");
-		}
-
-		if(c == 's'){
-			printf("%s\n", (save_images()) ? "Images Recorded" : "Recording Failed");
-		}
 
 		if(c == 'd'){
 			user_detection = !user_detection;
 			printf("%s\n", (user_detection) ? "Recognizing Users" : "Stop Recognizing");
-		}
-
-		if(c == 'l'){
-			load_face_db();
-			printf("Load DB");
-		}
-
-		if(c == 'z'){
-			name_ac[0][0] = 0; name_ac[0][1] = 0; name_ac[0][2] = 0; name_ac[0][3] = 0;
-			name_ac[1][0] = 0; name_ac[1][1] = 0; name_ac[1][2] = 0; name_ac[1][3] = 0;
-			name_ac[2][0] = 0; name_ac[2][1] = 0; name_ac[2][2] = 0; name_ac[2][3] = 0;
-			name_ac[3][0] = 0; name_ac[3][1] = 0; name_ac[3][2] = 0; name_ac[3][3] = 0;
-			name_ac[4][0] = 0; name_ac[4][1] = 0; name_ac[4][2] = 0; name_ac[4][3] = 0;
-			name_ac[5][0] = 0; name_ac[5][1] = 0; name_ac[5][2] = 0; name_ac[5][3] = 0;
-			name_ac[6][0] = 0; name_ac[6][1] = 0; name_ac[6][2] = 0; name_ac[6][3] = 0;
-			name_ac[7][0] = 0; name_ac[7][1] = 0; name_ac[7][2] = 0; name_ac[7][3] = 0;
-			name_ac[8][0] = 0; name_ac[8][1] = 0; name_ac[8][2] = 0; name_ac[8][3] = 0;
-			name_ac[9][0] = 0; name_ac[9][1] = 0; name_ac[9][2] = 0; name_ac[9][3] = 0;
 		}
 	}
 

@@ -84,8 +84,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FaceTemplateMatch.cpp" />
     <ClCompile Include="FaceTracker.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MultiTracking.cpp" />
     <ClCompile Include="MultiUserViewer.cpp" />
     <ClCompile Include="MultiViewer.cpp" />
     <ClCompile Include="MultiNIKinect2.cpp" />
@@ -93,7 +95,9 @@
     <ClCompile Include="SimpleViewer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FaceTemplateMatch.h" />
     <ClInclude Include="FaceTracker.h" />
+    <ClInclude Include="MultiTracking.h" />
     <ClInclude Include="MultiUserViewer.h" />
     <ClInclude Include="MultiViewer.h" />
     <ClInclude Include="MultiNIKinect2.h" />
