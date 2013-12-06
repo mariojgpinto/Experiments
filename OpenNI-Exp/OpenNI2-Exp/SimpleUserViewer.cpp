@@ -13,7 +13,7 @@ int main_simple_user_viewer(int argc, char* argv[]){
 
 	openni::Device device;
 	openni::VideoStream depth, color;
-	const char* deviceURI = openni::ANY_DEVICE;
+	const char* deviceURI = openni::ANY_DEVICE;//"Track\\track1.oni";//
 	if (argc > 1)
 	{
 		deviceURI = argv[1];
@@ -96,9 +96,9 @@ int main_simple_user_viewer(int argc, char* argv[]){
 
 
 
-	nite::NiTE::initialize();
-	nite::UserTracker* m_pUserTracker = new nite::UserTracker;
-
+	nite::Status et = nite::NiTE::initialize();
+	nite::UserTracker* m_pUserTracker = new nite::UserTracker();
+	
 	if (m_pUserTracker->create(&device) != nite::STATUS_OK)	{
 		return openni::STATUS_ERROR;
 	}

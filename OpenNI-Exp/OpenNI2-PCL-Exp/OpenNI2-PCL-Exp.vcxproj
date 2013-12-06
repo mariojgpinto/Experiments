@@ -40,6 +40,8 @@
     <Import Project="..\..\..\PropertySheets\BOOST.props" />
     <Import Project="..\..\..\PropertySheets\EIGEN.props" />
     <Import Project="..\..\..\PropertySheets\VTK_DEBUG.props" />
+    <Import Project="..\..\..\PropertySheets\NIKINECT2.props" />
+    <Import Project="..\..\..\PropertySheets\TOOLBOX.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -51,6 +53,8 @@
     <Import Project="..\..\..\PropertySheets\BOOST.props" />
     <Import Project="..\..\..\PropertySheets\EIGEN.props" />
     <Import Project="..\..\..\PropertySheets\VTK_RELEASE.props" />
+    <Import Project="..\..\..\PropertySheets\NIKINECT2.props" />
+    <Import Project="..\..\..\PropertySheets\TOOLBOX.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -91,13 +95,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MultiTrackingBio3D.cpp" />
     <ClCompile Include="MultiViewer3D.cpp" />
+    <ClCompile Include="NIUser3D.cpp" />
+    <ClCompile Include="NIViewer.cpp" />
     <ClCompile Include="SimpleViewer3D.cpp" />
     <ClCompile Include="TopView2.cpp" />
     <ClCompile Include="User3D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MultiTrackingBio3D.h" />
     <ClInclude Include="MultiViewer3D.h" />
+    <ClInclude Include="NIUser3D.h" />
+    <ClInclude Include="NIViewer.h" />
     <ClInclude Include="SimpleViewer3D.h" />
     <ClInclude Include="TopView2.h" />
     <ClInclude Include="User3D.h" />

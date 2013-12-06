@@ -85,9 +85,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FaceTemplateMatch.cpp" />
-    <ClCompile Include="FaceTracker.cpp" />
+    <ClCompile Include="FaceTracker.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MultiTracking.cpp" />
+    <ClCompile Include="MultiNIKinect2ColorAdjust.cpp" />
+    <ClCompile Include="MultiTrackingBio.cpp" />
+    <ClCompile Include="MultiTrackingColor.cpp" />
+    <ClCompile Include="MultiTrackingFeatures.cpp" />
     <ClCompile Include="MultiUserViewer.cpp" />
     <ClCompile Include="MultiViewer.cpp" />
     <ClCompile Include="MultiNIKinect2.cpp" />
@@ -96,8 +101,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FaceTemplateMatch.h" />
-    <ClInclude Include="FaceTracker.h" />
-    <ClInclude Include="MultiTracking.h" />
+    <ClInclude Include="FaceTracker.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="MultiNIKinect2ColorAdjust.h" />
+    <ClInclude Include="MultiTrackingBio.h" />
+    <ClInclude Include="MultiTrackingColor.h" />
+    <ClInclude Include="MultiTrackingFeatures.h" />
     <ClInclude Include="MultiUserViewer.h" />
     <ClInclude Include="MultiViewer.h" />
     <ClInclude Include="MultiNIKinect2.h" />

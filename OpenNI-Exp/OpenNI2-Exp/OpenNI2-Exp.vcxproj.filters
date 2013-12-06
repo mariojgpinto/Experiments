@@ -36,10 +36,19 @@
     <ClCompile Include="FaceTracker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MultiTracking.cpp">
+    <ClCompile Include="FaceTemplateMatch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FaceTemplateMatch.cpp">
+    <ClCompile Include="MultiTrackingColor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiTrackingFeatures.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiTrackingBio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiNIKinect2ColorAdjust.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,10 +71,19 @@
     <ClInclude Include="MultiNIKinect2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MultiTracking.h">
+    <ClInclude Include="FaceTemplateMatch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FaceTemplateMatch.h">
+    <ClInclude Include="MultiTrackingColor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiTrackingFeatures.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiTrackingBio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiNIKinect2ColorAdjust.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -95,11 +95,11 @@ bool activate_color(){
 	openni::VideoMode vid1 = modes[1];
 	openni::VideoMode vid2 = modes[2];
 
-	openni::VideoMode vid;
-	vid.setFps(12);
-	vid.setResolution(1280,960);
-	vid.setPixelFormat(openni::PixelFormat(ONI_PIXEL_FORMAT_RGB888));
-	rc = color.setVideoMode(vid);
+	//openni::VideoMode vid;
+	//vid.setFps(12);
+	//vid.setResolution(1280,960);
+	//vid.setPixelFormat(openni::PixelFormat(ONI_PIXEL_FORMAT_RGB888));
+	//rc = color.setVideoMode(vid0);
 
 	if (rc == openni::STATUS_OK)	{
 		rc = color.start();
@@ -179,13 +179,13 @@ int main_simple_viewer(int argc, char* argv[]){
 	bool result = false;
 	openni::Status rc = openni::STATUS_OK;
 
-	Kinect2 kinect;
+	Kinect2 kinect("Track\\track1.oni");
 		
-	//result = kinect.activate_depth();
-	//result = kinect.activate_color();
+	result = kinect.activate_depth();
+	result = kinect.activate_color();
 
 	//rc = kinect.device.setImageRegistrationMode(openni::IMAGE_REGISTRATION_DEPTH_TO_COLOR );
-	rc = kinect.device.setDepthColorSyncEnabled(true);
+	//rc = kinect.device.setDepthColorSyncEnabled(true);
 	
 	kinect.m_streams[0] = &kinect.depth;
 	kinect.m_streams[1] = &kinect.color;
@@ -194,20 +194,20 @@ int main_simple_viewer(int argc, char* argv[]){
 
 	bool regist = false;
 	
-	nite::NiTE::initialize();
-	nite::UserTracker* m_pUserTracker = new nite::UserTracker;
+	//nite::NiTE::initialize();
+	//nite::UserTracker* m_pUserTracker = new nite::UserTracker();
 
-	if (m_pUserTracker->create(&kinect.device) != nite::STATUS_OK)	{
-		return openni::STATUS_ERROR;
-	}
+	//if (m_pUserTracker->create(&kinect.device) != nite::STATUS_OK)	{
+	//	return openni::STATUS_ERROR;
+	//}
 
-	nite::SkeletonState g_skeletonStates[10] = {nite::SKELETON_NONE};
+	//nite::SkeletonState g_skeletonStates[10] = {nite::SKELETON_NONE};
 
-	nite::UserTrackerFrameRef userTrackerFrame;
-	openni::VideoFrameRef depthFrame;
-	openni::VideoFrameRef depthFrame_nite;
-	
-	nite::UserMap user_map;
+	//nite::UserTrackerFrameRef userTrackerFrame;
+	//openni::VideoFrameRef depthFrame;
+	//openni::VideoFrameRef depthFrame_nite;
+	//
+	//nite::UserMap user_map;
 	
 	cv::namedWindow("Depth");
 	char c = 0;
@@ -215,13 +215,13 @@ int main_simple_viewer(int argc, char* argv[]){
 		if(!kinect.update())
 			break;
 
-		nite::Status rc_nite = m_pUserTracker->readFrame(&userTrackerFrame);
-		if (rc_nite != nite::STATUS_OK){
-			printf("GetNextData failed\n");
-			return 3;
-		}
+		//nite::Status rc_nite = m_pUserTracker->readFrame(&userTrackerFrame);
+		//if (rc_nite != nite::STATUS_OK){
+		//	printf("GetNextData failed\n");
+		//	return 3;
+		//}
 
-		const nite::UserMap& userLabels = userTrackerFrame.getUserMap();
+		//const nite::UserMap& userLabels = userTrackerFrame.getUserMap();
 		
 
 		if(kinect._flags[Kinect2::DEPTH]){
@@ -235,7 +235,7 @@ int main_simple_viewer(int argc, char* argv[]){
 		if(kinect._flags[Kinect2::COLOR]){
 			rc = kinect.color.readFrame(&kinect.m_colorFrame);
 
-			cv::Mat color(960,1280,CV_8UC3,(void*) kinect.m_colorFrame.getData());
+			cv::Mat color(480,640,CV_8UC3,(void*) kinect.m_colorFrame.getData());
 			cv::Mat color2;
 			cv::cvtColor(color,color2,CV_RGB2BGR);
 			cv::Mat color3;
@@ -268,12 +268,12 @@ int main_simple_viewer(int argc, char* argv[]){
 			}
 			regist = !regist;
 		}
-		if(c == 'f'){
-			//openni::VideoStream::
-			nite::Plane plane = userTrackerFrame.getFloor();
-			//nite::UserTrackerFrameRef::getFloor();
-			printf("");
-		}
+		//if(c == 'f'){
+		//	//openni::VideoStream::
+		//	nite::Plane plane = userTrackerFrame.getFloor();
+		//	//nite::UserTrackerFrameRef::getFloor();
+		//	printf("");
+		//}
 		
 		++_frame_counter;
 		if (_frame_counter == 15)
@@ -286,8 +286,8 @@ int main_simple_viewer(int argc, char* argv[]){
 		}
 	}
 
-	userTrackerFrame.release();
-	m_pUserTracker->destroy();
+	//userTrackerFrame.release();
+	//m_pUserTracker->destroy();
 	nite::NiTE::shutdown();
 
 	kinect.close();	

@@ -30,6 +30,15 @@
     <ClCompile Include="TopView2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NIViewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NIUser3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiTrackingBio3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SimpleViewer3D.h">
@@ -42,6 +51,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TopView2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NIViewer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NIUser3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiTrackingBio3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

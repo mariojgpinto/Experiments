@@ -177,10 +177,33 @@ int main_multi_viewer(int argc, char* argv[]){
 					
 			if(flag_color){
 				cv::Mat color_aux1(480,640,CV_8UC3,(void*) color_frame[i]->getData());
-				cv::Mat color1,color2;
+				cv::Mat color1,color2,color3;
 				cv::cvtColor(color_aux1,color1,CV_RGB2BGR);
-				color1.copyTo(color2,*mat_depth[i]);
-				color2.assignTo(*mat_color[i]);
+				
+				//cv::blur(color1,color2,cv::Size(3,3));
+				//cv::blur(color1,color3,cv::Size(5,5));
+
+				//cv::subtract(color3,color2,*mat_color[i]);
+
+				cv::vector<cv::Mat> channels; 
+				//cv::Mat img_hist_equalized;
+
+				//cv::cvtColor(color1, img_hist_equalized, CV_BGR2YCrCb); //change the color image from BGR to YCrCb format
+
+				cv::split(color1,channels); //split the image into channels
+
+				cv::normalize(channels[0], channels[0],0,255,cv::NORM_MINMAX); //equalize histogram on the 1st channel (Y)
+				cv::normalize(channels[1], channels[1],0,255,cv::NORM_MINMAX); //equalize histogram on the 1st channel (Y)
+				cv::normalize(channels[2], channels[2],0,255,cv::NORM_MINMAX); //equalize histogram on the 1st channel (Y)
+
+				cv::merge(channels,*mat_color[i]); //merge 3 channels including the modified 1st channel into one image
+
+				//cv::cvtColor(img_hist_equalized, *mat_color[i], CV_YCrCb2BGR); //change the color image from YCrCb to BGR format (to display image properly)
+
+				
+				//cv::equalizeHist(color1,*mat_color[i]);
+				//color1.copyTo(color2,*mat_depth[i]);
+				//color2.assignTo(*mat_color[i]);
 			}
 		}
 
