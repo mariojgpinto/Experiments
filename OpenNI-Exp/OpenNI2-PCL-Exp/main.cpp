@@ -21,7 +21,7 @@ int main(int argc, char* argv[]){
 	//result = main_pcl_multi_tracking_3d(argc, argv);
 
 #ifdef _CCG
-	result = main_pcl_multi_tracking_3d(argc, argv);
+	result = main_top_view_2(argc, argv);
 #endif
 
 #ifdef _HOME

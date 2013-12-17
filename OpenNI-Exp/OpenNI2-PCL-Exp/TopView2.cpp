@@ -269,8 +269,8 @@ int main_top_view_2(int argc, char* argv[]){
 				for(int x=0; x<640; x++) { 
 					_x = (int)((_temp_x[y][x] - _min_xx)/10.0);
 					_y = (int)((_temp_z[y][x] - _min_yy)/10.0);
-					if(_y >= 0 && _x >= 0){
-						top_ptr[_x * _width + _y] = 255;
+					if(_y >= 0 && _y < _height && _x >= 0 && _x < _width){
+						top_ptr[_y * _width + _x] = 255;
 					}
 				}
 			}
