@@ -17,7 +17,7 @@ int main(int argc, char* argv[]){
 	//result = main_foot_detection(argc,argv);
 
 #ifdef _CCG
-	result = main_foot_detection(argc,argv);
+	result = main_chessboard_orig(argc,argv);
 #endif
 
 #ifdef _HOME

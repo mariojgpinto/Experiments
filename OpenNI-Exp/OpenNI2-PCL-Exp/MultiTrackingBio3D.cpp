@@ -672,7 +672,6 @@ void rgb_histogram2(User* user){
 		if(i == 6){ color.val[2] = 255; color.val[1] = 255; color.val[0] =  0 ;} /*1 1 0*/
 		if(i == 7){ color.val[2] = 255; color.val[1] = 255; color.val[0] = 255;} /*1 1 1*/
 
-
 		cv::rectangle(user->_histogram._hist_vis_rgb,cv::Rect(i*bar_width,height,bar_width,hist_h-height),color,-1);
 	}
 
@@ -878,7 +877,7 @@ void hsv_histogram2(User* user){
 				if(min_idx == 2){ ptr_result[idx_clr+0] =  60; ptr_result[idx_clr+1] = 255; ptr_result[idx_clr+2] = 255;} /*0 1 0*/
 				if(min_idx == 3){ ptr_result[idx_clr+0] =  90; ptr_result[idx_clr+1] = 255; ptr_result[idx_clr+2] = 255;} /*0 1 1*/
 				if(min_idx == 4){ ptr_result[idx_clr+0] =  0 ; ptr_result[idx_clr+1] = 255; ptr_result[idx_clr+2] = 255;} /*1 0 0*/
-				if(min_idx == 5){ ptr_result[idx_clr+0] = 0; ptr_result[idx_clr+1] = 255; ptr_result[idx_clr+2] = 255;}   /*1 0 1*/
+				if(min_idx == 5){ ptr_result[idx_clr+0] =  0 ; ptr_result[idx_clr+1] = 255; ptr_result[idx_clr+2] = 255;}   /*1 0 1*/
 				if(min_idx == 6){ ptr_result[idx_clr+0] =  30; ptr_result[idx_clr+1] = 255; ptr_result[idx_clr+2] = 255;} /*1 1 0*/
 				if(min_idx == 7){ ptr_result[idx_clr+0] =  0 ; ptr_result[idx_clr+1] =  0 ; ptr_result[idx_clr+2] = 255;} /*1 1 1*/
 				if(min_idx == 8){ ptr_result[idx_clr+0] =  0 ; ptr_result[idx_clr+1] =  0 ; ptr_result[idx_clr+2] = 190;} /*1 1 1*/
@@ -892,7 +891,7 @@ void hsv_histogram2(User* user){
 			}
 		}
 	}
-
+	
 	for(int i = 0 ; i < 9 ; ++i)
 		user->_histogram._hist_hsv[i] /= (float)user->_histogram._counter;
 
@@ -911,7 +910,7 @@ void hsv_histogram2(User* user){
 			if(i == 2){ color.val[0] =  60; color.val[1] = 255; color.val[2] = 255;} /*0 1 0*/
 			if(i == 3){ color.val[0] =  90; color.val[1] = 255; color.val[2] = 255;} /*0 1 1*/
 			if(i == 4){ color.val[0] =  0 ; color.val[1] = 255; color.val[2] = 255;} /*1 0 0*/
-			if(i == 5){ color.val[0] = 0; color.val[1] = 255; color.val[2] = 255;} /*1 0 1*/
+			if(i == 5){ color.val[0] =	0 ; color.val[1] = 255; color.val[2] = 255;} /*1 0 1*/
 			if(i == 6){ color.val[0] =  30; color.val[1] = 255; color.val[2] = 255;} /*1 1 0*/
 			if(i == 7){ color.val[0] =  0 ; color.val[1] =  0 ; color.val[2] = 255;} /*1 1 1*/
 			if(i == 8){ color.val[0] =  0 ; color.val[1] =  0 ; color.val[2] = 190;} /*1 1 1*/

@@ -84,6 +84,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CameraCalibration.cpp" />
     <ClCompile Include="FaceTemplateMatch.cpp" />
     <ClCompile Include="FaceTracker.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -100,6 +101,7 @@
     <ClCompile Include="SimpleViewer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CameraCalibration.h" />
     <ClInclude Include="FaceTemplateMatch.h" />
     <ClInclude Include="FaceTracker.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

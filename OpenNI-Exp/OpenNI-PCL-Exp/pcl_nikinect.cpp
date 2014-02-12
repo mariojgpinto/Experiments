@@ -88,8 +88,12 @@ int main_pcl_ni_kinect(int argc, char* argv[]){
 		//_depth_generator.ConvertProjectiveToRealWorld(n, pointList, realWorld);
 
 		if(pointList){
-			
-			ToolBoxPCL::convert_points_to_mesh(n, realWorld,cloud);
+			cloud.clear();
+			for(int i = 0 ; i < counter ; i++){
+				if(realWorld[i].Z > 0 )
+					cloud.push_back(pcl::PointXYZ(realWorld[i].X,realWorld[i].Y,realWorld[i].Z));
+			}
+			//ToolBoxPCL::convert_points_to_mesh(n, realWorld,cloud);
 
 			viewer.showCloud(cloud.makeShared());
 		}

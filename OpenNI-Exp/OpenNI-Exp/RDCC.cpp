@@ -12,7 +12,7 @@ using namespace xn;
 #include <boost/asio.hpp>
 using boost::asio::ip::tcp;
 
-#define _SOCKETS
+//#define _SOCKETS
 
 char* host = "192.168.1.1";
 char* port = "9991";

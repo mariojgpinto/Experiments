@@ -507,6 +507,11 @@ int main_multiple_kinect(int argc, char* argv[]){
 			//char buff[100];
 			//sprintf_s(buff,"Ranged Image (%d)",i);
 			//cv::imshow(buff,colorize);
+			cv::Mat depthMat8UC1;
+			depthMat16UC1.convertTo(depthMat8UC1,CV_8UC1,0.05);
+			char buff1[100];
+			sprintf_s(buff1,"Depth (%d)",i);
+			cv::imshow(buff1,depthMat8UC1);
 
 			char buff2[100];
 			sprintf_s(buff2,"Color (%d)",i);

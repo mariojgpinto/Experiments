@@ -496,11 +496,11 @@ int main_chessboard_orig( int argc, char* argv[] )
         }
 
         if(found){
-            //drawChessboardCorners( view, boardSize, Mat(pointbuf), found );
-			cv::circle(view,cv::Point(pointbuf[0].x,pointbuf[0].y),5,cv::Scalar(255,0,0),-1);
-			cv::circle(view,cv::Point(pointbuf[8].x,pointbuf[8].y),5,cv::Scalar(255,0,0),-1);
-			cv::circle(view,cv::Point(pointbuf[45].x,pointbuf[45].y),5,cv::Scalar(255,0,0),-1);
-			cv::circle(view,cv::Point(pointbuf[53].x,pointbuf[53].y),5,cv::Scalar(255,0,0),-1);
+            drawChessboardCorners( view, boardSize, Mat(pointbuf), found );
+			//cv::circle(view,cv::Point(pointbuf[0].x,pointbuf[0].y),5,cv::Scalar(255,0,0),-1);
+			//cv::circle(view,cv::Point(pointbuf[8].x,pointbuf[8].y),5,cv::Scalar(255,0,0),-1);
+			//cv::circle(view,cv::Point(pointbuf[45].x,pointbuf[45].y),5,cv::Scalar(255,0,0),-1);
+			//cv::circle(view,cv::Point(pointbuf[53].x,pointbuf[53].y),5,cv::Scalar(255,0,0),-1);
 
 		}
 

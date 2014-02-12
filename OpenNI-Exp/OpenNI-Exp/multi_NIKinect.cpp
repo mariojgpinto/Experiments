@@ -78,10 +78,10 @@ int main_multi_ni_kinect(int argc, char* argv[]){
 			//color_1.copyTo(color,mask_1);
 			imshow("Color1",color_1);
 		}
-		//if(kinect1->get_depth(depth_1)){
-		//	depth_1.convertTo(depthMat8UC1_1, CV_8UC1,0.05);
-		//	imshow("Depth1",depthMat8UC1_1);
-		//}
+		if(kinect1->get_depth(depth_1)){
+			depth_1.convertTo(depthMat8UC1_1, CV_8UC1,0.05);
+			imshow("Depth1",depthMat8UC1_1);
+		}
 
 
 
@@ -94,10 +94,10 @@ int main_multi_ni_kinect(int argc, char* argv[]){
 			//color_2.copyTo(color,mask_2);
 			imshow("Color2",color_2	);
 		}
-		//if(kinect2->get_depth(depth_2)){
-		//	depth_2.convertTo(depthMat8UC1_2, CV_8UC1,0.05);
-		//	imshow("Depth2",depthMat8UC1_2);
-		//}
+		if(kinect2->get_depth(depth_2)){
+			depth_2.convertTo(depthMat8UC1_2, CV_8UC1,0.05);
+			imshow("Depth2",depthMat8UC1_2);
+		}
 
 		
 

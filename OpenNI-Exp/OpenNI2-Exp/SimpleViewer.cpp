@@ -179,7 +179,7 @@ int main_simple_viewer(int argc, char* argv[]){
 	bool result = false;
 	openni::Status rc = openni::STATUS_OK;
 
-	Kinect2 kinect("Track\\track1.oni");
+	Kinect2 kinect(NULL);
 		
 	result = kinect.activate_depth();
 	result = kinect.activate_color();
@@ -209,6 +209,8 @@ int main_simple_viewer(int argc, char* argv[]){
 	//
 	//nite::UserMap user_map;
 	
+	result = kinect.disable_depth();
+
 	cv::namedWindow("Depth");
 	char c = 0;
 	while((c = cv::waitKey(12)) != 27){
@@ -235,7 +237,7 @@ int main_simple_viewer(int argc, char* argv[]){
 		if(kinect._flags[Kinect2::COLOR]){
 			rc = kinect.color.readFrame(&kinect.m_colorFrame);
 
-			cv::Mat color(480,640,CV_8UC3,(void*) kinect.m_colorFrame.getData());
+			cv::Mat color(960,1280,CV_8UC3,(void*) kinect.m_colorFrame.getData());
 			cv::Mat color2;
 			cv::cvtColor(color,color2,CV_RGB2BGR);
 			cv::Mat color3;
