@@ -10,32 +10,10 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="chessboard.cpp" />
-    <ClCompile Include="ChromaKey.cpp" />
-    <ClCompile Include="FootDetection.cpp" />
-    <ClCompile Include="FullScreen.cpp" />
-    <ClCompile Include="HeadTracker.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Mapping.cpp" />
-    <ClCompile Include="MappingPoints.cpp" />
-    <ClCompile Include="Skeletonize.cpp" />
-    <ClCompile Include="VideoRecorder.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="chessboard.h" />
-    <ClInclude Include="ChromaKey.h" />
-    <ClInclude Include="FootDetection.h" />
-    <ClInclude Include="FullScreen.h" />
-    <ClInclude Include="HeadTracker.h" />
-    <ClInclude Include="Mapping.h" />
-    <ClInclude Include="Skeletonize.h" />
-    <ClInclude Include="VideoRecorder.h" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{CA0575F4-4C78-4F63-A6A5-E0E74F90E7CB}</ProjectGuid>
+    <ProjectGuid>{FF311F3E-22B0-4ECF-9C03-1ABDD18BA9B4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>OpenCV245</RootNamespace>
+    <RootNamespace>OFxExp</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -54,19 +32,13 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="C:\Dev\PropertySheets\OPENCV_245_DEBUG.props" />
-    <Import Project="..\..\..\PropertySheets\INCLUDE_MYLIB.props" />
-    <Import Project="..\..\..\PropertySheets\TOOLBOXCV.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="C:\Dev\PropertySheets\OPENCV_245_RELEASE.props" />
-    <Import Project="..\..\..\PropertySheets\INCLUDE_MYLIB.props" />
-    <Import Project="..\..\..\PropertySheets\TOOLBOXCV.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -101,6 +73,9 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
