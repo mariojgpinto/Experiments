@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
 	//result = main_chroma_key(argc,argv);
 
 #ifdef _CCG
-	result = main_chessboard_orig(argc,argv);
+	result = main_chroma_key(argc, argv);
 #endif
 
 #ifdef _HOME
