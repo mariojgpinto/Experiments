@@ -75,6 +75,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ofxCamera.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ofxCamera.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
