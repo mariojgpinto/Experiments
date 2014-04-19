@@ -45,7 +45,7 @@ void on_trackbar_v_max( int, void* )
 	_v_max = (double) _v_max_slider;
 }
 
-const int n_videos = 6;
+const int n_videos = 1;
 bool record_flag = false;
 
 int main_chroma_key(int argc, char* argv[]){
@@ -69,7 +69,7 @@ int main_chroma_key(int argc, char* argv[]){
 	
 
 	for(int i = 0 ; i < n_videos ; ++i){
-		video[i].open("teste.mp4");
+		video[i].open("c:/Dev/Data/teste.mp4");
 		//video[i].open("green2.avi");
 		//video[i].set(CV_cap_prop_
 		//video[i].open("vid5.avi");
@@ -80,7 +80,7 @@ int main_chroma_key(int argc, char* argv[]){
 	}
 
 	//capture.open(-1);
-	capture.open("C:\\Users\\Pinto\\Videos\\Music\\Radiohead - Lotus Flower.mp4");
+	capture.open("c:/Dev/Data/Radiohead1080.mp4");
 
     if( !capture.isOpened() ){
 		return -1;
@@ -166,18 +166,18 @@ int main_chroma_key(int argc, char* argv[]){
 		//	unsigned char* ptr_clr = image_video_hsv[i].data;
 			unsigned char* ptr_mask = video_mask[i].data;
 
-			for(int y = 0 ; y < image_video_hsv[i].rows ; y++) { 
-				for(int x = 0; x < image_video_hsv[i].cols ; x++) { 
-					int mpos = y * image_video_hsv[i].cols + x;
-					//int hpos = y * image_video_hsv[i].cols * 3 + x * 3 + 0;
-					int spos = y * image_video_hsv[i].cols * 3 + x * 3 + 1;
-					//int vpos = y * image_video_hsv[i].cols * 3 + x * 3 + 2;
+			//for(int y = 0 ; y < image_video_hsv[i].rows ; y++) { 
+			//	for(int x = 0; x < image_video_hsv[i].cols ; x++) { 
+			//		int mpos = y * image_video_hsv[i].cols + x;
+			//		//int hpos = y * image_video_hsv[i].cols * 3 + x * 3 + 0;
+			//		int spos = y * image_video_hsv[i].cols * 3 + x * 3 + 1;
+			//		//int vpos = y * image_video_hsv[i].cols * 3 + x * 3 + 2;
 
-					if(ptr_clr[spos] > 250){
-						ptr_mask[mpos] = 0;
-					}
-				}
-			}
+			//		if(ptr_clr[spos] > 240){
+			//			ptr_mask[mpos] = 0;
+			//		}
+			//	}
+			//}
 
 
 
