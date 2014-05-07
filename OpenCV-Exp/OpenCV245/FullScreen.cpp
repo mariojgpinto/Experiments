@@ -105,8 +105,6 @@ int main_full_screen(int argc, char* argv[]){
 		}
 	}
 
-	//record.~VideoWriter();
-
 	capture.release();
 
 	return 0;

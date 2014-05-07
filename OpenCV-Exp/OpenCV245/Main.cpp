@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
 	//result = main_chroma_key(argc,argv);
 
 #ifdef _CCG
-	result = main_chroma_key(argc, argv);
+	result = main_full_screen(argc, argv);
 #endif
 
 #ifdef _HOME
