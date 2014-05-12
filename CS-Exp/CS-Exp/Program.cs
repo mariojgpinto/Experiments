@@ -50,7 +50,7 @@ namespace CS_Exp
         static void Main(string[] args)
         {
             ////Basic Examples
-            //func1();
+            func1();
 
             ////Classes Examples
             //func2();
@@ -71,7 +71,7 @@ namespace CS_Exp
             //func7();
 
             //File Sniffer
-            func8();
+            //func8();
         }
 
         static void func8()
@@ -79,8 +79,20 @@ namespace CS_Exp
             string _directoryPath = "\\\\ILLUSTRATOR-1\\RockInRio\\Fotos\\";
             string localPath = "C:\\RockInRio\\Fotos2\\";
 
+            string _userName = "Leonel Mendes";
+            string _password = "01";
+
+            Console.WriteLine("Disconnect in case we are currently connected with our credentials.");
+            string result_disconnect = NetworkShare.DisconnectFromShare(_directoryPath, true); //Disconnect in case we are currently connected with our credentials;
+            Console.WriteLine("Result:" + result_disconnect);
+
+            Console.WriteLine("Connect with the new credentials.");
+            string result_connect = NetworkShare.ConnectToShare(_directoryPath, _userName, _password); //Connect with the new credentials
+            Console.WriteLine("Result:" + result_connect);
+
             while (true)
             {
+                Console.WriteLine("Sniff");
                 IEnumerable<string> files = Directory.EnumerateFiles(_directoryPath);
 
                 foreach (string file in files)
@@ -91,10 +103,11 @@ namespace CS_Exp
 
                     Console.WriteLine("\n\nFile Found: " + parts[parts.Length - 1] + "\nMoving File to: " + dest);
 
-                    File.Move(file, dest);
+                    File.Copy(file, dest, true);
+                    File.Delete(file);
                 }
 
-                System.Threading.Thread.Sleep(100);
+                System.Threading.Thread.Sleep(250);
             }
         }
 
@@ -314,19 +327,26 @@ namespace CS_Exp
 
         static void func1()
         {
-            string str = "0101";
+            //string str = "0101";
 
-            System.Console.WriteLine(str[0]);
-            System.Console.WriteLine(str[1]);
-            System.Console.WriteLine(str[2]);
-            System.Console.WriteLine(str[3]);
+            //System.Console.WriteLine(str[0]);
+            //System.Console.WriteLine(str[1]);
+            //System.Console.WriteLine(str[2]);
+            //System.Console.WriteLine(str[3]);
 
-            System.Console.WriteLine(System.String.Format("{0}{1}{2}{3}", str[0], str[1], str[2], str[3]));
+            //System.Console.WriteLine(System.String.Format("{0}{1}{2}{3}", str[0], str[1], str[2], str[3]));
 
-            Console.WriteLine(12312.523.ToString("0."));
+            //Console.WriteLine(12312.523.ToString("0."));
 
 
-            System.Console.Read();
+            for (int i = 1; i <= 216; i += 8)
+            {
+                File.AppendAllText("file.txt", i + ", " + (i + 1) + ", " + (i + 4) + ", " + (i + 5) + ", " + (i + 2) + ", " + (i + 3) + ", " + (i + 6) + ", " + (i + 7) + ", ");
+                Console.Write(i + ", " + (i + 1) + ", " + (i + 4) + ", " + (i + 5) + ", " + (i + 2) + ", " + (i + 3) + ", " + (i + 6) + ", " + (i + 7) + ", ");
+            }
+
+
+                System.Console.Read();
         }
     }
 }
