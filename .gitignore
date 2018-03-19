@@ -42,7 +42,7 @@ local.properties
 *.sln.docstates
 
 # Build results
-
+.vs/
 [Dd]ebug/
 [Rr]elease/
 x64/
@@ -216,7 +216,7 @@ pip-log.txt
 
 GeneratedFiles/
 
-db
+.db
 
 Marie8/
 Marie16/
@@ -227,3 +227,5 @@ Calib - Cópia/
 Calib - Cópia (2)/
 Calib - Good/
 Calib/
+.bag
+

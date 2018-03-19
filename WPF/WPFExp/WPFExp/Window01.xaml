@@ -1,0 +1,9 @@
+﻿<Window x:Class="WPFExp.Window01"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ImageSlideShow" Height="350" Width="525" Background="Black">
+    <!-- Topmost="True" WindowState="Maximized" WindowStyle="None" -->
+    <Grid Name="SlideShowGrid">
+        
+    </Grid>
+</Window>

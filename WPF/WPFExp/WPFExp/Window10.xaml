@@ -1,0 +1,22 @@
+﻿<Window x:Class="WPFExp.Window10"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Window10" Height="615" Width="500" WindowStyle="None">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition />
+
+        </Grid.RowDefinitions>
+
+        <Button Name="btn"
+        />
+
+
+
+        <Grid Grid.Row="1" Name="MainGrid">
+        
+        </Grid>
+    </Grid>
+</Window>

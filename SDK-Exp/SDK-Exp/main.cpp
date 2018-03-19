@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
 	//result = main_kinect_base(argc, argv);
 	//
 
-	result = main_sample1(argc, argv);
+	result = main_sample3(argc, argv);
 
 	return result;
 }

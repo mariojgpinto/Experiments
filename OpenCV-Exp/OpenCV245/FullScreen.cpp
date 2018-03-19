@@ -12,7 +12,7 @@ int main_full_screen(int argc, char* argv[]){
 
 	cv::VideoCapture capture;
 
-	capture.open(-1);
+	capture.open(1);
 	//capture.open("C:\\Users\\Pinto\\Videos\\Music\\Radiohead - Lotus Flower.mp4");
 
     if( !capture.isOpened() ){
@@ -27,29 +27,37 @@ int main_full_screen(int argc, char* argv[]){
 
 	capture >> image_camera;
 	std::cout<< capture.get(CV_CAP_PROP_FOURCC)								<< std::endl;
-	//std::cout<< capture.set(CV_CAP_PROP_FOURCC,CV_FOURCC('M','J','P','G'))	<< std::endl;
-	//std::cout<< capture.set(CV_CAP_PROP_FOURCC,CV_FOURCC('M','P','4','2'))	<< std::endl;
-	//std::cout<< capture.set(CV_CAP_PROP_FOURCC,CV_FOURCC('D','I','V','3'))	<< std::endl;
-	//std::cout<< capture.set(CV_CAP_PROP_FOURCC,CV_FOURCC('D','I','V','X'))	<< std::endl;
-	//std::cout<< capture.set(CV_CAP_PROP_FOURCC,CV_FOURCC('U','2','6','3'))	<< std::endl;
-	//std::cout<< capture.set(CV_CAP_PROP_FOURCC,CV_FOURCC('I','2','6','3'))	<< std::endl;
-	//std::cout<< capture.set(CV_CAP_PROP_FOURCC,CV_FOURCC('F','L','V','1'))	<< std::endl;
 	
-	
+	std::cout<< "SET CODEC" << capture.set(CV_CAP_PROP_FOURCC,CV_FOURCC('M','J','P','G'))	<< std::endl;
+	//std::cout<< "SET CODEC" << capture.set(CV_CAP_PROP_FOURCC,CV_FOURCC('M','P','4','2'))	<< std::endl;
+	//std::cout<< "SET CODEC" << capture.set(CV_CAP_PROP_FOURCC,CV_FOURCC('D','I','V','3'))	<< std::endl;
+	//std::cout<< "SET CODEC" << capture.set(CV_CAP_PROP_FOURCC,CV_FOURCC('D','I','V','X'))	<< std::endl;
+	//std::cout<< "SET CODEC" << capture.set(CV_CAP_PROP_FOURCC,CV_FOURCC('U','2','6','3'))	<< std::endl;
+	//std::cout<< "SET CODEC" << capture.set(CV_CAP_PROP_FOURCC,CV_FOURCC('I','2','6','3'))	<< std::endl;
+	//std::cout<< "SET CODEC" << capture.set(CV_CAP_PROP_FOURCC,CV_FOURCC('F','L','V','1'))	<< std::endl;
+	//std::cout<< "SET CODEC" << capture.set(CV_CAP_PROP_FOURCC,CV_FOURCC('X','2','6','4'))	<< std::endl;
+
 	std::cout<< capture.set(CV_CAP_PROP_FPS, 30)							<< std::endl;
 
 	std::cout<< "capture.set(CV_CAP_PROP_FRAME_WIDTH , 1920)"	<< 
 		capture.set(CV_CAP_PROP_FRAME_WIDTH , 1920)				<< std::endl;
 	std::cout<< "capture.set(CV_CAP_PROP_FRAME_HEIGHT, 1080)"	<<
 		capture.set(CV_CAP_PROP_FRAME_HEIGHT, 1080)				<< std::endl;
+
+	_sleep(100);
+
+	
+	
+
 	//std::cout<< capture.set(CV_CAP_PROP_FPS, 30)							<< std::endl;
 	//std::cout<< capture.get(CV_CAP_PROP_FOURCC)								<< std::endl;
-	std::cout<< "SET CODEC" << capture.set(CV_CAP_PROP_FOURCC,CV_FOURCC('X','2','6','4'))	<< std::endl;
+	//
 
 	printf("\n\n\n");
 	std::cout	<<	"Cam Width - "	<<	capture.get(CV_CAP_PROP_FRAME_WIDTH)	<< std::endl;
 	std::cout	<<	"Cam Height - "	<<	capture.get(CV_CAP_PROP_FRAME_HEIGHT)	<< std::endl;
 	std::cout	<<	"Cam FPS - "	<<	capture.get(CV_CAP_PROP_FPS)			<< std::endl;
+	std::cout	<<	"Cam Codec - "	<<	capture.get(CV_CAP_PROP_FOURCC)			<< std::endl;
 
 	//int frames = capture.get(CV_CAP_PROP_FRAME_COUNT);
 	//int cam_width = capture.get(CV_CAP_PROP_FRAME_WIDTH);

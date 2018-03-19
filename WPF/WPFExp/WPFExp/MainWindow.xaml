@@ -1,0 +1,38 @@
+﻿<Window x:Class="WPFExp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:WPFExp"
+        Title="WPF Experiments" Height="500" Width="525">
+
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static local:MainWindow.MyCommand}" Executed="MyCommandExecuted"/>
+    </Window.CommandBindings>
+    
+    <!-- Topmost="True" WindowState="Maximized" WindowStyle="None" -->   
+    <Grid Name="Grid01">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Button Grid.Row="0" Grid.Column="0" Click="Button_Click" Tag="BT01" Content="Splash Screen"/>
+        <Button Grid.Row="0" Grid.Column="1" Click="Button_Click" Tag="BT02" Content="Slide Show"/>
+        <Button Grid.Row="0" Grid.Column="2" Click="Button_Click" Tag="BT03" Content="Dynamic Grid"/>
+        <Button Grid.Row="1" Grid.Column="0" Click="Button_Click" Tag="BT04" Content="Sliders"/>
+        <Button Grid.Row="1" Grid.Column="1" Click="Button_Click" Tag="BT05" Content="PopUp Notification"/>
+        <Button Grid.Row="1" Grid.Column="2" Click="Button_Click" Tag="BT06" Content="Button 06"/>
+        <Button Grid.Row="2" Grid.Column="0" Click="Button_Click" Tag="BT07" Content="Button 07"/>
+        <Button Grid.Row="2" Grid.Column="1" Click="Button_Click" Tag="BT08" Content="Button 08"/>
+        <Button Grid.Row="2" Grid.Column="2" Click="Button_Click" Tag="BT09" Content="Button 09"/>
+        <Button Grid.Row="3" Grid.Column="0" Click="Button_Click" Tag="BT10" Content="Button 10"/>
+        <Button Grid.Row="3" Grid.Column="1" Click="Button_Click" Tag="BT11" Content="Button 11"/>
+        <Button Grid.Row="3" Grid.Column="2" Click="Button_Click" Tag="BT12" Content="Button 12"/>
+    </Grid>
+</Window>

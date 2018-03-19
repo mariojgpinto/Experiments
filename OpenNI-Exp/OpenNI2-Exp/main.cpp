@@ -47,7 +47,7 @@ int main(int argc, char* argv[]){
 	//int i4 = round (r4);
 	//int i5 = round (r5);
 
-	result = main_kinect_calibration(argc, argv);
+	result = main_simple_viewer(argc, argv);
 #endif
 
 #ifdef _HOME

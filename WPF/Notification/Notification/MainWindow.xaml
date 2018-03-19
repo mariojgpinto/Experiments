@@ -1,0 +1,11 @@
+﻿<Window x:Class="Notification.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Pedo" Height="150" Width="150" WindowStyle="None" Background="Transparent" 
+        AllowsTransparency="True" ResizeMode="NoResize" ShowInTaskbar="False"
+        WindowStartupLocation="Manual" ShowActivated="False" 
+        Left="0" Top="-150">
+    <Grid Name="PedoGrid">
+        
+    </Grid>
+</Window>

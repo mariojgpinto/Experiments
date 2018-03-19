@@ -8,6 +8,7 @@
 #include "FullScreen.h"
 #include "VideoRecorder.h"
 #include "ChromaKey.h"
+#include "VideoMaskAlphaJoin.h"
 
 int main(int argc, char* argv[]){
 	int result = -1;
@@ -20,9 +21,11 @@ int main(int argc, char* argv[]){
 	//result = main_foot_detection(argc,argv);
 	//result = main_full_screen(argc,argv);
 	//result = main_chroma_key(argc,argv);
+	//result = main_video_mask_alpha_join(argc, argv);
 
 #ifdef _CCG
-	result = main_full_screen(argc, argv);
+
+	result = main_video_mask_alpha_join(argc, argv);
 #endif
 
 #ifdef _HOME

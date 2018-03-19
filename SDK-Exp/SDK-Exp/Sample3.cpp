@@ -7,6 +7,11 @@
 
 int main_sample3(int argc, char* argv[])
 {
+
+	double _last_tick = 0;
+	int _frame_counter = 0;
+	float _frame_rate = 0;
+
 	cv::setUseOptimized( true );
 
 	// Kinect
@@ -69,6 +74,13 @@ int main_sample3(int argc, char* argv[])
 	cv::namedWindow( "Player" );
 	cv::namedWindow( "Skeleton" );
 
+	double aux1 = NUI_IMAGE_DEPTH_MAXIMUM;
+	double aux2 = NUI_IMAGE_DEPTH_MINIMUM;
+	double aux3 = NUI_IMAGE_DEPTH_MAXIMUM_NEAR_MODE;
+	double aux4 = NUI_IMAGE_DEPTH_MINIMUM_NEAR_MODE;
+
+	double depth_alpha = 255.0f / NUI_IMAGE_DEPTH_MAXIMUM;
+
 	while( 1 ){
 		ResetEvent( hColorEvent );
 		ResetEvent( hDepthPlayerEvent );
@@ -110,45 +122,87 @@ int main_sample3(int argc, char* argv[])
 		pDepthPlayerFrameTexture->LockRect( 0, &sDepthPlayerLockedRect, nullptr, 0 );
 
 		cv::Mat colorMat( 480, 640, CV_8UC4, reinterpret_cast<uchar*>( sColorLockedRect.pBits ) );
+		cv::Mat depthMat( 480, 640, CV_16SC1, reinterpret_cast<uchar*>( sDepthPlayerLockedRect.pBits )  );
 
-		LONG registX = 0;
-		LONG registY = 0;
+		//LONG registX = 0;
+		//LONG registY = 0;
 		ushort* pBuffer = reinterpret_cast<ushort*>( sDepthPlayerLockedRect.pBits );
-		cv::Mat bufferMat = cv::Mat::zeros( 480, 640, CV_16UC1 );
-		cv::Mat playerMat = cv::Mat::zeros( 480, 640, CV_8UC3 );
-		for( int y = 0; y < 480; y++ ){
-			for( int x = 0; x < 640; x++ ){
-				pSensor->NuiImageGetColorPixelCoordinatesFromDepthPixelAtResolution( NUI_IMAGE_RESOLUTION_640x480, NUI_IMAGE_RESOLUTION_640x480, nullptr, x, y, *pBuffer, &registX, &registY );
-				if( ( registX >= 0 ) && ( registX < 640 ) && ( registY >= 0 ) && ( registY < 480 ) ){
-					bufferMat.at<ushort>( registY, registX ) = *pBuffer & 0xFFF8;
-					playerMat.at<cv::Vec3b>( registY, registX ) = color[*pBuffer & 0x7];
-				}
-				pBuffer++;
-			}
-		}
-		cv::Mat depthMat( 480, 640, CV_8UC1 );
-		bufferMat.convertTo( depthMat, CV_8UC3, -255.0f / NUI_IMAGE_DEPTH_MAXIMUM, 255.0f );
+		//cv::Mat bufferMat = cv::Mat::zeros( 480, 640, CV_16UC1 );
+		//cv::Mat playerMat = cv::Mat::zeros( 480, 640, CV_8UC3 );
+		//for( int y = 0; y < 480; y++ ){
+		//	for( int x = 0; x < 640; x++ ){
+		//		pSensor->NuiImageGetColorPixelCoordinatesFromDepthPixelAtResolution( NUI_IMAGE_RESOLUTION_640x480, NUI_IMAGE_RESOLUTION_640x480, nullptr, x, y, *pBuffer, &registX, &registY );
+		//		if( ( registX >= 0 ) && ( registX < 640 ) && ( registY >= 0 ) && ( registY < 480 ) ){
+		//			bufferMat.at<ushort>( registY, registX ) = *pBuffer & 0xFFF8;
+		//			playerMat.at<cv::Vec3b>( registY, registX ) = color[*pBuffer & 0x7];
+		//		}
+		//		pBuffer++;
+		//	}
+		//}
+		//cv::Mat depthMat( 480, 640, CV_8UC1 );
+		//bufferMat.convertTo( depthMat, CV_8UC3, -255.0f / NUI_IMAGE_DEPTH_MAXIMUM, 255.0f );
 
-		cv::Mat skeletonMat = cv::Mat::zeros( 960, 1280, CV_8UC3 );
+		cv::Mat skeletonMat = cv::Mat::zeros( 480, 640, CV_8UC3 );
 		cv::Point2f point;
+		cv::Point3f point_hand;
 		for( int count = 0; count < NUI_SKELETON_COUNT; count++ ){
 			NUI_SKELETON_DATA skeleton = pSkeletonFrame.SkeletonData[count];
 			if( skeleton.eTrackingState == NUI_SKELETON_TRACKED ){
 				for( int position = 0; position < NUI_SKELETON_POSITION_COUNT; position++ ){
-					NuiTransformSkeletonToDepthImage( skeleton.SkeletonPositions[position], &point.x, &point.y, NUI_IMAGE_RESOLUTION_1280x960 );
+					NuiTransformSkeletonToDepthImage( skeleton.SkeletonPositions[position], &point.x, &point.y, NUI_IMAGE_RESOLUTION_640x480 );
 					cv::circle( skeletonMat, point, 10, static_cast<cv::Scalar>( color[count + 1] ), -1, CV_AA );
+
+					if(position == NUI_SKELETON_POSITION_HAND_RIGHT){
+						point_hand.x = skeleton.SkeletonPositions[position].x;
+						point_hand.y = skeleton.SkeletonPositions[position].y;
+						point_hand.z = skeleton.SkeletonPositions[position].z;
+					}
 				}
 			}
-		}
+		}	
+
+
+		cv::Point p1(320,240);
+		cv::Point p2(500,240);
+
+		Vector4 vec =  NuiTransformDepthImageToSkeleton(p1.x/640,p1.y/480,NuiDepthPixelToDepth(pBuffer[p1.y*640+p1.x]) << 3);
+
+		char buff1[100];
+		sprintf(buff1,"X:%.2f  Y:%.2f  Z:%.2f  A:%.2f", vec.x, vec.y, vec.z, vec.w);
+		cv::putText(skeletonMat, buff1, cvPoint(30,30), cv::FONT_HERSHEY_COMPLEX, 1., cvScalar(255,255,255), 1, CV_AA);
+
+
+		char buff2[100];
+		sprintf(buff2,"Distance(mm):%d , %d", NuiDepthPixelToDepth(pBuffer[p1.y*640+p1.x]),pBuffer[p1.y*640+p1.x]);
+		cv::putText(skeletonMat, buff2, cvPoint(30,100), cv::FONT_HERSHEY_COMPLEX, 1., cvScalar(255,255,255), 1, CV_AA);
+
+		char buff3[100];
+		sprintf(buff3,"Distance(mm):%d , %d", NuiDepthPixelToDepth(pBuffer[p2.y*640+p2.x]),pBuffer[p2.y*640+p2.x]);
+		cv::putText(skeletonMat, buff3, cvPoint(30,200), cv::FONT_HERSHEY_COMPLEX, 1., cvScalar(255,255,255), 1, CV_AA);
 
 		
+
 		cv::Mat temp;
 		colorMat.convertTo(temp,CV_8UC3);
-		 //= colorMat + (0.5*skeletonMat);
-
+		// //= colorMat + (0.5*skeletonMat);
 		cv::imshow( "Color", temp);
-		cv::imshow( "Depth", depthMat );
-		cv::imshow( "Player", playerMat );
+
+		cv::Mat depthMat8UC1;
+		depthMat.convertTo( depthMat8UC1, CV_8UC1, depth_alpha);
+
+
+
+		cv::circle(depthMat8UC1,p1,5,cv::Scalar(255,255,255),-1);
+		cv::circle(depthMat8UC1,p2,5,cv::Scalar(255,255,255),-1);
+
+		cv::imshow( "Depth", depthMat8UC1 );
+		
+		cv::Mat temp2;
+		temp.copyTo(temp2,depthMat8UC1);
+
+		cv::imshow( "Player", temp2 );
+		
+		
 		cv::imshow( "Skeleton", skeletonMat );
 
 		pColorFrameTexture->UnlockRect( 0 );
@@ -156,8 +210,18 @@ int main_sample3(int argc, char* argv[])
 		pSensor->NuiImageStreamReleaseFrame( hColorHandle, &pColorImageFrame );
 		pSensor->NuiImageStreamReleaseFrame( hDepthPlayerHandle, &pDepthPlayerImageFrame );
 
-		if( cv::waitKey( 30 ) == VK_ESCAPE ){
+		if( cv::waitKey( 11 ) == VK_ESCAPE ){
 			break;
+		}
+
+		++_frame_counter;
+		if (_frame_counter == 15)
+		{
+			double current_tick = cv::getTickCount();
+			_frame_rate = _frame_counter / ((current_tick - _last_tick)/cv::getTickFrequency());
+			_last_tick = current_tick;
+			_frame_counter = 0;
+			printf("FrameRate %.2f\n",_frame_rate);
 		}
 	}
 

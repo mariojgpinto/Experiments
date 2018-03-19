@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+# Visual C++ Express 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDK-Exp", "SDK-Exp\SDK-Exp.vcxproj", "{6A7E74BE-3D14-4B35-98F3-4F5B6258CA54}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDK-PCL-Exp", "SDK-PCL-Exp\SDK-PCL-Exp.vcxproj", "{C4138443-DA22-44D0-B946-1155714B68AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +15,10 @@ Global
 		{6A7E74BE-3D14-4B35-98F3-4F5B6258CA54}.Debug|Win32.Build.0 = Debug|Win32
 		{6A7E74BE-3D14-4B35-98F3-4F5B6258CA54}.Release|Win32.ActiveCfg = Release|Win32
 		{6A7E74BE-3D14-4B35-98F3-4F5B6258CA54}.Release|Win32.Build.0 = Release|Win32
+		{C4138443-DA22-44D0-B946-1155714B68AA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C4138443-DA22-44D0-B946-1155714B68AA}.Debug|Win32.Build.0 = Debug|Win32
+		{C4138443-DA22-44D0-B946-1155714B68AA}.Release|Win32.ActiveCfg = Release|Win32
+		{C4138443-DA22-44D0-B946-1155714B68AA}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
