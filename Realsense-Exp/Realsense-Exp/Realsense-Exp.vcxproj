@@ -65,14 +65,10 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\..\External\Prozis\PROZIS_GAMES.props" />
-    <Import Project="..\..\..\PropertySheets\OPENCV_310_X64.props" />
-    <Import Project="..\..\..\PropertySheets\IntelRealsense2.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\..\External\Prozis\PROZIS_GAMES.props" />
-    <Import Project="..\..\..\PropertySheets\OPENCV_310_X64.props" />
-    <Import Project="..\..\..\PropertySheets\IntelRealsense2.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
@@ -88,6 +84,9 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -119,6 +118,7 @@
   <ItemGroup>
     <ClCompile Include="DepthSensorPlayback.cpp" />
     <ClCompile Include="DepthSensorRecorder.cpp" />
+    <ClCompile Include="FloorDetection.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Main_D415.cpp" />
     <ClCompile Include="Main_RecordPlaybackSrc.cpp" />
@@ -129,6 +129,7 @@
     <ClInclude Include="DepthSensorRecorder.h" />
     <ClInclude Include="example.hpp" />
     <ClInclude Include="DepthSensorPlayback.h" />
+    <ClInclude Include="FloorDetection.h" />
     <ClInclude Include="Main_D415.h" />
     <ClInclude Include="Main_RecordPlaybackSrc.h" />
     <ClInclude Include="Main_RecordPlaybackCV.h" />

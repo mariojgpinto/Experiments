@@ -36,6 +36,9 @@
     <ClCompile Include="DepthSensorPlayback.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FloorDetection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main_D415.h">
@@ -57,6 +60,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DepthSensorPlayback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FloorDetection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

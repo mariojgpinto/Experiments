@@ -1,6 +1,9 @@
 #include "Main_D415.h"
 #include "SharedFunctions.h"
 
+using namespace cv;
+using namespace std;
+
 int main_d415(int argc, char* argv[]) {
 	printf("main_d415");
 

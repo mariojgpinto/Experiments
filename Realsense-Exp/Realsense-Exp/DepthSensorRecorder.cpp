@@ -1,4 +1,5 @@
 #include "DepthSensorRecorder.h"
+#include "SharedFunctions.h"
 
 #include <stdio.h>
 
@@ -10,30 +11,6 @@ using namespace std;
 
 #include <opencv2\opencv.hpp>
 #include <time.h>
-
-string depthWindowNameRealsense[] = { "Depth0", "Depht1", "Depht2", "Depht3" };
-string maskWindowNameRealsense[] = { "Mask0", "Mask1", "Mask2", "Mask3" };
-string colorWindowNameRealsense[] = { "Color0", "Color1", "Color2", "Color3" };
-
-void CreateWindows_RealsenseKinects(int nKinects) {
-	int windowDeltaY = -1200;
-	int windowDeltaX = 960;
-	int windowSpaceWidth = 640;
-	int windowSpaceHeight = 480;
-
-	for (int i = 0; i < nKinects; ++i) {
-		cv::namedWindow(depthWindowNameRealsense[i]);
-		cv::moveWindow(depthWindowNameRealsense[i], windowDeltaX + windowSpaceWidth * i, 0 + windowDeltaY);
-
-		cv::namedWindow(maskWindowNameRealsense[i]);
-		cv::moveWindow(maskWindowNameRealsense[i], windowDeltaX + windowSpaceWidth * i, windowSpaceHeight + windowDeltaY);
-
-		cv::namedWindow(colorWindowNameRealsense[i]);
-		cv::moveWindow(colorWindowNameRealsense[i], windowSpaceWidth * i, 0);
-	}
-}
-
-
 
 int main_DepthSensorRecorder(int argc, char* argv[]) {
 	std::cout << "main_DepthSensorRecorder" << std::endl;
@@ -147,7 +124,7 @@ int main_DepthSensorRecorder(int argc, char* argv[]) {
 			for (int i = 0; i < nDevices; ++i) {
 				RealSense* sensor = (RealSense*)GetDepthSensorInstance(i);
 
-				char buff[16];
+				char buff[32];
 				sprintf_s(buff, "m_file_%d.bag", i);
 				recorder[i] = new rs2::recorder(buff, sensor->pipe->get_active_profile().get_device());
 				

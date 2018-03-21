@@ -1,6 +1,8 @@
 #include "Main_RecordPlaybackCV.h"
 #include "SharedFunctions.h"
 
+using namespace cv;
+using namespace std;
 
 int main_RecordPlaybackCV(int argc, char* argv[]) try {
 	printf("main_RecordPlaybackCV\n");
